@@ -1,5 +1,5 @@
 """
-estimator.py: Estimate collision cross sections
+totcross.py: Estimate total collision cross sections
 
 Refrence "Introduction to Elementary Particles" by Griffiths, 2nd Ed
 Chapter 9 section 6: Neutral Weak Interactions
