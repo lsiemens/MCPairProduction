@@ -64,12 +64,42 @@ for meson in meson_octet:
 # List reactions
 body += "\n\n\\section{Reactions: quantum numbers only}\n"
 
+number_reactions = 0
 for B_i in baryon_decuplet:
     for B_f in baryon_octet:
         for M_f in meson_octet:
             if (B_f["c"] + M_f["c"] - B_i["c"] == 0) and (B_f["s"] + M_f["s"] - B_i["s"] == 0):
                 body += "$" + B_i["n"] + " \\rightarrow " + B_f["n"] + " + " + M_f["n"] + "$, "
+                number_reactions += 1
     body += "\n\\newline\n"
+
+# List reactions
+body += "\n\n\\section{Reactions: quantum numbers, kinimatics}\n"
+
+number_reactions = 0
+for B_i in baryon_decuplet:
+    for B_f in baryon_octet:
+        for M_f in meson_octet:
+            if (B_f["c"] + M_f["c"] - B_i["c"] == 0) and (B_f["s"] + M_f["s"] - B_i["s"] == 0) and (B_i["e"] >= B_f["e"] + M_f["e"]):
+                body += "$$" + B_i["n"] + " \\rightarrow " + B_f["n"] + " + " + M_f["n"] + "$$\n"
+                number_reactions += 1
+#    body += "\n\\newline\n"
+    body += "\n\n"
+
+# List reactions
+body += "\n\n\\subsection{Restricted}\n"
+
+number_reactions = 0
+for B_i in baryon_decuplet:
+    for B_f in baryon_octet:
+        for M_f in meson_octet:
+            if (B_f["c"] + M_f["c"] - B_i["c"] == 0) and (B_f["s"] + M_f["s"] - B_i["s"] == 0) and (B_i["e"] < B_f["e"] + M_f["e"]):
+                body += "$$" + B_i["n"] + " \\rightarrow " + B_f["n"] + " + " + M_f["n"] + "$$\n"
+                number_reactions += 1
+#    body += "\n\\newline\n"
+    body += "\n\n"
+
+print("The total number of reactions:", number_reactions)
 
 text = latex_header + "\n\n" + body + "\n\n" + latex_footer
 with open("./scratch/A1Q2d.tex", "w") as fout:
