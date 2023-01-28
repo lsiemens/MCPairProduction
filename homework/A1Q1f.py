@@ -16,9 +16,9 @@ Q_14C   = 1.565E-1 # in MeV for   14C -> 14N + e-
 Q_137Cs = 1.176E+0 # in MeV for 137Cs -> 137Ba + e-
 
 Qs = [Q_3H, Q_14C, Q_137Cs]
-reactions = ["$\\ ^3H \\rightarrow \\ ^3He + e^+$",
-             "$\\ ^{14}C \\rightarrow \\ ^{14}N + e^+$",
-             "$\\ ^{137}Cs \\rightarrow \\ ^{137}Ba + e^+$"]
+reactions = ["$\\ ^3H \\rightarrow \\ ^3He + e^-$",
+             "$\\ ^{14}C \\rightarrow \\ ^{14}N + e^-$",
+             "$\\ ^{137}Cs \\rightarrow \\ ^{137}Ba + e^-$"]
 
 simple_name = ["3H_3He", "14C_14N", "137Cs_137Ba"]
 line_styles = [("*k:", 80), ("sk-.", 100), ("ok--", 120)]
@@ -86,6 +86,8 @@ for Q, reaction, sname in zip(Qs, reactions, simple_name):
     i_min, i_max = indices
     p_min = find_zero(i_min, p, f_value)
     p_max = find_zero(i_max, p, f_value)
+    
+    # Find HWHM and plot
     p_range = numpy.array([p_min, p_max])
     p_half = numpy.array([p_range.mean(), p_max])
 
@@ -93,7 +95,6 @@ for Q, reaction, sname in zip(Qs, reactions, simple_name):
 
     f_value = f(p,Q)
     f_max = numpy.max(f_value)
-    print(f_max)
 
     hline = numpy.array([1/2, 1/2]) - 0.03
 
