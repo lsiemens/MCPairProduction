@@ -1,50 +1,128 @@
 """
-totcross.py: Estimate total collision cross sections
+totcross.py: Estimate total cross sections
+
+This script estimates the total interaction cross section for electron
+positron scattering mediated by the Z boson e⁻ + e⁺ →  f + f̄. The
+estimate of the total cross section is computed from the differential
+cross section using Monte Carlo integration.
+
+Note, internal calculations use natural units with ħ=c=1. Energies are
+in units of MeV if not otherwise specified.
 
 Refrence "Introduction to Elementary Particles" by Griffiths, 2nd Ed
 Chapter 9 section 6: Neutral Weak Interactions
 
-In paticular compute the total cross section from the differential
-cross section for e^+ + e^- -> f + \\bar{f}. Following Eample 9.5
-
-Note internal calculations use natural units with h_bar=c=1.
-Energies in units of MeV if not otherwise specified.
+.. [2] R.L. Workman et al. (Particle Data Group), Prog. Theor. Exp. Phys. 2022, 083C01 (2022)
 """
 
 from matplotlib import pyplot
 import numpy
 
-# constants values from Griffiths
+# Constants: values from Griffiths
 g_z = 0.7180 # TODO; the neutral coupling constant
 theta_w = 28.78 # in degrees, the weak mixing angle
 sin2_theta_w = 0.2314 # unitless, sin^2(theta_w)
-M_z = 9.1E4 # in MeV/c^2; mass of the Z boson
+M_z = 9.2E4 # in MeV/c^2; mass of the Z boson
 Gamma_z = 2.495E3 # in MeV/hbar; decay rate of Z boson
 
-# todo select couplings from desired flaver
-# Neutral vector and axial vector couplings
-fermion_couplings = {"lepton":{""}, "quark":{}}
+# a dictionary of fermion labels, all of the entries contain a tuple of
+# the particle's weak isospin T_3 and charge Q. The tuples have the
+# format (T_3, Q)
+fermions = {"nu_e":( 0,  1/2), "nu_mu":( 0,  1/2), "nu_tau":( 0,  1/2),
+               "e":(-1, -1/2),    "mu":(-1, -1/2),    "tau":(-1, -1/2),
+            "u":( 2/3,  1/2), "c":( 2/3,  1/2), "t":( 2/3,  1/2),
+            "d":(-1/3, -1/2), "s":(-1/3, -1/2), "b":(-1/3, -1/2)}
 
-# neutrino
-c_Vf = 1/2
-c_Af = 1/2
+def neutral_couplings(T_3, Q):
+    """Get the weak neutral couplings constants.
 
-# electron
-c_Ve = -1/2 + 2*sin2_theta_w
-c_Ae = -1/2
+    The coupling constants for a fermion are determined by the particle's
+    weak isospin T₃ and charge Q, see PDG section 10.1 for more details.
+    The vector coupling is,
 
-# TODO double check equation, in peticular the 16pi factor
-# dsigma_dOmega = (g_z^2E)^2/([16pi[2E]^2 - [M_z]^2)]^2 + [16pi M_z Gamma_z]^2)
-# *{ [(c_Vf)^2 + (c_Af)^2][(c_Ve)^2 + (c_Ae)^2](1 + cos^2(theta)
-#    - 8c_Vf c_Af c_Ve c_Ae cos(theta)}
-#
+    g_V = T₃ - 2Qsin²(θ_w)
 
-def dsigma_dOmega(E, theta):
-    # breit-Wigner distribution
-    BW_dist = (g_z**2*E/(16*numpy.pi))**2/((4*E**2 - M_z**2)**2 + (M_z*Gamma_z)**2)
-    A = (c_Vf**2 + c_Af**2)*(c_Ve**2 + c_Vf**2)*(1 + numpy.cos(theta)**2)
-    B = 8*c_Vf*c_Af*c_Ve*c_Ae*numpy.cos(theta)
-    return BW_dist*(A - B)
+    where θ_w is the weak mixing angle. The axial-vector coupling is,
+
+    g_A = T₃
+
+    Parameters
+    ----------
+    T_3 : float
+        The weak isospin of the fermion.
+    Q : float
+        The electric charge of the fermion.
+
+    Returns
+    -------
+    (g_V, g_A) : tuple
+        The vector and axial-vector coupling constants.
+    """
+    return T_3 - 2*Q*sin2_theta_w, T_3
+
+def dsigma_dOmega(E, theta, fermion_name):
+    """differential cross section for electron positron scattering
+
+    Compute the differential cross section for the interaction
+    e⁻ + e⁺ →  f + f̄ mediated by a Z boson. Note f may be any
+    fundimental fermion other than the electron, that case has not
+    been implemented.
+
+    The differental cross section dσ/dΩ for these interactions is
+    given by the equation below.
+
+    A = (g_z²E/[16𝜋])²
+    B = (c_Vf² + c_Af²)(c_Ve² + c_Ae²)
+    C = 8c_Vf c_Af c_Ve c_Ae
+    D = (4E² - M_z²)² + (M_z𝚪_z)²
+
+    dσ/dΩ = A(B[1 + cos²(θ)] - C*cos(θ))/D
+
+    where g_z is the neutral coupling constant, E is the energy of the
+    incoming electron and positron, c_Ve, c_Ae are the neutral vector
+    and axial vector couplings of the electron, c_Vf, c_Af are the
+    neutral vector and axial vector couplings of resulting fermions,
+    M_z is the mass of the Z boson and 𝚪_z is the decay rate of the Z boson.
+
+    Parameters
+    ----------
+    E : array or float
+        The energy of the incoming positron and electron.
+    theta : array or float
+        The angle relative to the beam line of the resulting fermions.
+    fermion_name : string
+        Name of the resulting fundimental fermion for the reaction.
+        Ex "mu" or "nu_e" ...
+
+    Returns
+    -------
+    dσ/dΩ : array or float
+        The differential cross section of the spesified interaction for
+        the given E and theta.
+    """
+
+    if fermion_name == "e":
+        raise ValueError(f"Invalid particle label: {fermion_name}\n"
+                          "The reaction e⁻ + e⁺ →  e⁻ + e⁺ is not implemented.")
+
+    # get the weak neutral coupling constants
+    ## electron coupling constants
+    c_Ve, c_Ae = neutral_couplings(*fermions["e"])
+
+    ## fermion coupling constants
+    c_Vf, c_Af = neutral_couplings(*fermions[fermion_name])
+
+    # Calculate the differential cross section
+    ## sub units of the section
+    A = (g_z**2*E/(16*numpy.pi))**2
+    B = (c_Vf**2 + c_Af**2)*(c_Ve**2 + c_Vf**2)
+    C = 8*c_Vf*c_Af*c_Ve*c_Ae
+    D = (4*E**2 - M_z**2)**2 + (M_z*Gamma_z)**2
+
+    ## the differential cross section
+    return A*(B*(1 + numpy.cos(theta)**2) - C*numpy.cos(theta))/D
+
+#Note dΩ = sin(θ)dθdΦ
 
 ##### break: old code #####################################
 
@@ -70,16 +148,16 @@ N = 100
 samples_theta = numpy.random.uniform(0, numpy.pi, size=N)
 samples_phi = numpy.random.uniform(-numpy.pi, numpy.pi, size=N)
 
-print((2*numpy.pi**2)*numpy.sum(dsigma_dOmega(M_z/2, samples_theta))/N)
+print((2*numpy.pi**2)*numpy.sum(numpy.sin(samples_theta)*dsigma_dOmega(M_z/2, samples_theta, "nu_e"))/N)
 
 Es = numpy.linspace(0, M_z, 10*N)
 thetas = numpy.linspace(0, numpy.pi, 10)
 for theta in thetas:
-    pyplot.plot(Es, dsigma_dOmega(Es, theta))
+    pyplot.plot(Es, dsigma_dOmega(Es, theta, "nu_e"))
 pyplot.show()
 
 Es = numpy.linspace(0, M_z, 10)
 thetas = numpy.linspace(0, numpy.pi, 10*N)
 for E in Es:
-    pyplot.plot(thetas, dsigma_dOmega(E, thetas))
+    pyplot.plot(thetas, dsigma_dOmega(E, thetas, "nu_e"))
 pyplot.show()
