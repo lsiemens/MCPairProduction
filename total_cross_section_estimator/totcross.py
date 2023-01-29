@@ -12,18 +12,19 @@ in units of MeV if not otherwise specified.
 Refrence "Introduction to Elementary Particles" by Griffiths, 2nd Ed
 Chapter 9 section 6: Neutral Weak Interactions
 
+.. [1] D.J Griffiths "Introduction to Elementary Particles" 2nd Rev Ed. ...
+
 .. [2] R.L. Workman et al. (Particle Data Group), Prog. Theor. Exp. Phys. 2022, 083C01 (2022)
 """
 
 from matplotlib import pyplot
 import numpy
 
-# Constants: values from Griffiths
+# Constants: values from PDG
 g_z = 0.7180 # TODO; the neutral coupling constant
-theta_w = 28.78 # in degrees, the weak mixing angle
-sin2_theta_w = 0.2314 # unitless, sin^2(theta_w)
-M_z = 9.2E4 # in MeV/c^2; mass of the Z boson
-Gamma_z = 2.495E3 # in MeV/hbar; decay rate of Z boson
+sin2_theta_w = 0.2312 # unitless, sin²(θ_w) of the weak mixing angle θ_w
+M_z = 9.118E4 # in MeV/c^2; mass of the Z boson
+Gamma_z = 2.49E3 # in MeV/hbar; decay rate of Z boson
 
 # a dictionary of fermion labels, all of the entries contain a tuple of
 # the particle's weak isospin T_3 and charge Q. The tuples have the
@@ -40,11 +41,13 @@ def neutral_couplings(T_3, Q):
     weak isospin T₃ and charge Q, see PDG section 10.1 for more details.
     The vector coupling is,
 
-    g_V = T₃ - 2Qsin²(θ_w)
+    c_V = T₃ - 2Qsin²(θ_w)
 
     where θ_w is the weak mixing angle. The axial-vector coupling is,
 
-    g_A = T₃
+    c_A = T₃
+
+    Note in PDG material the coupling constants are reffered to as g_V and g_A.
 
     Parameters
     ----------
@@ -55,7 +58,7 @@ def neutral_couplings(T_3, Q):
 
     Returns
     -------
-    (g_V, g_A) : tuple
+    (c_V, c_A) : tuple
         The vector and axial-vector coupling constants.
     """
     return T_3 - 2*Q*sin2_theta_w, T_3
@@ -71,18 +74,19 @@ def dsigma_dOmega(E, theta, fermion_name):
     The differental cross section dσ/dΩ for these interactions is
     given by the equation below.
 
-    A = (g_z²E/[16𝜋])²
+    A = (g_z²E/[16𝜋])²/([4E² - M_z²]² + [M_z𝚪_z]²)
     B = (c_Vf² + c_Af²)(c_Ve² + c_Ae²)
     C = 8c_Vf c_Af c_Ve c_Ae
-    D = (4E² - M_z²)² + (M_z𝚪_z)²
 
-    dσ/dΩ = A(B[1 + cos²(θ)] - C*cos(θ))/D
+    dσ/dΩ = A(B[1 + cos²(θ)] - C*cos(θ))
 
     where g_z is the neutral coupling constant, E is the energy of the
     incoming electron and positron, c_Ve, c_Ae are the neutral vector
     and axial vector couplings of the electron, c_Vf, c_Af are the
     neutral vector and axial vector couplings of resulting fermions,
     M_z is the mass of the Z boson and 𝚪_z is the decay rate of the Z boson.
+
+    TODO Add refrence to griffiths
 
     Parameters
     ----------
@@ -113,14 +117,13 @@ def dsigma_dOmega(E, theta, fermion_name):
     c_Vf, c_Af = neutral_couplings(*fermions[fermion_name])
 
     # Calculate the differential cross section
-    ## sub units of the section
-    A = (g_z**2*E/(16*numpy.pi))**2
+    ## sub units
+    A = (g_z**2*E/(16*numpy.pi))**2/((4*E**2 - M_z**2)**2 + (M_z*Gamma_z)**2)
     B = (c_Vf**2 + c_Af**2)*(c_Ve**2 + c_Vf**2)
     C = 8*c_Vf*c_Af*c_Ve*c_Ae
-    D = (4*E**2 - M_z**2)**2 + (M_z*Gamma_z)**2
 
     ## the differential cross section
-    return A*(B*(1 + numpy.cos(theta)**2) - C*numpy.cos(theta))/D
+    return A*(B*(1 + numpy.cos(theta)**2) - C*numpy.cos(theta))
 
 #Note dΩ = sin(θ)dθdΦ
 
