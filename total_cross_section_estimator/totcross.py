@@ -21,10 +21,19 @@ from matplotlib import pyplot
 import numpy
 
 # Constants: values from PDG
-g_z = 0.7180 # TODO; the neutral coupling constant
+alpha = 7.29735256E-3 # unitless, fine-structure constant
 sin2_theta_w = 0.2312 # unitless, sin²(θ_w) of the weak mixing angle θ_w
 M_z = 9.118E4 # in MeV/c^2; mass of the Z boson
 Gamma_z = 2.49E3 # in MeV/hbar; decay rate of Z boson
+
+# calculating the coupling to the Z boson
+# g_e^2 = 4pi alpha
+# g_e = g_z cos_theta_w sin_theta_w
+
+# 4pi alpha = g_z^2(1-sin2_thata_w)sin2_theta_w
+# g_z = sqrt(4*pi*alpha/(sin2_theta_w(1 - sin2*theta_w)))
+g_z = numpy.sqrt(4*numpy.pi*alpha/(sin2_theta_w - sin2_theta_w**2))
+
 
 # a dictionary of fermion labels, all of the entries contain a tuple of
 # the particle's weak isospin T_3 and charge Q. The tuples have the
@@ -35,7 +44,7 @@ fermions = {"nu_e":( 0,  1/2), "nu_mu":( 0,  1/2), "nu_tau":( 0,  1/2),
             "d":(-1/3, -1/2), "s":(-1/3, -1/2), "b":(-1/3, -1/2)}
 
 def neutral_couplings(T_3, Q):
-    """Get the weak neutral couplings constants.
+    """Get the vector and axial-vector coupling constants.
 
     The coupling constants for a fermion are determined by the particle's
     weak isospin T₃ and charge Q, see PDG section 10.1 for more details.
@@ -125,42 +134,65 @@ def dsigma_dOmega(E, theta, fermion_name):
     ## the differential cross section
     return A*(B*(1 + numpy.cos(theta)**2) - C*numpy.cos(theta))
 
-#Note dΩ = sin(θ)dθdΦ
+def sigma_analytic(E, fermion_name):
+    # get the weak neutral coupling constants
+    ## electron coupling constants
+    c_Ve, c_Ae = neutral_couplings(*fermions["e"])
 
-##### break: old code #####################################
+    ## fermion coupling constants
+    c_Vf, c_Af = neutral_couplings(*fermions[fermion_name])
 
-#
-# toy dsigmadOmega = (E/(E^2 - M_z^2))^2*(A(1 + cos^2(theta)) - Bcos(theta))
-#
-# degrees of freedom: theta, phi
-#
-# domin of variables: theta [0, pi]; phi [-pi, pi]
-#
+    # Calculate the differential cross section
+    ## sub units
+    A = (g_z**2*E/(16*numpy.pi))**2/((4*E**2 - M_z**2)**2 + (M_z*Gamma_z)**2)
+    B = (c_Vf**2 + c_Af**2)*(c_Ve**2 + c_Vf**2)
 
-#def diff_cross(E, theta, phi):
-#    return (E**2/((E**2 - M_z**2)**2 + Gamma**2))*(A*(1 + numpy.cos(theta)**2) - B*numpy.cos(theta))
-#    return (A*(1 + numpy.cos(theta)**2) - B*numpy.cos(theta))
+    ## the total cross section
+    return 16*numpy.pi*A*B/3
 
-#M_z = 1
-#A = 1
-#B = 1
-#Gamma = 0.01
+def get_random_samples(N, seed=None):
+    """
+    TODO
+    """
+    theta_phi_min = numpy.array([0, -numpy.pi])
+    theta_phi_max = numpy.array([numpy.pi, numpy.pi])
 
-N = 100
+    rng = numpy.random.default_rng(seed=seed) # TODO mention PCG64
+    samples = rng.uniform(theta_phi_min, theta_phi_max, (N, 2))
+    # Note, random.Generator.uniform samples on a half open [low, high)
+    # interval, so formaly samples with theta = 𝜋 or phi = 𝜋 are excluded.
 
-samples_theta = numpy.random.uniform(0, numpy.pi, size=N)
-samples_phi = numpy.random.uniform(-numpy.pi, numpy.pi, size=N)
+    domain_size = numpy.prod(theta_phi_max - theta_phi_min)
 
-print((2*numpy.pi**2)*numpy.sum(numpy.sin(samples_theta)*dsigma_dOmega(M_z/2, samples_theta, "nu_e"))/N)
+    return samples, domain_size
 
-Es = numpy.linspace(0, M_z, 10*N)
-thetas = numpy.linspace(0, numpy.pi, 10)
-for theta in thetas:
-    pyplot.plot(Es, dsigma_dOmega(Es, theta, "nu_e"))
+def sigma_estimate(E, fermion_name, N):
+    samples, domain_size = get_random_samples(N)
+
+    theta = samples[:, 0]
+    phi = samples[:, 1]
+
+    #Note dΩ = sin(θ)dθdΦ
+    # Note, every sample in samples is valid
+    sample_sigma = dsigma_dOmega(E, theta, fermion_name)*numpy.sin(theta)*domain_size
+
+    return numpy.mean(sample_sigma), numpy.std(sample_sigma, ddof=1)/numpy.sqrt(N)
+
+E_range = (-10, numpy.log10(M_z))
+resolution = 101
+num_samples = 100
+fermion_name = "nu_e"
+
+E_grid = 10**numpy.linspace(*E_range, resolution)
+
+cross_section = numpy.array([sigma_estimate(E, fermion_name, num_samples) for E in E_grid])
+err = cross_section[:, 1]
+cross_section = cross_section[:, 0]
+
+pyplot.errorbar(E_grid, cross_section, yerr=err) #, "g-", label=num_samples)
+
+e_grid = 10**numpy.linspace(*E_range, 10*resolution)
+pyplot.plot(e_grid, sigma_analytic(e_grid, fermion_name), "k-", label="analytic")
+pyplot.legend()
 pyplot.show()
 
-Es = numpy.linspace(0, M_z, 10)
-thetas = numpy.linspace(0, numpy.pi, 10*N)
-for E in Es:
-    pyplot.plot(thetas, dsigma_dOmega(E, thetas, "nu_e"))
-pyplot.show()
