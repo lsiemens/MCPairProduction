@@ -45,7 +45,8 @@ fermions = {"nu_e":( 0,  1/2), "nu_mu":( 0,  1/2), "nu_tau":( 0,  1/2),
             "d":(-1/3, -1/2), "s":(-1/3, -1/2), "b":(-1/3, -1/2)}
 
 def neutral_couplings(T_3, Q):
-    """Get the vector and axial-vector coupling constants.
+    """
+    Get the vector and axial-vector coupling constants.
 
     The coupling constants for a fermion are determined by the particle's
     weak isospin T₃ and charge Q, see PDG section 10.1 for more details.
@@ -74,7 +75,8 @@ def neutral_couplings(T_3, Q):
     return T_3 - 2*Q*sin2_theta_w, T_3
 
 def dsigma_dOmega(E, theta, fermion_name):
-    """differential cross section for electron positron scattering
+    """
+    differential cross section for electron positron scattering
 
     Compute the differential cross section for the interaction
     e⁻ + e⁺ →  f + f̄ mediated by a Z boson. Note f may be any
@@ -101,7 +103,7 @@ def dsigma_dOmega(E, theta, fermion_name):
     Parameters
     ----------
     E : array or float
-        The energy of the incoming positron and electron.
+        The energy of the incoming particles in the center of mass frame.
     theta : array or float
         The angle relative to the beam line of the resulting fermions.
     fermion_name : string
@@ -136,7 +138,8 @@ def dsigma_dOmega(E, theta, fermion_name):
     return A*(B*(1 + numpy.cos(theta)**2) - C*numpy.cos(theta))
 
 def sigma_analytic(E, fermion_name):
-    """total cross section for electron positron scattering
+    """
+    total cross section for electron positron scattering
 
     The total cross section computed by analytical integration of the
     differential cross section equation found in dsigma_dOmega.
@@ -171,7 +174,8 @@ def sigma_analytic(E, fermion_name):
     return 16*numpy.pi*A*B/3
 
 def get_random_samples(shape, seed=None):
-    """Generate random samples of (θ, φ)
+    """
+    Generate random samples of (θ, φ)
 
     The samples are generated uniformly in the domain, with θ ∊ [0, 𝜋)
     and φ ∊ [-𝜋, 𝜋). The size of the rectangular domain is also given.
@@ -208,7 +212,8 @@ def get_random_samples(shape, seed=None):
     return samples, domain_size
 
 def sigma_estimate(E, fermion_name, N):
-    """Estimate the total cross section.
+    """
+    Estimate the total cross section.
 
     Use Monte Carlo integration to find the total cross section from the
     differential cross section dσ/dΩ, note dΩ = sin(θ)dθdφ. Then the
@@ -245,7 +250,8 @@ def sigma_estimate(E, fermion_name, N):
     return mean_sample*domain_size
 
 def get_reaction_equation(fermion_name):
-    """Get reaction equation for latex
+    """
+    Get reaction equation for latex
 
     Parameters
     ----------
@@ -271,24 +277,28 @@ def get_reaction_equation(fermion_name):
     base_reaction = f"$e^+ + e^- \\rightarrow {f} + {fbar}$"
     return base_reaction
 
-E_range = (0, 2*M_z)
-resolution = 600
-num_samples = 50
+if __name__ == "__main__":
+    # estimate the cross section on a logrithmic energy axis
+    E_range_log = (3, 6)
+    resolution = 100
+    num_samples = 50
 
-fermion_name = "mu"
+    # which reaction to use
+    fermion_name = "mu"
 
-reaction_tex = get_reaction_equation(fermion_name)
+    reaction_tex = get_reaction_equation(fermion_name)
+    E_grid = 10**numpy.linspace(*E_range_log, resolution)
+    E_grid_highres = 10**numpy.linspace(*E_range_log, 10*resolution)
 
-E_grid = numpy.linspace(*E_range, resolution)
+    cross_section = hbarc2*sigma_estimate(E_grid, fermion_name, num_samples)
+    analytic_cross_section = hbarc2*sigma_analytic(E_grid_highres, fermion_name)
 
-cross_section = sigma_estimate(E_grid, fermion_name, num_samples)
-pyplot.scatter(E_grid, hbarc2*cross_section, label=f"$\\sigma_{{Monte Carlo}}$, {num_samples} samples")
+    # graphing using 2*E_grid the total energy of the two particles
+    pyplot.scatter(2*E_grid, cross_section, color="b", marker="+", label=f"$\\sigma_{{Monte Carlo}}$, {num_samples} samples")
+    pyplot.loglog(2*E_grid_highres, analytic_cross_section, "k-", label="$\\sigma_{{Analytical}}$")
 
-# high resolution energy grid for refrence function
-e_grid = numpy.linspace(*E_range, 10*resolution)
-pyplot.loglog(e_grid, hbarc2*sigma_analytic(e_grid, fermion_name), "k-", label="$\\sigma_{{Analytical}}$")
-pyplot.xlabel("Energy in MeV")
-pyplot.ylabel("Total cross section in mbarn")
-pyplot.title(f"Total cross section $\sigma(E)$ for {reaction_tex}\nMonte Carlo vs analytical integration")
-pyplot.legend()
-pyplot.show()
+    pyplot.title(f"Total cross section $\sigma(E)$ for {reaction_tex}\nMonte Carlo vs analytical integration")
+    pyplot.xlabel("Total Energy $E_{cm}$ in MeV")
+    pyplot.ylabel("Total cross section in mbarn")
+    pyplot.legend()
+    pyplot.show()
