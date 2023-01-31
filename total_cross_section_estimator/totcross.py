@@ -23,8 +23,9 @@ import numpy
 # Constants: values from PDG
 alpha = 7.29735256E-3 # unitless, fine-structure constant
 sin2_theta_w = 0.2312 # unitless, sin²(θ_w) of the weak mixing angle θ_w
-M_z = 9.118E4 # in MeV/c^2; mass of the Z boson
+M_z = 9.118E4 # in MeV/c²; mass of the Z boson
 Gamma_z = 2.49E3 # in MeV/hbar; decay rate of Z boson
+hbarc2 = 3.893793721E5 # in MeV²mbarn
 
 # calculating the coupling to the Z boson
 # g_e^2 = 4pi alpha
@@ -135,6 +136,27 @@ def dsigma_dOmega(E, theta, fermion_name):
     return A*(B*(1 + numpy.cos(theta)**2) - C*numpy.cos(theta))
 
 def sigma_analytic(E, fermion_name):
+    """total cross section for electron positron scattering
+
+    The total cross section computed by analytical integration of the
+    differential cross section equation found in dsigma_dOmega.
+
+    Parameters
+    ----------
+    E : array or float
+        The energy of the incoming positron and electron.
+    theta : array or float
+        The angle relative to the beam line of the resulting fermions.
+    fermion_name : string
+        Name of the resulting fundimental fermion for the reaction.
+        Ex "mu" or "nu_e" ...
+
+    Returns
+    -------
+    σ : array or float
+        The total cross section of the spesified interaction for the
+        given E and theta.
+    """
     # get the weak neutral coupling constants
     ## electron coupling constants
     c_Ve, c_Ae = neutral_couplings(*fermions["e"])
@@ -142,23 +164,42 @@ def sigma_analytic(E, fermion_name):
     ## fermion coupling constants
     c_Vf, c_Af = neutral_couplings(*fermions[fermion_name])
 
-    # Calculate the differential cross section
-    ## sub units
+    # Calculate the total cross section
     A = (g_z**2*E/(16*numpy.pi))**2/((4*E**2 - M_z**2)**2 + (M_z*Gamma_z)**2)
     B = (c_Vf**2 + c_Af**2)*(c_Ve**2 + c_Vf**2)
 
-    ## the total cross section
     return 16*numpy.pi*A*B/3
 
-def get_random_samples(N, seed=None):
-    """
-    TODO
+def get_random_samples(shape, seed=None):
+    """Generate random samples of (θ, φ)
+
+    The samples are generated uniformly in the domain, with θ ∊ [0, 𝜋)
+    and φ ∊ [-𝜋, 𝜋). The size of the rectangular domain is also given.
+
+    Parameters
+    shape : tuple
+        Shape of array of sample point pairs. The resulting array of
+        samples will have the shape (*shape, 2).
+    seed : None, int
+        Seed value for the random number generator. If `seed` is None,
+        then numpy.random.default_rng will initalize with random entropy
+        from the OS.
+
+    Returns
+    -------
+    samples : array
+        Random samples in the domain with the shape (*shape, 2).
+    domain_size : float
+        Size of the rectangular domain.
     """
     theta_phi_min = numpy.array([0, -numpy.pi])
     theta_phi_max = numpy.array([numpy.pi, numpy.pi])
 
-    rng = numpy.random.default_rng(seed=seed) # TODO mention PCG64
-    samples = rng.uniform(theta_phi_min, theta_phi_max, (N, 2))
+    rng = numpy.random.default_rng(seed=seed)
+    # currently (01/30/2023) default_rng uses the PCG-64 pseudo random
+    # number generator by default.
+
+    samples = rng.uniform(theta_phi_min, theta_phi_max, (*shape, 2))
     # Note, random.Generator.uniform samples on a half open [low, high)
     # interval, so formaly samples with theta = 𝜋 or phi = 𝜋 are excluded.
 
@@ -167,32 +208,87 @@ def get_random_samples(N, seed=None):
     return samples, domain_size
 
 def sigma_estimate(E, fermion_name, N):
-    samples, domain_size = get_random_samples(N)
+    """Estimate the total cross section.
 
-    theta = samples[:, 0]
-    phi = samples[:, 1]
+    Use Monte Carlo integration to find the total cross section from the
+    differential cross section dσ/dΩ, note dΩ = sin(θ)dθdφ. Then the
+    total cross section is σ = ∬ (dσ/dΩ)sin(θ)dθdφ over the rectangular
+    domain with θ ∊ [0, 𝜋) and φ ∊ [-𝜋, 𝜋).
 
+    Parameters
+    ----------
+    E : array
+        An array of energies to evaluat the total cross section at.
+    fermion_name : string
+        Name of the resulting fundimental fermion for the reaction.
+        Ex "mu" or "nu_e" ...
+    N : int
+        The number of samples to use in the the Monte Carlo integral for
+        each energy value.
+
+    Returns
+    -------
+    σ : array
+        An array of estimates of the total cross section with the same
+        shape as the array `E`.
+    """
+    samples, domain_size = get_random_samples((*E.shape, N))
+
+    theta = samples[:, :, 0]
+    phi = samples[:, :, 1]
+
+    # Use monte carlo integration for each energy in E
+    function_samples = dsigma_dOmega(E[:, numpy.newaxis], theta, fermion_name)
+    mean_sample = numpy.mean(function_samples*numpy.sin(theta), axis=1)
     #Note dΩ = sin(θ)dθdΦ
-    # Note, every sample in samples is valid
-    sample_sigma = dsigma_dOmega(E, theta, fermion_name)*numpy.sin(theta)*domain_size
 
-    return numpy.mean(sample_sigma), numpy.std(sample_sigma, ddof=1)/numpy.sqrt(N)
+    return mean_sample*domain_size
 
-E_range = (-10, numpy.log10(M_z))
-resolution = 101
-num_samples = 100
-fermion_name = "nu_e"
+def get_reaction_equation(fermion_name):
+    """Get reaction equation for latex
 
-E_grid = 10**numpy.linspace(*E_range, resolution)
+    Parameters
+    ----------
+    fermion_name : string
+        Name of the resulting fundimental fermion for the reaction.
+        Ex "mu" or "nu_e" ...
 
-cross_section = numpy.array([sigma_estimate(E, fermion_name, num_samples) for E in E_grid])
-err = cross_section[:, 1]
-cross_section = cross_section[:, 0]
+    Returns
+    -------
+    string
+        Latex formated reaction equation.
+    """
+    names = {"nu_e":("\\nu_e", "\\overline{\\nu}_e"),
+             "nu_mu":("\\nu_\\mu", "\\overline{\\nu}_\\mu"),
+             "nu_tau":("\\nu_\\tau", "\\overline{\\nu}_\\tau"),
+             "e":("e^-", "e^+"),
+             "mu":("\\mu^-", "\\mu^+"),
+             "tau":("\\tau^-", "\\tau^+"),
+             "u":("u", "\\overline{u}"), "d":("d", "\\overline{d}"),
+             "c":("c", "\\overline{c}"), "s":("s", "\\overline{s}"),
+             "t":("t", "\\overline{t}"), "b":("b", "\\overline{b}")}
+    f, fbar = names[fermion_name]
+    base_reaction = f"$e^+ + e^- \\rightarrow {f} + {fbar}$"
+    return base_reaction
 
-pyplot.errorbar(E_grid, cross_section, yerr=err) #, "g-", label=num_samples)
+E_range = (0, 2*M_z)
+resolution = 600
+num_samples = 50
 
-e_grid = 10**numpy.linspace(*E_range, 10*resolution)
-pyplot.plot(e_grid, sigma_analytic(e_grid, fermion_name), "k-", label="analytic")
+fermion_name = "mu"
+
+reaction_tex = get_reaction_equation(fermion_name)
+
+E_grid = numpy.linspace(*E_range, resolution)
+
+cross_section = sigma_estimate(E_grid, fermion_name, num_samples)
+pyplot.scatter(E_grid, hbarc2*cross_section, label=f"$\\sigma_{{Monte Carlo}}$, {num_samples} samples")
+
+# high resolution energy grid for refrence function
+e_grid = numpy.linspace(*E_range, 10*resolution)
+pyplot.loglog(e_grid, hbarc2*sigma_analytic(e_grid, fermion_name), "k-", label="$\\sigma_{{Analytical}}$")
+pyplot.xlabel("Energy in MeV")
+pyplot.ylabel("Total cross section in mbarn")
+pyplot.title(f"Total cross section $\sigma(E)$ for {reaction_tex}\nMonte Carlo vs analytical integration")
 pyplot.legend()
 pyplot.show()
-
