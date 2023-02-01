@@ -9,18 +9,27 @@ cross section using Monte Carlo integration.
 Note, internal calculations use natural units with ħ=c=1. Energies are
 in units of MeV if not otherwise specified.
 
-Refrence "Introduction to Elementary Particles" by Griffiths, 2nd Ed
-Chapter 9 section 6: Neutral Weak Interactions
+The differentail cross section is from Griffiths [1]_ Example 9.5
+Electron-Positron scattering near the Z pole, with *Review of Particle
+Physics* [2]_ as an additional refrence and source for physical constants.
+Equations for calculating the weak coupling to the Z boson are from
+Thomson [3]_ section 15.3.1
 
-.. [1] D.J Griffiths "Introduction to Elementary Particles" 2nd Rev Ed. ...
+.. [1] D. J. Griffiths, *Introduction to elementary particles*, 2nd,
+   rev. ed. Weinheim: Wiley-VCH, 2008.
 
-.. [2] R.L. Workman et al. (Particle Data Group), Prog. Theor. Exp. Phys. 2022, 083C01 (2022)
+.. [2] R.L. Workman et al. (Particle Data Group), Prog. Theor. Exp. Phys.
+   2022, 083C01 (2022)
+
+.. [3] M. Thomson, *Modern particle physics*. Cambridge: Cambridge
+   University Press, 2013.
+
 """
 
 from matplotlib import pyplot
 import numpy
 
-# Constants: values from PDG
+# Constants: values from PDG values
 alpha = 7.29735256E-3 # unitless, fine-structure constant
 sin2_theta_w = 0.2312 # unitless, sin²(θ_w) of the weak mixing angle θ_w
 M_z = 9.118E4 # in MeV/c²; mass of the Z boson
@@ -28,13 +37,13 @@ Gamma_z = 2.49E3 # in MeV/hbar; decay rate of Z boson
 hbarc2 = 3.893793721E5 # in MeV²mbarn
 
 # calculating the coupling to the Z boson
-# g_e^2 = 4pi alpha
-# g_e = g_z cos_theta_w sin_theta_w
-
-# 4pi alpha = g_z^2(1-sin2_thata_w)sin2_theta_w
-# g_z = sqrt(4*pi*alpha/(sin2_theta_w(1 - sin2*theta_w)))
+# The electromagnetic coupling constant is g_e² = 4𝜋*𝛼 (note g_e equal
+# to the elementary electric charge in natural units). This is related
+# to the coupling constant for the Z boson g_z by the equation
+# g_e = g_z cos(θ_w)sin(θ_w). Using these equations the constant g_z in
+# terms of fine structure constant and weak mixing angle is
+# g_z = sqrt(4𝜋*𝛼/[sin²(θ_w)(1 - sin²(θ_w))])
 g_z = numpy.sqrt(4*numpy.pi*alpha/(sin2_theta_w - sin2_theta_w**2))
-
 
 # a dictionary of fermion labels, all of the entries contain a tuple of
 # the particle's weak isospin T_3 and charge Q. The tuples have the
@@ -97,8 +106,6 @@ def dsigma_dOmega(E, theta, fermion_name):
     and axial vector couplings of the electron, c_Vf, c_Af are the
     neutral vector and axial vector couplings of resulting fermions,
     M_z is the mass of the Z boson and 𝚪_z is the decay rate of the Z boson.
-
-    TODO Add refrence to griffiths
 
     Parameters
     ----------
