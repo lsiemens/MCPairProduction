@@ -1,8 +1,9 @@
-# solotion for particle physics Assignment 2 question 1 part d
+# Assignment 2
 from matplotlib import pyplot
 import numpy
 import scipy.integrate
 
+# Question 1.d
 m_mu = 0.105659 # in GeV/c²
 tau_rest = 2.2E-6 # in s, the rest frame mean life time of muons
 
@@ -43,6 +44,7 @@ print(f"The mean energy is {mean_E:.6E} GeV")
 pyplot.plot(E, energy_dist(E, A))
 pyplot.show()
 
+# Question 1.e
 def beta(E):
     """
     relitivistic β factor for muons with energy E
@@ -97,4 +99,3 @@ print(f"The mean E of muons that arrive at the surface is {mean_E_surf} in GeV")
 pyplot.plot(E, energy_dist(E, A)*f_strat)
 pyplot.plot(E, expected_flux(E))
 pyplot.show()
-
