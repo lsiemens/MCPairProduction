@@ -9,9 +9,9 @@ latex_header = r"""
 \usepackage{listings}
 \usepackage{xcolor}
 
-\definecolor{ccomment}{rgb}{0.5, 0.0, 0.2}
-\definecolor{ckeyword}{rgb}{0.0, 0.2, 0.5}
-\definecolor{cstring}{rgb}{0.0, 0.5, 0.2}
+\definecolor{ccomment}{rgb}{0.7, 0.0, 0.4}
+\definecolor{ckeyword}{rgb}{0.0, 0.4, 0.7}
+\definecolor{cstring}{rgb}{0.0, 0.7, 0.4}
 
 \lstdefinestyle{mystyle}{
     commentstyle=\color{ccomment},
