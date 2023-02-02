@@ -9,30 +9,25 @@ latex_header = r"""
 \usepackage{listings}
 \usepackage{xcolor}
 
-\definecolor{codegreen}{rgb}{0,0.6,0}
-\definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{codepurple}{rgb}{0.58,0,0.82}
-\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{ccomment}{rgb}{0.5, 0.0, 0.2}
+\definecolor{ckeyword}{rgb}{0.0, 0.2, 0.5}
+\definecolor{cstring}{rgb}{0.0, 0.5, 0.2}
 
 \lstdefinestyle{mystyle}{
-    %backgroundcolor=\color{backcolour},
-    commentstyle=\color{codegreen},
-    keywordstyle=\color{magenta},
-    numberstyle=\tiny\color{codegray},
-    stringstyle=\color{codepurple},
-    basicstyle=\footnotesize,
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    captionpos=b,                    
-    keepspaces=true,                 
-    %numbers=left,                    
-    numbersep=5pt,                  
-    showspaces=false,                
+    commentstyle=\color{ccomment},
+    keywordstyle=\color{ckeyword},
+    stringstyle=\color{cstring},
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbersep=5pt,
+    showspaces=false,
     showstringspaces=false,
-    showtabs=false,                  
+    showtabs=false,
     tabsize=2
 }
- 
+
 \lstset{style=mystyle}
 \begin{document}
 \lstset{language=Python}
@@ -49,14 +44,14 @@ scratch_dir = "./scratch"
 source = "./Assignment2.py"
 
 def code_to_pdf(source):
-    with open(source, "r") as fin:
+    with open(source, "r", encoding="utf-8") as fin:
         code = fin.read()
 
     tex_file = f"{latex_header}\n\n{code}\n{latex_footer}"
 
     for char in math_equiv:
         equiv = math_equiv[char]
-        tex_file = tex_file.replace(char, f"${equiv}$")
+        tex_file = tex_file.replace(char, f"$\color{{ccomment}}{equiv}$")
 
     # check for non ascii characters that are not being escaped
     for char in tex_file:
@@ -68,7 +63,7 @@ def code_to_pdf(source):
 
     os.makedirs(scratch_dir, exist_ok=True)
 
-    with open(target, "w") as fout:
+    with open(target, "w", encoding="utf-8") as fout:
         fout.write(tex_file)
 
 code_to_pdf(source)
