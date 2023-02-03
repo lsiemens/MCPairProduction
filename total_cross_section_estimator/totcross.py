@@ -286,7 +286,7 @@ def get_reaction_equation(fermion_name):
 
 if __name__ == "__main__":
     # estimate the cross section on a logrithmic energy axis
-    E_range_log = (3, 6)
+    E_range_log = (4, 6)
     resolution = 100
     num_samples = 50
 
