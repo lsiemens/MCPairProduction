@@ -284,28 +284,66 @@ def get_reaction_equation(fermion_name):
     base_reaction = f"$e^+ + e^- \\rightarrow {f} + {fbar}$"
     return base_reaction
 
-if __name__ == "__main__":
-    # estimate the cross section on a logrithmic energy axis
-    E_range_log = (3, 6)
-    resolution = 100
-    num_samples = 50
+def plot_compare(ax, fermion_name, range, MCsamples, resolution=100, logaxis=True):
+    """
+    Make plot of estimated total cross section
 
-    # which reaction to use
+    Parameters
+    ----------
+    ax : pyplot axis
+        The axis on which to make the plot.
+    fermion_name : string
+        Name of the resulting fundimental fermion for the reaction.
+        Ex "mu" or "nu_e" ...
+    range : tuple
+        Range of energy to plot in MeV, or the logarithm of the energies
+        if using logarithmic axes.
+    MCsamples : int
+        The number of samples to use in the the Monte Carlo integral for
+        each energy value.
+    resolution : int
+        The resolution of sampled energy values.
+    logaxis : boolean
+        If true, the plot will be displaid with log-log axis.
+    """
+    if logaxis:
+        E_MC = 10**numpy.linspace(*range, resolution)
+        E_analytic = 10**numpy.linspace(*range, 10*resolution)
+    else:
+        E_MC = numpy.linspace(*range, resolution)
+        E_analytic = numpy.linspace(*range, 10*resolution)
+
+    cross_section = hbarc2*sigma_estimate(E_MC, fermion_name, MCsamples)
+    analytic = hbarc2*sigma_analytic(E_analytic, fermion_name)
+
+    # graphing using the total energy of the two particles in GeV
+    E_MC = 2*E_MC/1000
+    E_analytic = 2*E_analytic/1000
+
+    ax.scatter(E_MC, cross_section, color="b", marker="+", label=f"$\\sigma_{{Monte\\ Carlo}}$, {MCsamples} samples")
+    if logaxis:
+        ax.loglog(E_analytic, analytic, "k-", label="$\\sigma_{{Analytical}}$")
+    else:
+        ax.plot(E_analytic, analytic, "k-", label="$\\sigma_{{Analytical}}$")
+
+    ax.set_title(f"{E_MC[0]:.4g} GeV to {E_MC[-1]:.4g} GeV")
+    ax.set_xlabel("Total Energy $E_{cm}$ in GeV")
+    ax.set_ylabel("Total cross section in mbarn")
+    ax.legend()
+
+
+if __name__ == "__main__":
+    logM_z = numpy.log10(M_z/2)
+    range_large = (3, 6)
+    range_small = (85E3/2, 95E3/2)
+    samples = 50
     fermion_name = "mu"
 
+    fig, (axleft, axright) = pyplot.subplots(1, 2)
+
+    plot_compare(axleft, fermion_name, range_large, samples)
+    plot_compare(axright, fermion_name, range_small, samples*100, logaxis=False)
+
     reaction_tex = get_reaction_equation(fermion_name)
-    E_grid = 10**numpy.linspace(*E_range_log, resolution)
-    E_grid_highres = 10**numpy.linspace(*E_range_log, 10*resolution)
-
-    cross_section = hbarc2*sigma_estimate(E_grid, fermion_name, num_samples)
-    analytic_cross_section = hbarc2*sigma_analytic(E_grid_highres, fermion_name)
-
-    # graphing using 2*E_grid the total energy of the two particles
-    pyplot.scatter(2*E_grid, cross_section, color="b", marker="+", label=f"$\\sigma_{{Monte Carlo}}$, {num_samples} samples")
-    pyplot.loglog(2*E_grid_highres, analytic_cross_section, "k-", label="$\\sigma_{{Analytical}}$")
-
-    pyplot.title(f"Total cross section $\sigma(E)$ for {reaction_tex}\nMonte Carlo vs analytical integration")
-    pyplot.xlabel("Total Energy $E_{cm}$ in MeV")
-    pyplot.ylabel("Total cross section in mbarn")
-    pyplot.legend()
+    pyplot.suptitle(f"Total cross section $\sigma(E)$ for {reaction_tex}\nMonte Carlo vs analytical integration")
     pyplot.show()
