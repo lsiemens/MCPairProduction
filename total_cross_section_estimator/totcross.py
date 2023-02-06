@@ -48,10 +48,10 @@ g_z = numpy.sqrt(4*numpy.pi*alpha/(sin2_theta_w - sin2_theta_w**2))
 # a dictionary of fermion labels, all of the entries contain a tuple of
 # the particle's weak isospin T_3 and charge Q. The tuples have the
 # format (T_3, Q)
-fermions = {"nu_e": (0, 1/2),  "nu_mu": (0, 1/2), "nu_tau": (0, 1/2),
-            "e": (-1, -1/2),   "mu": (-1, -1/2),  "tau": (-1, -1/2),
-            "u": (2/3, 1/2),   "c": (2/3, 1/2),   "t": (2/3, 1/2),
-            "d": (-1/3, -1/2), "s": (-1/3, -1/2), "b": (-1/3, -1/2)}
+fermions = {"nu_e": (1/2, 0),  "nu_mu": (1/2, 0), "nu_tau": (1/2, 0),
+            "e": (-1/2, -1),   "mu": (-1/2, -1),  "tau": (-1/2, -1),
+            "u": (1/2, 2/3),   "c": (1/2, 2/3),   "t": (1/2, 2/3),
+            "d": (-1/2, -1/3), "s": (-1/2, -1/3), "b": (-1/2, -1/3)}
 
 
 def neutral_couplings(T_3, Q):
@@ -136,7 +136,7 @@ def dsigma_dOmega(E, theta, fermion_name):
 
     # precompute terms for the differential cross section
     A = (g_z**2*E/(16*numpy.pi))**2/((4*E**2 - M_z**2)**2 + (M_z*Gamma_z)**2)
-    B = (c_Vf**2 + c_Af**2)*(c_Ve**2 + c_Vf**2)
+    B = (c_Vf**2 + c_Af**2)*(c_Ve**2 + c_Ae**2)
     C = 8*c_Vf*c_Af*c_Ve*c_Ae
 
     # the differential cross section
@@ -174,7 +174,7 @@ def sigma_analytic(E, fermion_name):
 
     # Calculate the total cross section
     A = (g_z**2*E/(16*numpy.pi))**2/((4*E**2 - M_z**2)**2 + (M_z*Gamma_z)**2)
-    B = (c_Vf**2 + c_Af**2)*(c_Ve**2 + c_Vf**2)
+    B = (c_Vf**2 + c_Af**2)*(c_Ve**2 + c_Ae**2)
 
     return 16*numpy.pi*A*B/3
 
@@ -251,7 +251,7 @@ def sigma_estimate(E, fermion_name, N):
     # Use monte carlo integration for each energy in E
     function_samples = dsigma_dOmega(E[:, numpy.newaxis], theta, fermion_name)
     mean_sample = numpy.mean(function_samples*numpy.sin(theta), axis=1)
-    # Note dΩ = sin(θ)dθdΦ
+    # Note dΩ = sin(θ)dθdφ
 
     return mean_sample*domain_size
 
@@ -319,11 +319,14 @@ def plot_compare(ax, fermion_name, range, MCsamples, resolution=100, logaxis=Tru
     E_MC = 2*E_MC/1000
     E_analytic = 2*E_analytic/1000
 
-    ax.scatter(E_MC, cross_section, color="b", marker="+", label=f"$\\sigma_{{Monte\\ Carlo}}$, {MCsamples} samples")
+    MC_label = f"$\\sigma_{{Monte\\ Carlo}}$, {MCsamples} samples"
+    analytic_label = "$\\sigma_{{Analytical}}$"
+
+    ax.scatter(E_MC, cross_section, color="b", marker="+", label=MC_label)
     if logaxis:
-        ax.loglog(E_analytic, analytic, "k-", label="$\\sigma_{{Analytical}}$")
+        ax.loglog(E_analytic, analytic, "k-", label=analytic_label)
     else:
-        ax.plot(E_analytic, analytic, "k-", label="$\\sigma_{{Analytical}}$")
+        ax.plot(E_analytic, analytic, "k-", label=analytic_label)
 
     ax.set_title(f"{E_MC[0]:.4g} GeV to {E_MC[-1]:.4g} GeV")
     ax.set_xlabel("Total Energy $E_{cm}$ in GeV")
@@ -332,17 +335,28 @@ def plot_compare(ax, fermion_name, range, MCsamples, resolution=100, logaxis=Tru
 
 
 if __name__ == "__main__":
+    # update latex preamble
+    pyplot.rcParams.update({
+        "font.family": "serif",
+        "pgf.rcfonts": False,
+        "pgf.texsystem": 'pdflatex'})
+
     logM_z = numpy.log10(M_z/2)
     range_large = (3, 6)
     range_small = (85E3/2, 95E3/2)
-    samples = 50
+    samples = 15
     fermion_name = "mu"
 
     fig, (axleft, axright) = pyplot.subplots(1, 2)
 
     plot_compare(axleft, fermion_name, range_large, samples)
-    plot_compare(axright, fermion_name, range_small, samples*100, logaxis=False)
+    plot_compare(axright, fermion_name, range_small, samples*20, logaxis=False)
 
     reaction_tex = get_reaction_equation(fermion_name)
-    pyplot.suptitle(f"Total cross section $\sigma(E)$ for {reaction_tex}\nMonte Carlo vs analytical integration")
+    title = (f"Total cross section $\sigma(E)$ for {reaction_tex}"
+              "\nMonte Carlo vs analytical integration")
+
+    pyplot.suptitle(title)
     pyplot.show()
+#    fig.set_size_inches(w=8, h=7)
+#    pyplot.savefig("./scratch/Figure_1.pgf")
