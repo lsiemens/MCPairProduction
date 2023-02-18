@@ -1,0 +1,21 @@
+phys424.examples package
+========================
+
+Submodules
+----------
+
+phys424.examples.muon\_production module
+----------------------------------------
+
+.. automodule:: phys424.examples.muon_production
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: phys424.examples
+   :members:
+   :undoc-members:
+   :show-inheritance:

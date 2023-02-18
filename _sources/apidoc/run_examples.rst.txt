@@ -1,0 +1,7 @@
+run\_examples module
+====================
+
+.. automodule:: run_examples
+   :members:
+   :undoc-members:
+   :show-inheritance:

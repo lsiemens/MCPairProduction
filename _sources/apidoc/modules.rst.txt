@@ -1,0 +1,8 @@
+phys424
+=======
+
+.. toctree::
+   :maxdepth: 4
+
+   phys424
+   run_examples

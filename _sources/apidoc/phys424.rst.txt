@@ -1,0 +1,29 @@
+phys424 package
+===============
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   phys424.examples
+
+Submodules
+----------
+
+phys424.totcross module
+-----------------------
+
+.. automodule:: phys424.totcross
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: phys424
+   :members:
+   :undoc-members:
+   :show-inheritance:
