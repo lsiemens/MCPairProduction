@@ -1,6 +1,0 @@
-Make documentation with sphinx numpydoc using the "read the docs theme"
-
-setup shinx-quickstart with seporate build
-sphinx-autodoc to generate .rst files automaticaly in the ./source in directory for the documentation
-add the path to the python code to the conf.py
-possibly use myst_parser so .md works with .rst
