@@ -1,9 +1,9 @@
 """Estimate total cross sections of neutral weak interactions.
 
-This script estimates the total interaction cross section for electron
-positron scattering mediated by the Z boson e⁻ + e⁺ →  f + f̄. The
-estimate of the total cross section is computed from the differential
-cross section using Monte Carlo integration.
+Estimates the total interaction cross section for electron positron
+scattering mediated by the Z boson e⁻ + e⁺ →  f + f̄. The estimate of
+the total cross section is computed from the differential cross section
+using Monte Carlo integration.
 
 Note, internal calculations use natural units with ħ=c=1. Energies are
 in units of MeV if not otherwise specified.
@@ -332,31 +332,3 @@ def plot_compare(ax, fermion_name, range, MCsamples, resolution=100, logaxis=Tru
     ax.set_xlabel("Total Energy $E_{cm}$ in GeV")
     ax.set_ylabel("Total cross section in mbarn")
     ax.legend()
-
-
-if __name__ == "__main__":
-    # update latex preamble
-    pyplot.rcParams.update({
-        "font.family": "serif",
-        "pgf.rcfonts": False,
-        "pgf.texsystem": 'pdflatex'})
-
-    logM_z = numpy.log10(M_z/2)
-    range_large = (3, 6)
-    range_small = (85E3/2, 95E3/2)
-    samples = 15
-    fermion_name = "mu"
-
-    fig, (axleft, axright) = pyplot.subplots(1, 2)
-
-    plot_compare(axleft, fermion_name, range_large, samples)
-    plot_compare(axright, fermion_name, range_small, samples*20, logaxis=False)
-
-    reaction_tex = get_reaction_equation(fermion_name)
-    title = (f"Total cross section $\sigma(E)$ for {reaction_tex}"
-              "\nMonte Carlo vs analytical integration")
-
-    pyplot.suptitle(title)
-    pyplot.show()
-#    fig.set_size_inches(w=8, h=7)
-#    pyplot.savefig("./scratch/Figure_1.pgf")
