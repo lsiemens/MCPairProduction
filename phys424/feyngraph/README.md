@@ -1,4 +1,4 @@
-# FDiagrams
+# Feyngraph
 
 Generate Feynman diagrams using feynMP.
 
