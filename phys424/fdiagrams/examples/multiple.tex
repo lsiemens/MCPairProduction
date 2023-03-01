@@ -1,0 +1,62 @@
+% pdflatex multiple.tex
+% mpost multiple_mp.mp
+% pdflatex multiple.tex
+
+\documentclass{article}
+\usepackage{subfig}
+\usepackage{feynmp}
+\DeclareGraphicsRule{*}{mps}{*}{}
+
+\begin{document}
+\begin{fmffile}{multiple_mp}
+
+\begin{figure}[ht!]
+    \centering
+    \subfloat{
+        \begin{fmfgraph}(120, 80)
+            \fmfleft{i1,i2}
+            \fmfright{o1,o2}
+            \fmf{fermion}{i1,v1,o1}
+            \fmf{fermion}{i2,v2,o2}
+            \fmf{gluon}{v1,v2}
+        \end{fmfgraph}}
+    \subfloat{
+        \begin{fmfgraph}(120, 80)
+            \fmfleft{i1,i2}
+            \fmfright{o1,o2}
+            \fmf{fermion}{i1,v1,v2,o1}
+            \fmf{fermion}{i2,v3,v4,o2}
+            \fmf{photon}{v1,v3}
+            \fmf{photon}{v2,v4}
+        \end{fmfgraph}}
+
+    \subfloat{
+        \begin{fmfgraph}(120, 80)
+            \fmfleft{i1,i2}
+            \fmfright{o1,o2}
+            \fmf{fermion}{i1,v1,v2}
+            \fmf{phantom}{v2,o1}
+            \fmf{fermion,tension=0}{v2,o2}
+            \fmf{fermion}{i2,v3,v4}
+            \fmf{phantom}{v4,o2}
+            \fmf{fermion,tension=0}{v4,o1}
+            \fmf{photon}{v1,v3}
+            \fmf{photon}{v2,v4}
+        \end{fmfgraph}}
+    \subfloat{
+        \begin{fmfgraph}(120, 80)
+            \fmfleft{i1,i2}
+            \fmfright{o1,o2}
+            \fmf{fermion}{i1,v1,v2}
+            \fmf{phantom}{v2,o1}
+            \fmf{fermion,tension=0}{v2,o2}
+            \fmf{fermion}{i2,v3,v4}
+            \fmf{phantom}{v4,o2}
+            \fmf{fermion,tension=0}{v4,o1}
+            \fmf{photon}{v1,v3}
+            \fmf{photon}{v2,v4}
+        \end{fmfgraph}}
+\end{figure}
+
+\end{fmffile}
+\end{document}

@@ -1,0 +1,22 @@
+% to make pdf first run pdflatex then MetaPost then pdflatex again
+% pdflatex minimal.tex
+% mpost minimal.mp
+% pdflatex minimal.tex
+
+\documentclass{article}
+\usepackage{feynmp}
+\DeclareGraphicsRule{*}{mps}{*}{}
+
+\begin{document}
+\begin{fmffile}{minimal_mp}
+
+\begin{fmfgraph}(120, 80)
+    \fmfleft{i1,i2}
+    \fmfright{o1,o2}
+    \fmf{fermion}{i1,v1,o1}
+    \fmf{fermion}{i2,v2,o2}
+    \fmf{photon}{v1,v2}
+\end{fmfgraph}
+
+\end{fmffile}
+\end{document}
