@@ -242,6 +242,8 @@ def sigma_estimate(E, fermion_name, N):
     σ : array
         An array of estimates of the total cross section with the same
         shape as the array `E`.
+    max_sample : float
+        The maximum sampled value of dσ/dΩ
     """
     samples, domain_size = get_random_samples((*E.shape, N))
 
@@ -251,9 +253,10 @@ def sigma_estimate(E, fermion_name, N):
     # Use monte carlo integration for each energy in E
     function_samples = dsigma_dOmega(E[:, numpy.newaxis], theta, fermion_name)
     mean_sample = numpy.mean(function_samples*numpy.sin(theta), axis=1)
+    max_sample = numpy.max(function_samples, axis=1)
     # Note dΩ = sin(θ)dθdφ
 
-    return mean_sample*domain_size
+    return mean_sample*domain_size, max_sample
 
 
 def get_reaction_equation(fermion_name):
@@ -312,7 +315,9 @@ def plot_compare(ax, fermion_name, range, MCsamples, resolution=100, logaxis=Tru
         E_MC = numpy.linspace(*range, resolution)
         E_analytic = numpy.linspace(*range, 10*resolution)
 
-    cross_section = hbarc2*sigma_estimate(E_MC, fermion_name, MCsamples)
+    cross_section, max_dsigma = sigma_estimate(E_MC, fermion_name, MCsamples)
+    # convert cross_section from MeV² to mbarn
+    cross_section = hbarc2*cross_section
     analytic = hbarc2*sigma_analytic(E_analytic, fermion_name)
 
     # graphing using the total energy of the two particles in GeV
@@ -327,6 +332,8 @@ def plot_compare(ax, fermion_name, range, MCsamples, resolution=100, logaxis=Tru
         ax.loglog(E_analytic, analytic, "k-", label=analytic_label)
     else:
         ax.plot(E_analytic, analytic, "k-", label=analytic_label)
+
+    ax.plot(E_MC, hbarc2*4*numpy.pi*max_dsigma, label="max sample")
 
     ax.set_title(f"{E_MC[0]:.4g} GeV to {E_MC[-1]:.4g} GeV")
     ax.set_xlabel("Total Energy $E_{cm}$ in GeV")
