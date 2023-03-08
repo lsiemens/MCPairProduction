@@ -1,4 +1,4 @@
-# Phys424
+# MCPairProduction
 
 ## totcross
 
