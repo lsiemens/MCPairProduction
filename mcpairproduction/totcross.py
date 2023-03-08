@@ -218,6 +218,41 @@ def get_random_samples(shape, seed=None):
     return samples, domain_size
 
 
+def get_random_rejection_samples(shape, seed=None):
+    """Generate random samples of (θ, φ, x) for rejection sampling
+
+    The samples are generated uniformly in the domain, with θ ∊ [0, 𝜋),
+    φ ∊ [-𝜋, 𝜋) and x ∊ [0, 1).
+
+    Parameters
+    ----------
+    shape : tuple
+        Shape of array of sample point pairs. The resulting array of
+        samples will have the shape (*shape, 3).
+    seed : None, int
+        Seed value for the random number generator. If `seed` is None,
+        then numpy.random.default_rng will initalize with random entropy
+        from the OS.
+
+    Returns
+    -------
+    samples : array
+        Random samples in the domain with the shape (*shape, 3).
+    """
+    theta_phi_x_min = numpy.array([0, -numpy.pi, 0])
+    theta_phi_x_max = numpy.array([numpy.pi, numpy.pi, 1])
+
+    rng = numpy.random.default_rng(seed=seed)
+    # currently (01/30/2023) default_rng uses the PCG-64 pseudo random
+    # number generator by default.
+
+    samples = rng.uniform(theta_phi_x_min, theta_phi_x_max, (*shape, 3))
+    # Note, random.Generator.uniform samples on a half open [low, high)
+    # interval, so formaly samples with theta = 𝜋 or phi = 𝜋 are excluded.
+
+    return samples
+
+
 def sigma_estimate(E, fermion_name, N):
     """Estimate the total cross section.
 

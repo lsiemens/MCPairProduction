@@ -2,8 +2,9 @@
 """Run examples
 """
 
-import phys424
-import phys424.examples
+import mcpairproduction as mcpp
+import mcpairproduction.examples as examples
 
 if __name__ == "__main__":
-    phys424.examples.muon_production.muon_Z_pole()
+    pass
+#    phys424.examples.muon_production.muon_Z_pole()
