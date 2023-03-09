@@ -64,18 +64,18 @@ def get_random_samples(shape, seed=None):
 
 
 def get_random_rejection_samples(shape, seed=None):
-    """Generate random samples of (θ, x) for rejection sampling
+    """Generate random samples of (θ, v) for rejection sampling
 
     TODO mention removing phi
 
     The samples are generated uniformly in the domain, with θ ∊ [0, 𝜋),
-    φ ∊ [-𝜋, 𝜋) and x ∊ [0, 1).
+    φ ∊ [-𝜋, 𝜋) and v ∊ [0, 1).
 
     Parameters
     ----------
     shape : tuple
         Shape of array of sample point pairs. The resulting array of
-        samples will have the shape (*shape, 3).
+        samples will have the shape (2, *shape).
     seed : None, int
         Seed value for the random number generator. If `seed` is None,
         then numpy.random.default_rng will initalize with random entropy
@@ -84,17 +84,21 @@ def get_random_rejection_samples(shape, seed=None):
     Returns
     -------
     samples : array
-        Random samples in the domain with the shape (*shape, 3).
+        Random samples in the domain with the shape (2, *shape).
     """
     # remove phi [-pi, pi)
-    theta_x_min = numpy.array([0, 0])
-    theta_x_max = numpy.array([numpy.pi, 1])
+    theta_min_max = (0, numpy.pi)
+    v_min_max = (0, 1)
 
     rng = numpy.random.default_rng(seed=seed)
     # currently (01/30/2023) default_rng uses the PCG-64 pseudo random
     # number generator by default.
 
-    samples = rng.uniform(theta_x_min, theta_x_max, (*shape, 2))
+    samples = numpy.empty(shape=(2, *shape))
+    theta = rng.uniform(*theta_min_max, shape)
+    v = rng.uniform(*v_min_max, shape)
+    samples[0] = theta
+    samples[1] = v
     # Note, random.Generator.uniform samples on a half open [low, high)
     # interval, so formaly samples with theta = 𝜋 or phi = 𝜋 are excluded.
 
@@ -123,28 +127,37 @@ def monte_carlo_integration(function, x, dx, N):
     max_sample : float
         The maximum sampled value of dσ/dΩ
     """
-    samples, domain_size = get_random_samples((*parameters.shape, N))
+    samples, domain_size = get_random_samples((N, *x.shape))
 
     # Use monte carlo integration for each energy in E
-    function_samples = function(parameters[:, numpy.newaxis], samples)
-    mean_sample = numpy.mean(function_samples*dx(samples), axis=1)
-    max_sample = numpy.max(function_samples, axis=1)
+    function_samples = function(x, samples)
+    mean_sample = numpy.mean(function_samples*dx(samples), axis=0)
+    max_sample = numpy.max(function_samples, axis=0)
 
     return mean_sample*domain_size, max_sample
 
 
-def monte_carlo_sampling(function, x, N):
+def monte_carlo_sampling(function, x, maximum, N):
     """MC integrate
 
     """
-    samples = get_random_rejection_samples((*x.shape, N))
+    samples = numpy.empty(shape=(N, *x.shape))
+    missing = N*numpy.prod(x.shape)
+    missing_mask = numpy.ones(shape=(N, *x.shape), dtype=numpy.bool)
 
-    theta = samples[:, :, 0]
-    x = samples[:, :, 2]
+    x_ext = x + 0*samples
+    maximum_ext = maximum + 0*samples
 
-    # Use monte carlo integration for each energy in E
-    function_samples = function(x[:, numpy.newaxis], samples)
-    mean_sample = numpy.mean(function_samples*dx(samples), axis=1)
-    max_sample = numpy.max(function_samples, axis=1)
+    # recursively resample points that get rejected
+    while missing > 0:
+        new_samples_v = get_random_rejection_samples((missing, ))
+        new_samples, new_v = new_samples_v[0], new_samples_v[1]
+        new_values = function(x_ext[missing_mask], new_samples)/maximum_ext[missing_mask]
 
-    return mean_sample*domain_size, max_sample
+        samples[missing_mask] = new_samples
+
+        new_missing_mask = new_v > new_values
+        new_missing = numpy.sum(new_missing_mask)
+        missing_mask[missing_mask] = new_missing_mask
+        missing = numpy.sum(missing_mask)
+    return samples

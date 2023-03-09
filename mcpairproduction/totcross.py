@@ -29,8 +29,8 @@ from matplotlib import pyplot
 import numpy
 
 # Constants: values from PDG values
-M_z = 9.118E4  # in MeV/c²; mass of the Z boson
-Gamma_z = 2.49E3  # in MeV/hbar; decay rate of Z boson
+M_z = 9.11876E4  # in MeV/c²; mass of the Z boson
+Gamma_z = 2.4952E3  # in MeV/hbar; decay rate of Z boson
 hbarc2 = 3.893793721E5  # in MeV²mbarn
 # unitless constants
 alpha = 7.29735256E-3  # fine-structure constant
