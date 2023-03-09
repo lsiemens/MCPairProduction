@@ -1,8 +1,7 @@
 """Examples
 """
 
-from . import test
+from . import muon_pair
 from . import reproduce_totcross
-from . import muon_production
-#from . import tau_production
+from . import use_totcross
 #from . import tau_view

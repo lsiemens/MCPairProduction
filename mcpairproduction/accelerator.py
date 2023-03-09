@@ -27,42 +27,40 @@ Thomson [3]_ section 15.3.1
 
 """
 
-def sigma_estimate(E, fermion_name, N):
-    """Estimate the total cross section.
+import numpy
 
-    Use Monte Carlo integration to find the total cross section from the
-    differential cross section dσ/dΩ, note dΩ = sin(θ)dθdφ. Then the
-    total cross section is σ = ∬ (dσ/dΩ)sin(θ)dθdφ over the rectangular
-    domain with θ ∊ [0, 𝜋) and φ ∊ [-𝜋, 𝜋).
+from . import sampling
 
-    Parameters
-    ----------
-    E : array
-        An array of energies to evaluat the total cross section at.
-    fermion_name : string
-        Name of the resulting fundimental fermion for the reaction.
-        Ex "mu" or "nu_e" ...
-    N : int
-        The number of samples to use in the the Monte Carlo integral for
-        each energy value.
+class accelerator:
+    def __init__(self, L_int, dsigma_dOmega, M):
+        self.L_int = L_int
+        self.dsigma_dOmega = dsigma_dOmega
+        self.M = M
 
-    Returns
-    -------
-    σ : array
-        An array of estimates of the total cross section with the same
-        shape as the array `E`.
-    max_sample : float
-        The maximum sampled value of dσ/dΩ
-    """
-    samples, domain_size = get_random_samples((*E.shape, N))
+        # number of samples when using Monte Carlo integration to estimate
+        # the total cross section and the maximum of the differential cross
+        # section.
+        self.samples_MC_int = 1000
 
-    theta = samples[:, :, 0]
-    phi = samples[:, :, 1]
+    def run(self, E, path):
+        E = numpy.array([E])
 
-    # Use monte carlo integration for each energy in E
-    function_samples = dsigma_dOmega(E[:, numpy.newaxis], theta, fermion_name)
-    mean_sample = numpy.mean(function_samples*numpy.sin(theta), axis=1)
-    max_sample = numpy.max(function_samples, axis=1)
-    # Note dΩ = sin(θ)dθdφ
+        def dOmega(samples):
+            return numpy.sin(samples)
 
-    return mean_sample*domain_size, max_sample
+        sigma_total, dsigma_max = sampling.monte_carlo_integration(self.dsigma_dOmega, E, dOmega, self.samples_MC_int)
+
+        # expected number of events
+        N_events = int(numpy.ceil(sigma_total*self.L_int))
+        print(sigma_total, self.L_int, N_events)
+
+        # generate events
+        samples = sampling.monte_carlo_sampling(self.dsigma_dOmega, E, dsigma_max, N_events)
+        theta = samples[:, 0]
+
+        p_mag = numpy.sqrt(E[0]**2 - self.M**2)
+
+        with open(path, "w") as fout:
+            fout.write("#E, P, theta, phi\n")
+            for t in theta:
+                fout.write(f"{E[0]:.5E},{p_mag:.5E},{t:.5E},{0:.5E}\n")

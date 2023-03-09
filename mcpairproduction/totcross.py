@@ -31,7 +31,7 @@ import numpy
 # Constants: values from PDG values
 M_z = 9.11876E4  # in MeV/c²; mass of the Z boson
 Gamma_z = 2.4952E3  # in MeV/hbar; decay rate of Z boson
-hbarc2 = 3.893793721E5  # in MeV²mbarn
+hbarc2 = 3.893793721E5  # in MeV²mbarn; conversion factor (ħc)²
 # unitless constants
 alpha = 7.29735256E-3  # fine-structure constant
 sin2_theta_w = 0.2312  # sin²(θ_w) where θ_w is the weak mixing angle
