@@ -27,6 +27,8 @@ Thomson [3]_ section 15.3.1
 
 import numpy
 
+from .constants import neutral_couplings, fermions, M_z, Gamma_z, g_z
+
 def dsigma_dOmega(E, theta, fermion_name):
     """Differential cross section for electron positron scattering.
 

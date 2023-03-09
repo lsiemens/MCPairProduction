@@ -9,6 +9,8 @@ source for the physical constants, *Review of Particle Physics* [2]_.
 
 """
 
+import numpy
+
 # Constants: values from PDG
 
 # Leptons

@@ -45,24 +45,28 @@ def get_random_samples(shape, seed=None):
     domain_size : float
         Size of the rectangular domain.
     """
-    theta_phi_min = numpy.array([0, -numpy.pi])
-    theta_phi_max = numpy.array([numpy.pi, numpy.pi])
+    theta_min = 0
+    theta_max = numpy.pi
 
     rng = numpy.random.default_rng(seed=seed)
     # currently (01/30/2023) default_rng uses the PCG-64 pseudo random
     # number generator by default.
 
-    samples = rng.uniform(theta_phi_min, theta_phi_max, (*shape, 2))
+    # TODO mention removing phi
+
+    samples = rng.uniform(theta_min, theta_max, shape)
     # Note, random.Generator.uniform samples on a half open [low, high)
     # interval, so formaly samples with theta = 𝜋 or phi = 𝜋 are excluded.
 
-    domain_size = numpy.prod(theta_phi_max - theta_phi_min)
+    domain_size = 2*numpy.pi*numpy.prod(theta_max - theta_min)
 
     return samples, domain_size
 
 
 def get_random_rejection_samples(shape, seed=None):
-    """Generate random samples of (θ, φ, x) for rejection sampling
+    """Generate random samples of (θ, x) for rejection sampling
+
+    TODO mention removing phi
 
     The samples are generated uniformly in the domain, with θ ∊ [0, 𝜋),
     φ ∊ [-𝜋, 𝜋) and x ∊ [0, 1).
@@ -82,27 +86,23 @@ def get_random_rejection_samples(shape, seed=None):
     samples : array
         Random samples in the domain with the shape (*shape, 3).
     """
-    theta_phi_x_min = numpy.array([0, -numpy.pi, 0])
-    theta_phi_x_max = numpy.array([numpy.pi, numpy.pi, 1])
+    # remove phi [-pi, pi)
+    theta_x_min = numpy.array([0, 0])
+    theta_x_max = numpy.array([numpy.pi, 1])
 
     rng = numpy.random.default_rng(seed=seed)
     # currently (01/30/2023) default_rng uses the PCG-64 pseudo random
     # number generator by default.
 
-    samples = rng.uniform(theta_phi_x_min, theta_phi_x_max, (*shape, 3))
+    samples = rng.uniform(theta_x_min, theta_x_max, (*shape, 2))
     # Note, random.Generator.uniform samples on a half open [low, high)
     # interval, so formaly samples with theta = 𝜋 or phi = 𝜋 are excluded.
 
     return samples
 
 
-def sigma_estimate(E, fermion_name, N):
-    """Estimate the total cross section.
-
-    Use Monte Carlo integration to find the total cross section from the
-    differential cross section dσ/dΩ, note dΩ = sin(θ)dθdφ. Then the
-    total cross section is σ = ∬ (dσ/dΩ)sin(θ)dθdφ over the rectangular
-    domain with θ ∊ [0, 𝜋) and φ ∊ [-𝜋, 𝜋).
+def monte_carlo_integration(function, x, dx, N):
+    """MC integrate
 
     Parameters
     ----------
@@ -123,15 +123,28 @@ def sigma_estimate(E, fermion_name, N):
     max_sample : float
         The maximum sampled value of dσ/dΩ
     """
-    samples, domain_size = get_random_samples((*E.shape, N))
-
-    theta = samples[:, :, 0]
-    phi = samples[:, :, 1]
+    samples, domain_size = get_random_samples((*parameters.shape, N))
 
     # Use monte carlo integration for each energy in E
-    function_samples = dsigma_dOmega(E[:, numpy.newaxis], theta, fermion_name)
-    mean_sample = numpy.mean(function_samples*numpy.sin(theta), axis=1)
+    function_samples = function(parameters[:, numpy.newaxis], samples)
+    mean_sample = numpy.mean(function_samples*dx(samples), axis=1)
     max_sample = numpy.max(function_samples, axis=1)
-    # Note dΩ = sin(θ)dθdφ
+
+    return mean_sample*domain_size, max_sample
+
+
+def monte_carlo_sampling(function, x, N):
+    """MC integrate
+
+    """
+    samples = get_random_rejection_samples((*x.shape, N))
+
+    theta = samples[:, :, 0]
+    x = samples[:, :, 2]
+
+    # Use monte carlo integration for each energy in E
+    function_samples = function(x[:, numpy.newaxis], samples)
+    mean_sample = numpy.mean(function_samples*dx(samples), axis=1)
+    max_sample = numpy.max(function_samples, axis=1)
 
     return mean_sample*domain_size, max_sample
