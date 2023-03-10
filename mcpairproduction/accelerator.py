@@ -37,30 +37,62 @@ class accelerator:
         self.dsigma_dOmega = dsigma_dOmega
         self.M = M
 
+        def dOmega(samples):
+            return numpy.sin(samples)
+
+        self.dOmega = dOmega
+
         # number of samples when using Monte Carlo integration to estimate
         # the total cross section and the maximum of the differential cross
         # section.
         self.samples_MC_int = 1000
 
-    def run(self, E, path):
-        E = numpy.array([E])
 
-        def dOmega(samples):
-            return numpy.sin(samples)
+    def _run(self, E, dsigma_max, N_events, path, append=False):
+        # generate events
+        theta = sampling.monte_carlo_sampling(self.dsigma_dOmega, E, dsigma_max, N_events)
 
-        sigma_total, dsigma_max = sampling.monte_carlo_integration(self.dsigma_dOmega, E, dOmega, self.samples_MC_int)
+        p_mag = numpy.sqrt(E**2 - self.M**2)
+
+        if append:
+            mode = "a"
+        else:
+            mode = "w"
+
+        with open(path, mode) as fout:
+            if not append:
+                fout.write("#E, P, theta, phi\n")
+
+            for t in theta:
+                fout.write(f"{E:.5E},{p_mag:.5E},{t:.5E},{0:.5E}\n")
+
+
+    def run(self, E, path, append=False):
+        sigma_total, dsigma_max = sampling.monte_carlo_integration(self.dsigma_dOmega, E, self.dOmega, self.samples_MC_int)
 
         # expected number of events
-        N_events = int(numpy.ceil(sigma_total*self.L_int))
-        print(sigma_total, self.L_int, N_events)
+        expected_N_events = sigma_total*self.L_int
+        N_events = sampling.get_random_counts(expected_N_events)
 
-        # generate events
-        samples = sampling.monte_carlo_sampling(self.dsigma_dOmega, E, dsigma_max, N_events)
-        theta = samples[:, 0]
+        self._run(E, dsigma_max, N_events, path, append)
 
-        p_mag = numpy.sqrt(E[0]**2 - self.M**2)
 
-        with open(path, "w") as fout:
-            fout.write("#E, P, theta, phi\n")
-            for t in theta:
-                fout.write(f"{E[0]:.5E},{p_mag:.5E},{t:.5E},{0:.5E}\n")
+    def run_sequence(self, E, path):
+        """Collect data at a sequence of energies
+        """
+        sigma_total, dsigma_max = sampling.monte_carlo_integration_array(self.dsigma_dOmega, E, self.dOmega, self.samples_MC_int)
+
+        # Luminosity per run
+        L_int = self.L_int/len(E)
+
+        # expected number of events
+        expected_N_events = sigma_total*L_int
+        N_events = sampling.get_random_counts(expected_N_events)
+
+        first = True
+        for run_E, run_dsigma_max, run_N_events in zip(E, dsigma_max, N_events):
+            if first:
+                first = False
+                self._run(run_E, run_dsigma_max, run_N_events, path, append=False)
+            else:
+                self._run(run_E, run_dsigma_max, run_N_events, path, append=True)

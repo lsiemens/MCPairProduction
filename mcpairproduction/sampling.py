@@ -22,6 +22,19 @@ Thomson [3]_ section 15.3.1
 
 import numpy
 
+def get_random_counts(expected_counts, seed=None):
+    """Get random counts of events
+
+    draw random event counts using poisson distribution
+    """
+    rng = numpy.random.default_rng(seed=seed)
+    # currently (01/30/2023) default_rng uses the PCG-64 pseudo random
+    # number generator by default.
+
+    counts = rng.poisson(expected_counts)
+
+    return counts
+
 def get_random_samples(shape, seed=None):
     """Generate random samples of (θ, φ)
 
@@ -127,9 +140,40 @@ def monte_carlo_integration(function, x, dx, N):
     max_sample : float
         The maximum sampled value of dσ/dΩ
     """
-    samples, domain_size = get_random_samples((N, *x.shape))
+    samples, domain_size = get_random_samples((N,))
 
     # Use monte carlo integration for each energy in E
+    function_samples = function(x, samples)
+    mean_sample = numpy.mean(function_samples*dx(samples))
+    max_sample = numpy.max(function_samples)
+
+    return mean_sample*domain_size, max_sample
+
+
+def monte_carlo_integration_array(function, x, dx, N):
+    """MC integrate
+
+    Parameters
+    ----------
+    E : array
+        An array of energies to evaluat the total cross section at.
+    fermion_name : string
+        Name of the resulting fundimental fermion for the reaction.
+        Ex "mu" or "nu_e" ...
+    N : int
+        The number of samples to use in the the Monte Carlo integral for
+        each energy value.
+
+    Returns
+    -------
+    σ : array
+        An array of estimates of the total cross section with the same
+        shape as the array `E`.
+    max_sample : float
+        The maximum sampled value of dσ/dΩ
+    """
+    samples, domain_size = get_random_samples((N, *x.shape))
+
     function_samples = function(x, samples)
     mean_sample = numpy.mean(function_samples*dx(samples), axis=0)
     max_sample = numpy.max(function_samples, axis=0)
@@ -140,19 +184,17 @@ def monte_carlo_integration(function, x, dx, N):
 def monte_carlo_sampling(function, x, maximum, N):
     """MC integrate
 
+    Note x, maximum are not arrays
     """
-    samples = numpy.empty(shape=(N, *x.shape))
-    missing = N*numpy.prod(x.shape)
-    missing_mask = numpy.ones(shape=(N, *x.shape), dtype=numpy.bool)
-
-    x_ext = x + 0*samples
-    maximum_ext = maximum + 0*samples
+    samples = numpy.empty(shape=(N,))
+    missing = N
+    missing_mask = numpy.ones(shape=(N,), dtype=numpy.bool)
 
     # recursively resample points that get rejected
     while missing > 0:
         new_samples_v = get_random_rejection_samples((missing, ))
         new_samples, new_v = new_samples_v[0], new_samples_v[1]
-        new_values = function(x_ext[missing_mask], new_samples)/maximum_ext[missing_mask]
+        new_values = function(x, new_samples)/maximum
 
         samples[missing_mask] = new_samples
 
