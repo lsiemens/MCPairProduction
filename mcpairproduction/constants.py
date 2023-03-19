@@ -39,6 +39,7 @@ sin2_theta_w = 0.2312  # sin²(θ_w) where θ_w is the weak mixing angle
 # g_e = g_z cos(θ_w)sin(θ_w). Using these equations the constant g_z in
 # terms of fine structure constant and weak mixing angle is
 # g_z = sqrt(4𝜋*𝛼/[sin²(θ_w)(1 - sin²(θ_w))])
+g_e = numpy.sqrt(4*numpy.pi*alpha)
 g_z = numpy.sqrt(4*numpy.pi*alpha/(sin2_theta_w - sin2_theta_w**2))
 
 # a dictionary of fermion labels, all of the entries contain a tuple of

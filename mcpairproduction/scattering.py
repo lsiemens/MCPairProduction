@@ -27,98 +27,61 @@ Thomson [3]_ section 15.3.1
 
 import numpy
 
-from .constants import neutral_couplings, fermions, M_z, Gamma_z, g_z
+from . import constants
+from .constants import M_z, Gamma_z, g_e, g_z
 
-def dsigma_dOmega(E, theta, fermion_name):
-    """Differential cross section for electron positron scattering.
-
-    Compute the differential cross section for the interaction
-    e⁻ + e⁺ →  f + f̄ mediated by a Z boson. Note f may be any
-    fundimental fermion other than the electron, that case has not
-    been implemented.
-
-    The differental cross section dσ/dΩ for these interactions is
-    given by the equation below.
-
-    A = (g_z²E/[16𝜋])²/([4E² - M_z²]² + [M_z𝚪_z]²)
-    B = (c_Vf² + c_Af²)(c_Ve² + c_Ae²)
-    C = 8c_Vf c_Af c_Ve c_Ae
-
-    dσ/dΩ = A(B[1 + cos²(θ)] - C*cos(θ))
-
-    where g_z is the neutral coupling constant, E is the energy of the
-    incoming electron and positron, c_Ve, c_Ae are the neutral vector
-    and axial vector couplings of the electron, c_Vf, c_Af are the
-    neutral vector and axial vector couplings of resulting fermions,
-    M_z is the mass of the Z boson and 𝚪_z is the decay rate of the Z boson.
-
-    Parameters
-    ----------
-    E : array or float
-        The energy of the incoming particles in the center of mass frame.
-    theta : array or float
-        The angle relative to the beam line of the resulting fermions.
-    fermion_name : string
-        Name of the resulting fundimental fermion for the reaction.
-        Ex "mu" or "nu_e" ...
-
-    Returns
-    -------
-    dσ/dΩ : array or float
-        The differential cross section of the spesified interaction for
-        the given E and theta.
+def dsigma_dOmega(E, theta, A_2):
+    """Differential cross section in center of momentum frame and in
+    the relitivistic limit.
     """
+
+    print("stats", theta.shape, numpy.min(theta), numpy.max(theta))
+    # the differential cross section
+    return A_2(E, theta)/(16*numpy.pi*E)**2
+
+def get_A_tot2(fermion_name):
+    A_gamma2 = get_A_gamma2(fermion_name)
+    A_Z2 = get_A_Z2(fermion_name)
+    A_cross2 = get_A_cross2(fermion_name)
+
+    def A_tot2(E, theta):
+        return A_gamma2(E, theta) + A_Z2(E, theta) + A_cross2(E, theta)
+    return A_tot2
+
+def get_A_gamma2(fermion_name):
+    def A_gamma2(E, theta):
+        return g_e**4*(1 + numpy.cos(theta)**2)
+    return A_gamma2
+
+def get_A_Z2(fermion_name):
+    c_Ve, c_Ae, c_Vf, c_Af = get_neutral_couplings(fermion_name)
+    c_sum = (c_Ve**2 + c_Ae**2)*(c_Vf**2 + c_Af**2)
+    c_product = c_Ve*c_Ae*c_Vf*c_Af
+
+    def A_Z2(E, theta):
+        A = (g_e*E)**4/((4*E**2 - M_z**2)**2 + (M_z*Gamma_z)**2)
+        return A*(c_sum*(1 + numpy.cos(theta)**2) + 8*c_product*numpy.cos(theta))
+    return A_Z2
+
+def get_A_cross2(fermion_name):
+    c_Ve, c_Ae, c_Vf, c_Af = get_neutral_couplings(fermion_name)
+
+    def A_cross2(E, theta):
+        A = 8*(g_e*g_z*E**2)**2/((4*E**2 - M_z**2)**2 + (M_z*Gamma_z)**2)
+        B = (1 - (M_z/(2*E))**2)
+        return A*B*(c_Ve*c_Vf*(1 + numpy.cos(theta)**2) + 2*c_Ae*c_Af*numpy.cos(theta))
+    return A_cross2
+
+def get_neutral_couplings(fermion_name):
     if fermion_name == "e":
         raise ValueError(f"Invalid particle label: {fermion_name}\n"
                           "The reaction e⁻ + e⁺ →  e⁻ + e⁺ is not implemented.")
 
     # get the weak neutral coupling constants
     # coupling constants for the electron
-    c_Ve, c_Ae = neutral_couplings(*fermions["e"])
+    c_Ve, c_Ae = constants.neutral_couplings(*constants.fermions["e"])
 
     # fermion coupling constants for the other fermion
-    c_Vf, c_Af = neutral_couplings(*fermions[fermion_name])
+    c_Vf, c_Af = constants.neutral_couplings(*constants.fermions[fermion_name])
 
-    # precompute terms for the differential cross section
-    A = (g_z**2*E/(16*numpy.pi))**2/((4*E**2 - M_z**2)**2 + (M_z*Gamma_z)**2)
-    B = (c_Vf**2 + c_Af**2)*(c_Ve**2 + c_Ae**2)
-    C = 8*c_Vf*c_Af*c_Ve*c_Ae
-
-    # the differential cross section
-    return A*(B*(1 + numpy.cos(theta)**2) - C*numpy.cos(theta))
-
-
-def sigma_analytic(E, fermion_name):
-    """Total cross section for electron positron scattering.
-
-    The total cross section computed by analytical integration of the
-    differential cross section equation found in dsigma_dOmega.
-
-    Parameters
-    ----------
-    E : array or float
-        The energy of the incoming positron and electron.
-    theta : array or float
-        The angle relative to the beam line of the resulting fermions.
-    fermion_name : string
-        Name of the resulting fundimental fermion for the reaction.
-        Ex "mu" or "nu_e" ...
-
-    Returns
-    -------
-    σ : array or float
-        The total cross section of the spesified interaction for the
-        given E and theta.
-    """
-    # get the weak neutral coupling constants
-    # coupling constants for the electrons
-    c_Ve, c_Ae = neutral_couplings(*fermions["e"])
-
-    # fermion coupling constants for the other fermion
-    c_Vf, c_Af = neutral_couplings(*fermions[fermion_name])
-
-    # Calculate the total cross section
-    A = (g_z**2*E/(16*numpy.pi))**2/((4*E**2 - M_z**2)**2 + (M_z*Gamma_z)**2)
-    B = (c_Vf**2 + c_Af**2)*(c_Ve**2 + c_Ae**2)
-
-    return 16*numpy.pi*A*B/3
+    return c_Ve, c_Ae, c_Vf, c_Af
