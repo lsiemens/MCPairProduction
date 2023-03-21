@@ -52,8 +52,6 @@ class accelerator:
         # generate events
         theta = sampling.monte_carlo_sampling(self.dsigma_dOmega, E, dsigma_max, N_events)
 
-        print("sampled", theta.shape, numpy.min(theta), numpy.max(theta))
-
         p_mag = numpy.sqrt(E**2 - self.M**2)
 
         if append:
@@ -74,8 +72,6 @@ class accelerator:
 
         # expected number of events
         expected_N_events = sigma_total*self.L_int
-        # TODO remove this line
-        expected_N_events = numpy.abs(expected_N_events)
         N_events = sampling.get_random_counts(expected_N_events)
 
         print(expected_N_events, N_events)
