@@ -15,7 +15,7 @@ from .. import constants
 from .. import analysis
 
 def function(E, samples):
-    A_tot2 = scattering.get_A_cross2("mu")
+    A_tot2 = scattering.get_A_tot2("mu")
     return scattering.dsigma_dOmega(E, samples, A_tot2)
 
 def analytic_integral(E):

@@ -59,7 +59,7 @@ def get_A_Z2(fermion_name):
     c_product = c_Ve*c_Ae*c_Vf*c_Af
 
     def A_Z2(E, theta):
-        A = (g_e*E)**4/((4*E**2 - M_z**2)**2 + (M_z*Gamma_z)**2)
+        A = (g_z*E)**4/((4*E**2 - M_z**2)**2 + (M_z*Gamma_z)**2)
         return A*(c_sum*(1 + numpy.cos(theta)**2) + 8*c_product*numpy.cos(theta))
     return A_Z2
 
