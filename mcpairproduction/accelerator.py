@@ -74,8 +74,6 @@ class accelerator:
         expected_N_events = sigma_total*self.L_int
         N_events = sampling.get_random_counts(expected_N_events)
 
-        print(expected_N_events, N_events)
-
         self._run(E, dsigma_max, N_events, path, append)
 
 

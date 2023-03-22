@@ -27,7 +27,8 @@ def dOmega(samples):
     return numpy.sin(samples)
 
 def function(E, samples):
-    return scattering.dsigma_dOmega(E, samples, fermion_name)
+    A_Z2 = scattering.get_A_Z2(fermion_name)
+    return scattering.dsigma_dOmega(E, samples, A_Z2)
 
 E = numpy.linspace(*E_range, 100)
 totcross_cross, _ = totcross.sigma_estimate(E, fermion_name, samples)

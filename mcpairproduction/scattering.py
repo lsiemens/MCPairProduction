@@ -35,7 +35,6 @@ def dsigma_dOmega(E, theta, A_2):
     the relitivistic limit.
     """
 
-    print("stats", theta.shape, numpy.min(theta), numpy.max(theta))
     # the differential cross section
     return A_2(E, theta)/(16*numpy.pi*E)**2
 

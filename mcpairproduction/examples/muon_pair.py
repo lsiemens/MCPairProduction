@@ -49,7 +49,6 @@ E_, p_mag_, theta, phi_ = analysis.load(path)
 hist, bin_edges = numpy.histogram(theta, bins=n_bins)
 err = numpy.sqrt(hist)
 
-print("fig1")
 theta = numpy.linspace(0, numpy.pi)
 dist = function(E, theta)
 dist = dist*numpy.mean(hist)/numpy.mean(dist)
@@ -57,14 +56,12 @@ pyplot.bar(bin_edges[:-1], hist, width=numpy.diff(bin_edges), yerr=err, align="e
 pyplot.plot(theta, dist, "r")
 pyplot.show()
 
-print("fig2")
 symm = (hist - hist[::-1])/2
 symm_err = err + err[::-1]
 pyplot.bar(bin_edges[:-1], symm, width=numpy.diff(bin_edges), yerr=symm_err, align="edge")
 pyplot.show()
 
 
-print("fig3 E dist")
 # E sequence
 path2 = "./scratch/run2.dat"
 E_range = (1E3, 90E3)
@@ -104,4 +101,3 @@ asymmetry = (F - B)/(F + B)
 pyplot.errorbar((xedges[1:] + xedges[:-1])/2, asymmetry)
 pyplot.plot(E, FB_asymmetry(E))
 pyplot.show()
-print("END")
