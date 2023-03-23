@@ -71,7 +71,7 @@ def get_random_samples(shape, seed=None):
     # Note, random.Generator.uniform samples on a half open [low, high)
     # interval, so formaly samples with theta = 𝜋 or phi = 𝜋 are excluded.
 
-    domain_size = 2*numpy.pi*numpy.prod(theta_max - theta_min)
+    domain_size = 2*numpy.pi*(theta_max - theta_min)
 
     return samples, domain_size
 

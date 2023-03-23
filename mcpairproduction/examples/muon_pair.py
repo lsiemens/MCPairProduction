@@ -44,7 +44,7 @@ E = constants.M_z/2 - 1E3
 LEP = accelerator.accelerator(L_int, function, constants.M_mu)
 LEP.run(E, path)
 
-E_, p_mag_, theta, phi_ = analysis.load(path)
+E_, p_mag_, theta, phi_, L_int_ = analysis.load(path)
 
 hist, bin_edges = numpy.histogram(theta, bins=n_bins)
 err = numpy.sqrt(hist)
@@ -66,10 +66,10 @@ pyplot.show()
 path2 = "./scratch/run2.dat"
 E_range = (1E3, 90E3)
 #E_range = (constants.M_z/2 - 3E3, constants.M_z/2 + 3E3)
-E = numpy.linspace(*E_range, 1000)
+E = numpy.linspace(*E_range, n_bins*3)
 LEP.run_sequence(E, path2)
 
-E_, p_mag_, theta_, phi_ = analysis.load(path2)
+E_, p_mag_, theta_, phi_, L_int_ = analysis.load(path2)
 
 bin_edges = numpy.linspace(*E_range, n_bins + 1)
 hist, bin_edges = numpy.histogram(E_, bins=bin_edges)

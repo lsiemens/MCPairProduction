@@ -31,8 +31,12 @@ from matplotlib import pyplot
 import numpy
 
 def load(path):
-    E, p_mag, theta, phi = numpy.loadtxt(path, delimiter=",", unpack=True)
-    return E, p_mag, theta, phi
+    E, p_mag, theta, phi = numpy.loadtxt(path, delimiter=",", skiprows=2, unpack=True)
+    with open(path, "r") as fin:
+        next(fin)
+        line = fin.readline()
+        L_int = float(line)
+    return E, p_mag, theta, phi, L_int
 
 def get_reaction_equation(fermion_name):
     """Get reaction equation for latex.

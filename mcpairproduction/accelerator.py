@@ -30,6 +30,7 @@ Thomson [3]_ section 15.3.1
 import numpy
 
 from . import sampling
+from . import utils
 
 class accelerator:
     def __init__(self, L_int, dsigma_dOmega, M):
@@ -45,7 +46,7 @@ class accelerator:
         # number of samples when using Monte Carlo integration to estimate
         # the total cross section and the maximum of the differential cross
         # section.
-        self.samples_MC_int = 1000
+        self.samples_MC_int = 1000000
 
 
     def _run(self, E, dsigma_max, N_events, path, append=False):
@@ -61,10 +62,12 @@ class accelerator:
 
         with open(path, mode) as fout:
             if not append:
+                fout.write("# Integrated Luminosity in MeV^2\n")
+                fout.write(f"{self.L_int:.7E}\n")
                 fout.write("#E, P, theta, phi\n")
 
             for t in theta:
-                fout.write(f"{E:.5E},{p_mag:.5E},{t:.5E},{0:.5E}\n")
+                fout.write(f"{E:.7E},{p_mag:.7E},{t:.7E},{0:.7E}\n")
 
 
     def run(self, E, path, append=False):
@@ -72,7 +75,11 @@ class accelerator:
 
         # expected number of events
         expected_N_events = sigma_total*self.L_int
+        print("E", E, "samples", self.samples_MC_int)
+        print("sigma_total", sigma_total, "L_int", self.L_int)
+        print("Run: expected Events", expected_N_events, "+-", numpy.sqrt(expected_N_events))
         N_events = sampling.get_random_counts(expected_N_events)
+        print("Run: poisson events", N_events)
 
         self._run(E, dsigma_max, N_events, path, append)
 
@@ -80,19 +87,23 @@ class accelerator:
     def run_sequence(self, E, path):
         """Collect data at a sequence of energies
         """
-        sigma_total, dsigma_max = sampling.monte_carlo_integration_array(self.dsigma_dOmega, E, self.dOmega, self.samples_MC_int)
-
         # Luminosity per run
         L_int = self.L_int/len(E)
 
-        # expected number of events
-        expected_N_events = sigma_total*L_int
-        N_events = sampling.get_random_counts(expected_N_events)
-
         first = True
-        for run_E, run_dsigma_max, run_N_events in zip(E, dsigma_max, N_events):
+        for i, run_E in enumerate(E):
+            utils.progress_bar("Run sequence", i, len(E))
+
+            # estimate total differential cross section
+            sigma_total, dsigma_max = sampling.monte_carlo_integration_array(self.dsigma_dOmega, run_E, self.dOmega, self.samples_MC_int)
+
+            # expected number of events
+            expected_N_events = sigma_total*L_int
+            N_events = sampling.get_random_counts(expected_N_events)
+
             if first:
                 first = False
-                self._run(run_E, run_dsigma_max, run_N_events, path, append=False)
+                self._run(run_E, dsigma_max, N_events, path, append=False)
             else:
-                self._run(run_E, run_dsigma_max, run_N_events, path, append=True)
+                self._run(run_E, dsigma_max, N_events, path, append=True)
+        print()

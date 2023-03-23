@@ -6,5 +6,4 @@ import mcpairproduction as mcpp
 import mcpairproduction.examples as examples
 
 if __name__ == "__main__":
-    pass
-#    phys424.examples.muon_production.muon_Z_pole()
+    examples.use_totcross.muon_Z_pole()
