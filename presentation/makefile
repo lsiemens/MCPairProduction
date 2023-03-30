@@ -12,7 +12,7 @@ all: ${files}
 %.pdf : %.tex
 	${LATEX} $?
 #	mpost ${basename $?}_mp.mp
-#	${LATEX} $?
+	${LATEX} $?
 
 clean:
 #	rm *_mp* *.mp -f
