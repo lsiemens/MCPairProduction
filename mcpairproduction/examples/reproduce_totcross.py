@@ -49,7 +49,7 @@ samples = 10000
 theta = numpy.linspace(0, numpy.pi, 1000)
 
 _, maximum = sampling.monte_carlo_integration(function, E, dOmega, samples)
-sampling_diffcross = sampling.monte_carlo_sampling(function, E, maximum, samples)
+sampling_diffcross = sampling.monte_carlo_sampling(function, E, lambda sample:numpy.sin(sample), maximum, samples)
 
 totcross_dist = totcross.dsigma_dOmega(E, theta, fermion_name)
 pyplot.hist(sampling_diffcross, bins=50, alpha=0.5, density=True)

@@ -51,7 +51,7 @@ class accelerator:
 
     def _run(self, E, dsigma_max, N_events, path, append=False):
         # generate events
-        theta = sampling.monte_carlo_sampling(self.dsigma_dOmega, E, dsigma_max, N_events)
+        theta = sampling.monte_carlo_sampling(self.dsigma_dOmega, E, self.dOmega, dsigma_max, N_events)
 
         p_mag = numpy.sqrt(E**2 - self.M**2)
 

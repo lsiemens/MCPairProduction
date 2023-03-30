@@ -118,7 +118,7 @@ def get_random_rejection_samples(shape, seed=None):
     return samples
 
 
-def monte_carlo_integration(function, x, dx, N):
+def monte_carlo_integration(function, fArg, dx, N):
     """MC integrate
 
     Parameters
@@ -143,14 +143,14 @@ def monte_carlo_integration(function, x, dx, N):
     samples, domain_size = get_random_samples((N,))
 
     # Use monte carlo integration for each energy in E
-    function_samples = function(x, samples)
-    mean_sample = numpy.mean(function_samples*dx(samples))
+    function_samples = function(fArg, samples)*dx(samples)
+    mean_sample = numpy.mean(function_samples)
     max_sample = numpy.max(function_samples)
 
     return mean_sample*domain_size, max_sample
 
 
-def monte_carlo_integration_array(function, x, dx, N):
+def monte_carlo_integration_array(function, fArg, dx, N):
     """MC integrate
 
     Parameters
@@ -172,19 +172,19 @@ def monte_carlo_integration_array(function, x, dx, N):
     max_sample : float
         The maximum sampled value of dσ/dΩ
     """
-    samples, domain_size = get_random_samples((N, *x.shape))
+    samples, domain_size = get_random_samples((N, *fArg.shape))
 
-    function_samples = function(x, samples)
-    mean_sample = numpy.mean(function_samples*dx(samples), axis=0)
+    function_samples = function(fArg, samples)*dx(samples)
+    mean_sample = numpy.mean(function_samples, axis=0)
     max_sample = numpy.max(function_samples, axis=0)
 
     return mean_sample*domain_size, max_sample
 
 
-def monte_carlo_sampling(function, x, maximum, N):
+def monte_carlo_sampling(function, fArg, dx, maximum, N):
     """MC integrate
 
-    Note x, maximum are not arrays
+    Note fArg and maximum are not arrays
     """
     samples = numpy.empty(shape=(N,))
     missing = N
@@ -194,7 +194,7 @@ def monte_carlo_sampling(function, x, maximum, N):
     while missing > 0:
         new_samples_v = get_random_rejection_samples((missing, ))
         new_samples, new_v = new_samples_v[0], new_samples_v[1]
-        new_values = function(x, new_samples)/maximum
+        new_values = function(fArg, new_samples)*dx(new_samples)/maximum
 
         samples[missing_mask] = new_samples
 
