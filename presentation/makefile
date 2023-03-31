@@ -11,9 +11,9 @@ all: ${files}
 
 %.pdf : %.tex
 	${LATEX} $?
-#	mpost ${basename $?}_mp.mp
+	mpost ${basename $?}_mp.mp
 	${LATEX} $?
 
 clean:
-#	rm *_mp* *.mp -f
+	rm *_mp* *.mp -f
 	rm *.aux *.log *.nav *.snm *.out *.toc *.pdf -f
