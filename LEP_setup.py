@@ -25,19 +25,28 @@ LEP_operation = {1994:(4.56E4,  6.4E10),
 
 year = 2000
 Max_E, L_int = LEP_operation[year]
-L_int = L_int*constants.hbarc2 # in MeV
-# TODO remove line
-#L_int = L_int
-print(L_int)
+L_int = L_int*constants.hbarc2 # in MeV^2
 
 LEP = accelerator.accelerator(L_int, dsigma_dOmega, constants.M_mu)
 
-E_values = [constants.M_z/2 - dE for dE in [3E3, 0, -3E3]]
+E_values = [2.6E4, 4.0E4, 5.1E4]
 
-for E in E_values:
+fnames = [f"RUN_{int(E/1E3)}GeV.dat" for E in E_values]
+
+for E, fname in zip(E_values, fnames):
     fname = f"RUN_{int(E/1E3)}GeV.dat"
     LEP.run(E, os.path.join(path, fname))
 
+# The number of Energy steps should be much larger than the number of bins
+# in the analysis to avoid bias
+N_steps = 1024
 E_range = (10*constants.M_mu, Max_E)
-E = numpy.linspace(*E_range, 150)
-LEP.run_sequence(E, os.path.join(path, "RUN_E_range.dat"))
+E = numpy.linspace(*E_range, N_steps)
+
+fname = "RUN_E_range.dat"
+LEP.run_sequence(E, os.path.join(path, fname))
+fnames += [fname]
+
+with open(os.path.join(path, "data_index"), "w") as fout:
+    content = "\n".join(fnames)
+    fout.write(content)
