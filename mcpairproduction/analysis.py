@@ -76,12 +76,13 @@ def plot_angular_distribution(Run_data, n_bins, resolution=100, Nsigma=1):
 
     # make histogram of angular distribution
     hist, hist_err, bins, bin_width = setup_histogram(theta_data, n_bins, (0, numpy.pi), Nsigma)
-    pyplot.bar(bins, hist, bin_width, align="edge", yerr=hist_err)
+    pyplot.bar(bins, hist, bin_width, align="edge", yerr=hist_err, alpha=0.5, label="Data")
 
     for component, style in [("tot", "k-"), ("gamma", "r--"), ("Z", "g-."), ("cross", "b:")]:
         diff_amplitude, label = differential_amplitudes[component]
         dsigma = scattering.dsigma_dOmega(E_data, theta_theory, diff_amplitude())*numpy.sin(theta_theory)
         pyplot.plot(theta_theory, normalization*dsigma, style, label=label)
+    pyplot.xlabel("$\\theta$ in radians")
     pyplot.legend()
     pyplot.show()
 
@@ -94,13 +95,20 @@ def plot_energy_distribution(Run_data, n_bins, resolution=100, theta_range=(0, n
 
     mask = numpy.logical_and(theta_data >= theta_range[0], theta_data <= theta_range[1])
     hist, hist_err, bins, bin_width = setup_histogram(E_data[mask], n_bins, E_range, Nsigma)
-    pyplot.bar(bins, hist, bin_width, align="edge", yerr=hist_err)
+
+    # convert to sqrt(s) in GeV
+    bins, bin_width = 2*bins/1E3, 2*bin_width/1E3
+    sqrt_s = 2*E_theory/1E3
+
+    pyplot.bar(bins, hist, bin_width, align="edge", yerr=hist_err, alpha=0.5, label="Data")
 
     for component, style in [("tot", "k-"), ("gamma", "r--"), ("Z", "g-.")]:
         int_amplitude, label = integrated_amplitudes[component]
         sigma = scattering.sigma_analytic(E_theory, int_amplitude(theta_range=theta_range))
 
-        pyplot.semilogy(E_theory, sigma*L_int/n_bins, style, label=label)
+        pyplot.semilogy(sqrt_s, sigma*L_int/n_bins, style, label=label)
+    pyplot.ylim(1, None)
+    pyplot.xlabel("$\\sqrt{s}$ in GeV")
     pyplot.legend()
     pyplot.show()
 
@@ -120,14 +128,20 @@ def plot_FB_asymmetry(Run_data, n_bins, resolution=100, Nsigma=1):
     A_FB = (Fhist - Bhist)/(Fhist + Bhist)
     A_FB_err = (2*Fhist*Bhist/(Fhist + Bhist)**2)*numpy.sqrt((Fhist_err/Fhist)**2 + (Bhist_err/Bhist)**2)
 
-    pyplot.bar(bins, A_FB, bin_width, align="edge", yerr=A_FB_err)
+    # convert to sqrt(s) in GeV
+    bins, bin_width = 2*bins/1E3, 2*bin_width/1E3
+    sqrt_s = 2*E_theory/1E3
+
+    pyplot.bar(bins, A_FB, bin_width, align="edge", yerr=A_FB_err, alpha=0.5, label="Data")
 
     int_amplitude, _ = integrated_amplitudes["tot"]
     sigma_F = scattering.sigma_analytic(E_theory, int_amplitude(theta_range=[0, numpy.pi/2]))
     sigma_B = scattering.sigma_analytic(E_theory, int_amplitude(theta_range=[numpy.pi/2, numpy.pi]))
     FB_asymmetry = (sigma_F - sigma_B)/(sigma_F + sigma_B)
 
-    pyplot.plot(E_theory, FB_asymmetry, "k")
+    pyplot.plot(sqrt_s, FB_asymmetry, "k")
+    pyplot.xlabel("$\\sqrt{s}$ in GeV")
+    pyplot.ylabel("$A_{FB}$")
     pyplot.show()
 
 """
