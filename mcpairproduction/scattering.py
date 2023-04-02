@@ -38,7 +38,7 @@ def dsigma_dOmega(E, theta, A_2):
     # the differential cross section
     return A_2(E, theta)/(16*numpy.pi*E)**2
 
-def get_A_tot2(fermion_name):
+def get_A_tot2(fermion_name="mu"):
     A_gamma2 = get_A_gamma2(fermion_name)
     A_Z2 = get_A_Z2(fermion_name)
     A_cross2 = get_A_cross2(fermion_name)
@@ -47,12 +47,12 @@ def get_A_tot2(fermion_name):
         return A_gamma2(E, theta) + A_Z2(E, theta) + A_cross2(E, theta)
     return A_tot2
 
-def get_A_gamma2(fermion_name):
+def get_A_gamma2(fermion_name="mu"):
     def A_gamma2(E, theta):
         return g_e**4*(1 + numpy.cos(theta)**2)
     return A_gamma2
 
-def get_A_Z2(fermion_name):
+def get_A_Z2(fermion_name="mu"):
     c_Ve, c_Ae, c_Vf, c_Af = get_neutral_couplings(fermion_name)
     c_sum = (c_Ve**2 + c_Ae**2)*(c_Vf**2 + c_Af**2)
     c_product = c_Ve*c_Ae*c_Vf*c_Af
@@ -62,7 +62,7 @@ def get_A_Z2(fermion_name):
         return A*(c_sum*(1 + numpy.cos(theta)**2) + 8*c_product*numpy.cos(theta))
     return A_Z2
 
-def get_A_cross2(fermion_name):
+def get_A_cross2(fermion_name="mu"):
     c_Ve, c_Ae, c_Vf, c_Af = get_neutral_couplings(fermion_name)
 
     def A_cross2(E, theta):
@@ -93,7 +93,7 @@ def sigma_analytic(E, A_2_integrated):
     # the total cross section, integrated over phi
     return A_2_integrated(E)/(128*numpy.pi*E**2)
 
-def get_A_tot2_integrated(fermion_name, theta_range=None):
+def get_A_tot2_integrated(fermion_name="mu", theta_range=None):
     if theta_range is None:
         theta_range = [0, numpy.pi]
 
@@ -105,7 +105,7 @@ def get_A_tot2_integrated(fermion_name, theta_range=None):
         return A_gamma2_integrated(E) + A_Z2_integrated(E) + A_cross2_integrated(E)
     return A_tot2_integrated
 
-def get_A_gamma2_integrated(fermion_name, theta_range=None):
+def get_A_gamma2_integrated(fermion_name="mu", theta_range=None):
     if theta_range is None:
         theta_range = [0, numpy.pi]
 
@@ -113,7 +113,7 @@ def get_A_gamma2_integrated(fermion_name, theta_range=None):
         return g_e**4*(numpy.cos(theta) + numpy.cos(theta)**3/3)
     return lambda E : A_gamma2_indefinite(E, theta_range[0]) - A_gamma2_indefinite(E, theta_range[1])
 
-def get_A_Z2_integrated(fermion_name, theta_range=None):
+def get_A_Z2_integrated(fermion_name="mu", theta_range=None):
     if theta_range is None:
         theta_range = [0, numpy.pi]
 
@@ -126,7 +126,7 @@ def get_A_Z2_integrated(fermion_name, theta_range=None):
         return A*(c_sum*(numpy.cos(theta) + numpy.cos(theta)**3/3) + 4*c_product*numpy.cos(theta)**2)
     return lambda E : A_Z2_indefinite(E, theta_range[0]) - A_Z2_indefinite(E, theta_range[1])
 
-def get_A_cross2_integrated(fermion_name, theta_range=None):
+def get_A_cross2_integrated(fermion_name="mu", theta_range=None):
     if theta_range is None:
         theta_range = [0, numpy.pi]
 

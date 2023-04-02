@@ -9,59 +9,87 @@ from mcpairproduction import analysis
 path = "./scratch/"
 
 resolution = 1000
-n_bins = 25
-Nsigma = 2 # errors
+n_bins = 32
+Nsigma = 2 # Size of error bars in sigma
 
-E_files = ["RUN_42GeV.dat", "RUN_45GeV.dat", "RUN_48GeV.dat"]
-E_range_file = "RUN_E_range.dat"
+with open(os.path.join(path, "data_index"), "r") as fin:
+    E_files = fin.read()
+    E_files = E_files.split("\n")
+
+E_files, E_range_file = E_files[:-1], E_files[-1]
 
 Runs_fixed_E = [analysis.load(os.path.join(path, file)) for file in E_files]
-Run_E_range = analysis.load(os.path.join(path, E_range_file))
 
 # ----------- Observations of angular distribution at fixed energy
-Run = Runs_fixed_E[0]
-E_data, p_data, theta_data, phi_data, L_int = Run
-
-E_data = E_data[0]
-theta_theory = numpy.linspace(0, numpy.pi, resolution)
-
 # differential cross section functions
 
-def dsigma_dOmega(E, theta):
-    A_tot2 = scattering.get_A_tot2("mu")
-    return scattering.dsigma_dOmega(E, theta, A_tot2)
+for Run in Runs_fixed_E:
+    analysis.plot_angular_distribution(Run, n_bins, resolution, Nsigma)
 
-def dsigma_dOmega_gamma(E, theta):
-    A2 = scattering.get_A_gamma2("mu")
-    return scattering.dsigma_dOmega(E, theta, A2)
+# -------------- E range run
+# total cross section functions
 
-def dsigma_dOmega_Z(E, theta):
-    A2 = scattering.get_A_Z2("mu")
-    return scattering.dsigma_dOmega(E, theta, A2)
+def sigma_analytic(E):
+    A_tot2 = scattering.get_A_tot2_integrated()
+    return scattering.sigma_analytic(E, A_tot2)
 
-def dsigma_dOmega_interference(E, theta):
-    A2 = scattering.get_A_cross2("mu")
-    return scattering.dsigma_dOmega(E, theta, A2)
+Run = analysis.load(os.path.join(path, E_range_file))
+E_data, p_data, theta_data, phi_data, L_int = Run
 
-# calibrating the differential cross section to compair with the data
-ds_dO_total = dsigma_dOmega(E_data, theta_theory)
-ds_dO_gamma = dsigma_dOmega_gamma(E_data, theta_theory)
-ds_dO_Z = dsigma_dOmega_Z(E_data, theta_theory)
-ds_dO_interference = dsigma_dOmega_interference(E_data, theta_theory)
+E_range = (numpy.min(E_data), numpy.max(E_data))
+E_theory = numpy.linspace(*E_range, resolution)
 
-events_per_bin = len(theta_data)/n_bins
-normalization = events_per_bin/numpy.mean(ds_dO_total)
-#ds_dO_events = events_per_bin*ds_dO_total/numpy.mean(ds_dO_total)
+sigma_total = sigma_analytic(E_theory)
 
-# make histogram of angular distribution
-hist, bin_edges = numpy.histogram(theta_data, bins=n_bins, range=(0, numpy.pi))
-hist_err = Nsigma*numpy.sqrt(hist) # 2 sigma error from poisson statistics
+events_per_bin = len(E_data)/n_bins
+#normalization = events_per_bin/numpy.mean(sigma_total)
+normalization = events_per_bin/numpy.mean(sigma_analytic(numpy.array(list(set(E_data)))))
+
+hist, bin_edges = numpy.histogram(E_data, bins=n_bins, range=E_range)
+hist_err = Nsigma*numpy.sqrt(hist)
 
 bin_width = bin_edges[1] - bin_edges[0]
 pyplot.bar(bin_edges[:-1], hist, bin_width, align="edge", yerr=hist_err)
 
-pyplot.plot(theta_theory, normalization*ds_dO_total)
-pyplot.plot(theta_theory, normalization*ds_dO_gamma)
-pyplot.plot(theta_theory, normalization*ds_dO_Z)
-pyplot.plot(theta_theory, normalization*ds_dO_interference)
+pyplot.plot(E_theory, normalization*sigma_total, "k--")
+pyplot.show()
+
+# ----------- FB asymmetry
+# integrated cross section functions
+
+def sigma_forward(E):
+    A_2_forward = scattering.get_A_tot2_integrated(theta_range=(0, numpy.pi/2))
+    return scattering.sigma_analytic(E, A_2_forward)
+
+def sigma_back(E):
+    A_2_back = scattering.get_A_tot2_integrated(theta_range=(numpy.pi/2, numpy.pi))
+    return scattering.sigma_analytic(E, A_2_back)
+
+front_mask = theta_data <= numpy.pi/2
+
+Fhist, bin_edges = numpy.histogram(E_data[front_mask], bins=n_bins, range=E_range)
+Fhist_err = Nsigma*numpy.sqrt(Fhist)
+
+FB_asymmetry = 2*Fhist/hist - 1 # (F - B) / T, F + B = T
+
+asymmetry_err = (2*Fhist/hist)*numpy.sqrt((Fhist_err/Fhist)**2 + (hist_err/hist)**2)
+FB_asymmetry_analytic = 2*sigma_forward(E_theory)/sigma_analytic(E_theory) - 1
+
+bin_width = bin_edges[1] - bin_edges[0]
+pyplot.bar(bin_edges[:-1], FB_asymmetry, bin_width, align="edge", yerr=asymmetry_err)
+
+pyplot.plot(E_theory, FB_asymmetry_analytic, "k--")
+pyplot.title("FB_asymmetry")
+pyplot.show()
+
+pyplot.bar(bin_edges[:-1], Fhist, bin_width, align="edge", yerr=Fhist_err)
+
+pyplot.plot(E_theory, normalization*sigma_forward(E_theory), "k--")
+pyplot.title("sigma forward")
+pyplot.show()
+
+pyplot.bar(bin_edges[:-1], hist - Fhist, bin_width, align="edge", yerr=Nsigma*numpy.sqrt(hist - Fhist))
+
+pyplot.plot(E_theory, normalization*sigma_back(E_theory), "r-.")
+pyplot.title("sigma back")
 pyplot.show()

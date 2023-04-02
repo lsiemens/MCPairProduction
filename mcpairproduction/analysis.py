@@ -27,8 +27,17 @@ Thomson [3]_ section 15.3.1
 
 """
 
+from . import scattering
+
 from matplotlib import pyplot
 import numpy
+
+reaction_name = f"$e^- + e^+ \\rightarrow \\mu^- + \\mu^+$"
+
+differential_amplitudes = {"tot":(scattering.get_A_tot2(), "$\\left|A\\right|^2$"),
+                           "gamma":(scattering.get_A_gamma2(), "$\\left|A_{\\gamma}\\right|^2$"),
+                           "Z":(scattering.get_A_Z2(), "$\\left|A_{Z}\\right|^2$"),
+                           "cross":(scattering.get_A_cross2(), "$A_{\\gamma}A_{Z}^* + A_{Z}A_{\\gamma}^*$")}
 
 def load(path):
     E, p_mag, theta, phi = numpy.loadtxt(path, delimiter=",", skiprows=2, unpack=True)
@@ -38,36 +47,43 @@ def load(path):
         L_int = float(line)
     return E, p_mag, theta, phi, L_int
 
-def get_reaction_equation(fermion_name):
-    """Get reaction equation for latex.
 
-    Parameters
-    ----------
-    fermion_name : string
-        Name of the resulting fundimental fermion for the reaction.
-        Ex "mu" or "nu_e" ...
+def setup_histogram(data, n_bins, range, Nsigma=1):
+    hist, bin_edges = numpy.histogram(data, bins=n_bins, range=range)
+    hist_error = Nsigma*numpy.sqrt(hist)
+    bin_width = bin_edges[1] - bin_edges[0]
 
-    Returns
-    -------
-    string
-        Latex formated reaction equation.
-    """
-    names = {"nu_e": ("\\nu_e", "\\overline{\\nu}_e"),
-             "nu_mu": ("\\nu_\\mu", "\\overline{\\nu}_\\mu"),
-             "nu_tau": ("\\nu_\\tau", "\\overline{\\nu}_\\tau"),
-             "e": ("e^-", "e^+"),
-             "mu": ("\\mu^-", "\\mu^+"),
-             "tau": ("\\tau^-", "\\tau^+"),
-             "u": ("u", "\\overline{u}"), "d": ("d", "\\overline{d}"),
-             "c": ("c", "\\overline{c}"), "s": ("s", "\\overline{s}"),
-             "t": ("t", "\\overline{t}"), "b": ("b", "\\overline{b}")}
-    f, fbar = names[fermion_name]
-    base_reaction = f"$e^+ + e^- \\rightarrow {f} + {fbar}$"
-    return base_reaction
+    return hist, hist_error, bin_edges[:-1], bin_width
 
 
+def plot_angular_distribution(Run_data, n_bins, resolution=100, Nsigma=1):
+    E_data, p_data, theta_data, phi_data, L_int = Run_data
+
+    E_data = E_data[0]
+    theta_theory = numpy.linspace(0, numpy.pi, resolution)
+
+    # calibrating the differential cross section to compair with the data
+    tot_amplitude, _ = differential_amplitudes["tot"]
+    ds_total = scattering.dsigma_dOmega(E_data, theta_theory, tot_amplitude)*numpy.sin(theta_theory)
+
+    events_per_bin = len(theta_data)/n_bins
+    normalization = events_per_bin/numpy.mean(ds_total)
+
+    # make histogram of angular distribution
+    hist, hist_err, bins, bin_width = setup_histogram(theta_data, n_bins, (0, numpy.pi), Nsigma)
+    pyplot.bar(bins, hist, bin_width, align="edge", yerr=hist_err)
+
+    for component, style in [("tot", "k-"), ("gamma", "r--"), ("Z", "g-."), ("cross", "b:")]:
+        diff_amplitude, label = differential_amplitudes[component]
+        dsigma = scattering.dsigma_dOmega(E_data, theta_theory, diff_amplitude)*numpy.sin(theta_theory)
+        pyplot.plot(theta_theory, normalization*dsigma, style, label=label)
+    pyplot.legend()
+    pyplot.show()
+
+
+"""
 def plot_compare(ax, fermion_name, range, MCsamples, resolution=100, logaxis=True):
-    """
+    "
     Make plot of estimated total cross section
 
     Parameters
@@ -87,7 +103,7 @@ def plot_compare(ax, fermion_name, range, MCsamples, resolution=100, logaxis=Tru
         The resolution of sampled energy values.
     logaxis : boolean
         If true, the plot will be displaid with log-log axis.
-    """
+    "
     if logaxis:
         E_MC = 10**numpy.linspace(*range, resolution)
         E_analytic = 10**numpy.linspace(*range, 10*resolution)
@@ -119,3 +135,4 @@ def plot_compare(ax, fermion_name, range, MCsamples, resolution=100, logaxis=Tru
     ax.set_xlabel("Total Energy $E_{cm}$ in GeV")
     ax.set_ylabel("Total cross section in mbarn")
     ax.legend()
+"""
