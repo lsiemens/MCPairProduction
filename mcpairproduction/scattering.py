@@ -93,10 +93,7 @@ def sigma_analytic(E, A_2_integrated):
     # the total cross section, integrated over phi
     return A_2_integrated(E)/(128*numpy.pi*E**2)
 
-def get_A_tot2_integrated(fermion_name="mu", theta_range=None):
-    if theta_range is None:
-        theta_range = [0, numpy.pi]
-
+def get_A_tot2_integrated(fermion_name="mu", theta_range=[0, numpy.pi]):
     A_gamma2_integrated = get_A_gamma2_integrated(fermion_name, theta_range)
     A_Z2_integrated = get_A_Z2_integrated(fermion_name, theta_range)
     A_cross2_integrated = get_A_cross2_integrated(fermion_name, theta_range)
@@ -105,18 +102,12 @@ def get_A_tot2_integrated(fermion_name="mu", theta_range=None):
         return A_gamma2_integrated(E) + A_Z2_integrated(E) + A_cross2_integrated(E)
     return A_tot2_integrated
 
-def get_A_gamma2_integrated(fermion_name="mu", theta_range=None):
-    if theta_range is None:
-        theta_range = [0, numpy.pi]
-
+def get_A_gamma2_integrated(fermion_name="mu", theta_range=[0, numpy.pi]):
     def A_gamma2_indefinite(E, theta):
         return g_e**4*(numpy.cos(theta) + numpy.cos(theta)**3/3)
     return lambda E : A_gamma2_indefinite(E, theta_range[0]) - A_gamma2_indefinite(E, theta_range[1])
 
-def get_A_Z2_integrated(fermion_name="mu", theta_range=None):
-    if theta_range is None:
-        theta_range = [0, numpy.pi]
-
+def get_A_Z2_integrated(fermion_name="mu", theta_range=[0, numpy.pi]):
     c_Ve, c_Ae, c_Vf, c_Af = get_neutral_couplings(fermion_name)
     c_sum = (c_Ve**2 + c_Ae**2)*(c_Vf**2 + c_Af**2)
     c_product = c_Ve*c_Ae*c_Vf*c_Af
@@ -126,10 +117,7 @@ def get_A_Z2_integrated(fermion_name="mu", theta_range=None):
         return A*(c_sum*(numpy.cos(theta) + numpy.cos(theta)**3/3) + 4*c_product*numpy.cos(theta)**2)
     return lambda E : A_Z2_indefinite(E, theta_range[0]) - A_Z2_indefinite(E, theta_range[1])
 
-def get_A_cross2_integrated(fermion_name="mu", theta_range=None):
-    if theta_range is None:
-        theta_range = [0, numpy.pi]
-
+def get_A_cross2_integrated(fermion_name="mu", theta_range=[0, numpy.pi]):
     c_Ve, c_Ae, c_Vf, c_Af = get_neutral_couplings(fermion_name)
 
     def A_cross2_indefinite(E, theta):

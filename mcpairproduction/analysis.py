@@ -34,10 +34,15 @@ import numpy
 
 reaction_name = f"$e^- + e^+ \\rightarrow \\mu^- + \\mu^+$"
 
-differential_amplitudes = {"tot":(scattering.get_A_tot2(), "$\\left|A\\right|^2$"),
-                           "gamma":(scattering.get_A_gamma2(), "$\\left|A_{\\gamma}\\right|^2$"),
-                           "Z":(scattering.get_A_Z2(), "$\\left|A_{Z}\\right|^2$"),
-                           "cross":(scattering.get_A_cross2(), "$A_{\\gamma}A_{Z}^* + A_{Z}A_{\\gamma}^*$")}
+differential_amplitudes = {"tot":(scattering.get_A_tot2, "$\\left|A\\right|^2$"),
+                           "gamma":(scattering.get_A_gamma2, "$\\left|A_{\\gamma}\\right|^2$"),
+                           "Z":(scattering.get_A_Z2, "$\\left|A_{Z}\\right|^2$"),
+                           "cross":(scattering.get_A_cross2, "$A_{\\gamma}A_{Z}^* + A_{Z}A_{\\gamma}^*$")}
+
+integrated_amplitudes = {"tot":(scattering.get_A_tot2_integrated, "$\\left|A\\right|^2$"),
+                         "gamma":(scattering.get_A_gamma2_integrated, "$\\left|A_{\\gamma}\\right|^2$"),
+                         "Z":(scattering.get_A_Z2_integrated, "$\\left|A_{Z}\\right|^2$"),
+                         "cross":(scattering.get_A_cross2_integrated, "$A_{\\gamma}A_{Z}^* + A_{Z}A_{\\gamma}^*$")}
 
 def load(path):
     E, p_mag, theta, phi = numpy.loadtxt(path, delimiter=",", skiprows=2, unpack=True)
@@ -64,7 +69,7 @@ def plot_angular_distribution(Run_data, n_bins, resolution=100, Nsigma=1):
 
     # calibrating the differential cross section to compair with the data
     tot_amplitude, _ = differential_amplitudes["tot"]
-    ds_total = scattering.dsigma_dOmega(E_data, theta_theory, tot_amplitude)*numpy.sin(theta_theory)
+    ds_total = scattering.dsigma_dOmega(E_data, theta_theory, tot_amplitude())*numpy.sin(theta_theory)
 
     events_per_bin = len(theta_data)/n_bins
     normalization = events_per_bin/numpy.mean(ds_total)
@@ -75,11 +80,55 @@ def plot_angular_distribution(Run_data, n_bins, resolution=100, Nsigma=1):
 
     for component, style in [("tot", "k-"), ("gamma", "r--"), ("Z", "g-."), ("cross", "b:")]:
         diff_amplitude, label = differential_amplitudes[component]
-        dsigma = scattering.dsigma_dOmega(E_data, theta_theory, diff_amplitude)*numpy.sin(theta_theory)
+        dsigma = scattering.dsigma_dOmega(E_data, theta_theory, diff_amplitude())*numpy.sin(theta_theory)
         pyplot.plot(theta_theory, normalization*dsigma, style, label=label)
     pyplot.legend()
     pyplot.show()
 
+
+def plot_energy_distribution(Run_data, n_bins, resolution=100, theta_range=(0, numpy.pi), Nsigma=1):
+    E_data, p_data, theta_data, phi_data, L_int = Run_data
+
+    E_range = (numpy.min(E_data), numpy.max(E_data))
+    E_theory = numpy.linspace(*E_range, resolution)
+
+    mask = numpy.logical_and(theta_data >= theta_range[0], theta_data <= theta_range[1])
+    hist, hist_err, bins, bin_width = setup_histogram(E_data[mask], n_bins, E_range, Nsigma)
+    pyplot.bar(bins, hist, bin_width, align="edge", yerr=hist_err)
+
+    for component, style in [("tot", "k-"), ("gamma", "r--"), ("Z", "g-.")]:
+        int_amplitude, label = integrated_amplitudes[component]
+        sigma = scattering.sigma_analytic(E_theory, int_amplitude(theta_range=theta_range))
+
+        pyplot.semilogy(E_theory, sigma*L_int/n_bins, style, label=label)
+    pyplot.legend()
+    pyplot.show()
+
+
+def plot_FB_asymmetry(Run_data, n_bins, resolution=100, Nsigma=1):
+    E_data, p_data, theta_data, phi_data, L_int = Run_data
+
+    E_range = (numpy.min(E_data), numpy.max(E_data))
+    E_theory = numpy.linspace(*E_range, resolution)
+
+    front_mask = theta_data <= numpy.pi/2
+    back_mask = numpy.logical_not(front_mask)
+
+    Fhist, Fhist_err, bins, bin_width = setup_histogram(E_data[front_mask], n_bins, E_range, Nsigma)
+    Bhist, Bhist_err, bins, bin_width = setup_histogram(E_data[back_mask], n_bins, E_range, Nsigma)
+
+    A_FB = (Fhist - Bhist)/(Fhist + Bhist)
+    A_FB_err = (2*Fhist*Bhist/(Fhist + Bhist)**2)*numpy.sqrt((Fhist_err/Fhist)**2 + (Bhist_err/Bhist)**2)
+
+    pyplot.bar(bins, A_FB, bin_width, align="edge", yerr=A_FB_err)
+
+    int_amplitude, _ = integrated_amplitudes["tot"]
+    sigma_F = scattering.sigma_analytic(E_theory, int_amplitude(theta_range=[0, numpy.pi/2]))
+    sigma_B = scattering.sigma_analytic(E_theory, int_amplitude(theta_range=[numpy.pi/2, numpy.pi]))
+    FB_asymmetry = (sigma_F - sigma_B)/(sigma_F + sigma_B)
+
+    pyplot.plot(E_theory, FB_asymmetry, "k")
+    pyplot.show()
 
 """
 def plot_compare(ax, fermion_name, range, MCsamples, resolution=100, logaxis=True):
