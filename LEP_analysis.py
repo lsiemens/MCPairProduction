@@ -36,7 +36,7 @@ comparisons = [("tot", "k-", False), ("gamma", "r--", False), ("Z", "g-.", False
 fig, (ax1, ax2) = pyplot.subplots(1, 2)
 analysis.plot_energy_distribution(ax1, Run, n_bins, resolution, Nsigma=Nsigma, comparisons=comparisons)
 analysis.plot_energy_distribution(ax2, Run, n_bins, resolution, Nsigma=Nsigma, comparisons=[("tot", "k-", True)])
-pyplot.suptitle("Monte Carlo scattering data: " + analysis.reaction_name)
+pyplot.suptitle("Monte Carlo scattering events: " + analysis.reaction_name)
 pyplot.show()
 
 fig, ax = pyplot.subplots()
