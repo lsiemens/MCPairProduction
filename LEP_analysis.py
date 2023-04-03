@@ -24,16 +24,33 @@ Runs_fixed_E = [analysis.load(os.path.join(path, file)) for file in E_files]
 # differential cross section functions
 
 for Run in Runs_fixed_E:
-    analysis.plot_angular_distribution(Run, n_bins, resolution, Nsigma)
+    fig, ax = pyplot.subplots()
+    analysis.plot_angular_distribution(ax, Run, n_bins, resolution, Nsigma)
+    pyplot.show()
 
 # -------------- E range run
 
 Run = analysis.load(os.path.join(path, E_range_file))
+comparisons = [("tot", "k-", False), ("gamma", "r--", False), ("Z", "g-.", False)]
 
-analysis.plot_energy_distribution(Run, n_bins, resolution, Nsigma=Nsigma)
-analysis.plot_energy_distribution(Run, n_bins, resolution, theta_range=[0, numpy.pi/2], Nsigma=Nsigma)
-analysis.plot_energy_distribution(Run, n_bins, resolution, theta_range=[numpy.pi/2, numpy.pi], Nsigma=Nsigma)
+fig, (ax1, ax2) = pyplot.subplots(1, 2)
+analysis.plot_energy_distribution(ax1, Run, n_bins, resolution, Nsigma=Nsigma, comparisons=comparisons)
+analysis.plot_energy_distribution(ax2, Run, n_bins, resolution, Nsigma=Nsigma, comparisons=[("tot", "k-", True)])
+pyplot.suptitle("Monte Carlo scattering data: " + analysis.reaction_name)
+pyplot.show()
+
+fig, ax = pyplot.subplots()
+analysis.plot_energy_distribution(ax, Run, n_bins, resolution, theta_range=[0, numpy.pi/2], Nsigma=Nsigma, comparisons=comparisons)
+pyplot.title("Forward Events: $\\theta \in [0, \\pi/2]$")
+pyplot.show()
+
+fig, ax = pyplot.subplots()
+analysis.plot_energy_distribution(ax, Run, n_bins, resolution, theta_range=[numpy.pi/2, numpy.pi], Nsigma=Nsigma, comparisons=comparisons)
+pyplot.title("Backward Events: $\\theta \in [\\pi/2, \\pi]$")
+pyplot.show()
 
 # ----------- FB asymmetry
 
-analysis.plot_FB_asymmetry(Run, n_bins, resolution, Nsigma)
+fig, ax = pyplot.subplots()
+analysis.plot_FB_asymmetry(ax, Run, n_bins, resolution, Nsigma)
+pyplot.show()

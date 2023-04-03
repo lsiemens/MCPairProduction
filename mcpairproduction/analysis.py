@@ -28,6 +28,7 @@ Thomson [3]_ section 15.3.1
 """
 
 from . import scattering
+from . import constants
 
 from matplotlib import pyplot
 import numpy
@@ -39,10 +40,10 @@ differential_amplitudes = {"tot":(scattering.get_A_tot2, "$\\left|A\\right|^2$")
                            "Z":(scattering.get_A_Z2, "$\\left|A_{Z}\\right|^2$"),
                            "cross":(scattering.get_A_cross2, "$A_{\\gamma}A_{Z}^* + A_{Z}A_{\\gamma}^*$")}
 
-integrated_amplitudes = {"tot":(scattering.get_A_tot2_integrated, "$\\left|A\\right|^2$"),
-                         "gamma":(scattering.get_A_gamma2_integrated, "$\\left|A_{\\gamma}\\right|^2$"),
-                         "Z":(scattering.get_A_Z2_integrated, "$\\left|A_{Z}\\right|^2$"),
-                         "cross":(scattering.get_A_cross2_integrated, "$A_{\\gamma}A_{Z}^* + A_{Z}A_{\\gamma}^*$")}
+integrated_amplitudes = {"tot":(scattering.get_A_tot2_integrated, "$\\sigma_{total}$"),
+                         "gamma":(scattering.get_A_gamma2_integrated, "$\\sigma_{\\gamma}$"),
+                         "Z":(scattering.get_A_Z2_integrated, "$\\sigma_{Z}$"),
+                         "cross":(scattering.get_A_cross2_integrated, "$\\sigma_{cross}$")}
 
 def load(path):
     E, p_mag, theta, phi = numpy.loadtxt(path, delimiter=",", skiprows=2, unpack=True)
@@ -61,7 +62,7 @@ def setup_histogram(data, n_bins, range, Nsigma=1):
     return hist, hist_error, bin_edges[:-1], bin_width
 
 
-def plot_angular_distribution(Run_data, n_bins, resolution=100, Nsigma=1):
+def plot_angular_distribution(ax, Run_data, n_bins, resolution=100, Nsigma=1):
     E_data, p_data, theta_data, phi_data, L_int = Run_data
 
     E_data = E_data[0]
@@ -76,18 +77,34 @@ def plot_angular_distribution(Run_data, n_bins, resolution=100, Nsigma=1):
 
     # make histogram of angular distribution
     hist, hist_err, bins, bin_width = setup_histogram(theta_data, n_bins, (0, numpy.pi), Nsigma)
-    pyplot.bar(bins, hist, bin_width, align="edge", yerr=hist_err, alpha=0.5, label="Data")
+    ax.bar(bins, hist, bin_width, align="edge", yerr=hist_err, color="b", ecolor="b", capsize=2, alpha=0.4, label="Data")
 
-    for component, style in [("tot", "k-"), ("gamma", "r--"), ("Z", "g-."), ("cross", "b:")]:
+    sqrt_s = 2*E_data/1E3 # in GeV
+
+    for component, style in [("tot", "k-"), ("gamma", "r--"), ("Z", "g-."), ("cross", "m:")]:
         diff_amplitude, label = differential_amplitudes[component]
         dsigma = scattering.dsigma_dOmega(E_data, theta_theory, diff_amplitude())*numpy.sin(theta_theory)
-        pyplot.plot(theta_theory, normalization*dsigma, style, label=label)
-    pyplot.xlabel("$\\theta$ in radians")
-    pyplot.legend()
-    pyplot.show()
+        ax.plot(theta_theory, normalization*dsigma, style, label=label)
+    ax.set_xlim(0, numpy.pi)
+    ax.set_xlabel("$\\theta$ in radians")
+    ax.set_ylabel("Scattering Events")
+    ax.set_title(f"Angular distribution $\\frac{{d\\sigma}}{{d\\Omega}}$ at $\\sqrt{{s}} = {sqrt_s:.1f} GeV$")
+    ax.legend()
 
 
-def plot_energy_distribution(Run_data, n_bins, resolution=100, theta_range=(0, numpy.pi), Nsigma=1):
+def theoretic_binning(E, values, bins, bin_width):
+    binned_values = []
+    binned_E = []
+    for bin in bins:
+        mask = numpy.logical_and(E >= bin, E < bin + bin_width)
+        binned_values.append(numpy.mean(values[mask]))
+        binned_values.append(numpy.mean(values[mask]))
+        binned_E.append(bin)
+        binned_E.append(bin + bin_width)
+    return binned_E, binned_values
+
+
+def plot_energy_distribution(ax, Run_data, n_bins, resolution=100, theta_range=(0, numpy.pi), Nsigma=1, comparisons=[("tot", "k-", False)]):
     E_data, p_data, theta_data, phi_data, L_int = Run_data
 
     E_range = (numpy.min(E_data), numpy.max(E_data))
@@ -100,20 +117,26 @@ def plot_energy_distribution(Run_data, n_bins, resolution=100, theta_range=(0, n
     bins, bin_width = 2*bins/1E3, 2*bin_width/1E3
     sqrt_s = 2*E_theory/1E3
 
-    pyplot.bar(bins, hist, bin_width, align="edge", yerr=hist_err, alpha=0.5, label="Data")
+#    ax.bar(bins, hist, bin_width, align="edge", yerr=hist_err, alpha=0.5, label="Data")
+    ax.bar(bins, hist, bin_width, align="edge", yerr=hist_err, color="b", ecolor="b", capsize=2, alpha=0.4, label="Data")
 
-    for component, style in [("tot", "k-"), ("gamma", "r--"), ("Z", "g-.")]:
+    for component, style, binning in comparisons:
         int_amplitude, label = integrated_amplitudes[component]
         sigma = scattering.sigma_analytic(E_theory, int_amplitude(theta_range=theta_range))
 
-        pyplot.semilogy(sqrt_s, sigma*L_int/n_bins, style, label=label)
-    pyplot.ylim(1, None)
-    pyplot.xlabel("$\\sqrt{s}$ in GeV")
-    pyplot.legend()
-    pyplot.show()
+        if binning:
+            E_b, sigma_b = theoretic_binning(sqrt_s, sigma*L_int/n_bins, bins, bin_width)
+            ax.semilogy(E_b, sigma_b, style, label=label + " binned")
+        else:
+            ax.semilogy(sqrt_s, sigma*L_int/n_bins, style, label=label)
+    ax.set_ylim(1, None)
+    ax.set_xlim(numpy.min(sqrt_s), numpy.max(sqrt_s))
+    ax.set_ylabel("Scattering Events")
+    ax.set_xlabel("$\\sqrt{s}$ in GeV")
+    ax.legend()
 
 
-def plot_FB_asymmetry(Run_data, n_bins, resolution=100, Nsigma=1):
+def plot_FB_asymmetry(ax, Run_data, n_bins, resolution=100, Nsigma=1):
     E_data, p_data, theta_data, phi_data, L_int = Run_data
 
     E_range = (numpy.min(E_data), numpy.max(E_data))
@@ -132,17 +155,20 @@ def plot_FB_asymmetry(Run_data, n_bins, resolution=100, Nsigma=1):
     bins, bin_width = 2*bins/1E3, 2*bin_width/1E3
     sqrt_s = 2*E_theory/1E3
 
-    pyplot.bar(bins, A_FB, bin_width, align="edge", yerr=A_FB_err, alpha=0.5, label="Data")
+#    ax.bar(bins, A_FB, bin_width, align="edge", yerr=A_FB_err, alpha=0.5, label="Data")
+    ax.bar(bins, A_FB, bin_width, align="edge", yerr=A_FB_err, color="b", ecolor="b", capsize=2, alpha=0.4, label="Data")
 
     int_amplitude, _ = integrated_amplitudes["tot"]
     sigma_F = scattering.sigma_analytic(E_theory, int_amplitude(theta_range=[0, numpy.pi/2]))
     sigma_B = scattering.sigma_analytic(E_theory, int_amplitude(theta_range=[numpy.pi/2, numpy.pi]))
     FB_asymmetry = (sigma_F - sigma_B)/(sigma_F + sigma_B)
 
-    pyplot.plot(sqrt_s, FB_asymmetry, "k")
-    pyplot.xlabel("$\\sqrt{s}$ in GeV")
-    pyplot.ylabel("$A_{FB}$")
-    pyplot.show()
+    ax.plot(sqrt_s, FB_asymmetry, "k-", label="$A_{FB}$")
+    ax.set_xlim(numpy.min(sqrt_s), numpy.max(sqrt_s))
+    ax.set_xlabel("$\\sqrt{s}$ in GeV")
+    ax.set_ylabel("$A_{FB}$")
+    ax.set_title("Forward Backward asymmetry: $A_{FB}$")
+    ax.legend()
 
 """
 def plot_compare(ax, fermion_name, range, MCsamples, resolution=100, logaxis=True):
