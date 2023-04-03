@@ -10,59 +10,71 @@
 \setbeameroption{show notes}
 
 % title information
-\title[Muon Production and $A_{FB}$]{Muon Pair Production and Forward-Backward Asymmetry}
+\title[Muon Pair Production]{Muon Pair Production from Electron Positron Annihilation}
 \author{L.~Siemens}
 
 
 \begin{document}
 \begin{fmffile}{presentation_mp} % begin feynmp environment
 
+
 \begin{frame}
     \titlepage
-    \note{\tableofcontents}
+    %\note{\tableofcontents}
+    \note[item]{Give brief introduction}
+    \note{For my project I choose the computational project focusing on muon pair production. I will briefly introduce the mathematical methods used, outline the basic equations and simulation procedure, and present the result of the simulation.\vfill}
 \end{frame}
+
 
 \section{Setup}
-\subsection{Montecarlo methods}
+\subsection{Monte Carlo methods}
 \begin{frame}{Mathematical Methods: Monte Carlo Integration}
-    \begin{columns}
-        \column{0.75\textwidth}
-        average of a function $<f(x)> = \frac{1}{b-a}\int_a^b f(x)dx$
+%    \begin{columns}
+%        \column{0.5\textwidth}
+        Average of a function $<f(x)> = \frac{1}{b-a}\int_a^b f(x)dx$
 
-        \begin{block}{Estimate Integral}
+        \begin{block}{Monte Carlo Integration}
             $\int_a^b f(x)dx = (b-a)<f(x)>$
         \end{block}
-        \note[item]{Simples version of Monte Carlo integrationis derived directly from the difinition of the averag of thefuncktion on a domain}
-
-        sampling uniformly at N random points
+        \note[item]{Simplest version of Monte Carlo integration derived directly from the definition of the average of the function on a domain}
 
         \begin{block}{Estimated Error}
-            $\sigma_{error} \propto 1/\sqrt{N}$
+            \begin{itemize}
+                \item $N$ uniform random points
+                \item $\sigma_{error} \propto 1/\sqrt{N}$
+            \end{itemize}
         \end{block}
-        \note[item]{The error in the integral esimate is proportional to the standard error of the mean.}
+        \note[item]{The error in the integral estimate is proportional to the standard error of the mean.}
 
-        \note[item]{Notice that the error is indepedent of the dimension of the integral.}
-        
-        \column{0.25\textwidth}
-    \end{columns}
+        \note[item]{Notice that the error is independent of the dimension of the integral.}
+
+        \note{In its simplest form Monte Carlo integration is derived directly from the definition the average of a function over some domain. So the value of an integral can be estimated given you have an estimate of this average. If you compute the average by sampling the function at random points, in the domain, then the error in the estimate will be the standard error of the mean. Note that this can be generalized to higher dimensions but the relationship between the number of samples and the error remains the same.\vfill}
+
+%        \column{0.5\textwidth}
+        \includegraphics[height=0.5\textheight]{./Figures/angular.png}
+%    \end{columns}
 \end{frame}
+
 
 \begin{frame}{Mathematical Methods: Monte Carlo Sampling}{Rejection Sampling}
     \begin{columns}
-        \column{0.75\textwidth}
-        \begin{block}{Goal of Rejection Sampling}
-            Sample the distribution $f(x)$ on the domain $[a, b]$
+        \column{0.5\textwidth}
+		\begin{block}{Rejection Sampling}
+			Reproduce the distribution $f(x)$ on the domain $[a, b]$
+			\note[item]{Method for reproducing arbitrary distributions.}
+            \begin{enumerate}
+                \item Sample the domain $[a, b] \times [0, 1]$ labeling points $(x_i, v_i)$
+                \item Remove any sample with $v_i > f(x_i)/f_{max}$
+            \end{enumerate}
+            \note[item]{Note that the maximum of the function n the domain must be known beforehand.}
         \end{block}
 
-        \begin{enumerate}
-            \item Uniformly sample $[a, b] \times [0, 1]$ labeling points $(x_i, v_i)$
-            \item Reject any sample with $v_i > f(x_i)/f_{max}$
-            \item The remaining $x_i$ values follow the distribution $f(x)$
-        \end{enumerate}
-        \note[item]{Note that the maximum of the function n the domain must be known beforehand.}
-        \column{0.25\textwidth}
+		\note{Rejection sampling, a type of Monte Carlo sampling, is used to produce random samples from arbitrary distribution. The procedure consists of sampling a point in the domain and a value, between zero and one, from uniform distributions. This sample will be rejected, if the random value, from the unit interval, exceedes the ratio of the value of the function at the sampled point to the maximum of the the function in the domain. The samples which have not been rejected will reproduce the desired statistical distribution, but the maximum of the function over the domain must be known beforhand.\vfill}
+        \column{0.5\textwidth}
+        \includegraphics[width=\textwidth]{./Figures/angular.png}
     \end{columns}
 \end{frame}
+
 
 \subsection{Equations and differential cross section}
 \begin{frame}{Muon Pair Production: $e^+ + e^- \rightarrow \mu^+ + \mu^-$}
@@ -73,13 +85,16 @@
         \end{block}
         \note[item]{Expected number of events from time integrated luminosity and the total cross section}
 
-        In center of momentum frame and using the relitivistic limit
-
-        \begin{itemize}
-            \item $p_1^{\mu} = (E, 0, 0, E)^{\mu}$
-            \item $p_3^{\mu} = (E, E\sin(\theta), 0, E\cos(\theta))^{\mu}$
-        \end{itemize}
+		\begin{block}{4-Momentums}
+			Using the relativistic limit in the center of momentum frame
+            \begin{itemize}
+                \item $p_1^{\mu} = (E, 0, 0, E)^{\mu}$
+                \item $p_3^{\mu} = (E, E\sin(\theta), 0, E\cos(\theta))^{\mu}$
+            \end{itemize}
+        \end{block}
         \note[item]{Note that the angle $\theta$ is the angle of the out going muon relative to the incoming electron.}
+
+        \note{Moving on to the physics of the simulation. As I said before I am simulating muon pair production. Recall that the total number of expected scattering events is given by the time integrated luminosity and total scattering cross section. In the differential cross section contabutions from boath the photon and Z boson Feynman diagrams are accounted for. Also notice that the angle theta corrisponds to the angle between the out going muon and the incomming electron.\vfill}
 
         \column{0.40\textwidth}
         \begin{fmfgraph*}(100, 80)
@@ -126,6 +141,7 @@
     \end{columns}
 \end{frame}
 
+
 \begin{frame}{Differential Cross Section}
     Diagram amplitudes $A_{\gamma}$, $A_{Z}$
 
@@ -136,7 +152,7 @@
             \begin{block}{Propagator}
                 \centering
                 $\frac{-i(g_{\mu \nu} - q_{\mu}q_{\nu}/M_Z^2)}{q^2 - M_z^2 + iM_Z \Gamma_Z}$
-                \note[item]{The $Z^0$ boson propegator is that of a massive spin 1 particle}
+                \note[item]{The $Z^0$ boson propagator is that of a massive spin 1 particle}
                 \note[item]{The term $iM_Z\Gamma_Z$ is due to decay of the $Z^0$ boson}
             \end{block}
 
@@ -157,37 +173,47 @@
         \begin{itemize}
             \item $<|A_{\gamma}|^2> \propto 1 + \cos^2(\theta)$
             \item $<|A_Z|^2> \propto 1 + \cos^2(\theta) + a\cos(\theta)$
-            \item $<A_{cross}^2> \propto 1 + \cos^2(\theta) + b\cos(\theta)$
+            \item $<A_{\gamma}A_{Z}^* + A_{Z}A_{\gamma}^*> \propto 1 + \cos^2(\theta) + b\cos(\theta)$
         \end{itemize}
-        \note[item]{The factors $a$ and $b$ have different dependence on the vector-axial coupings}
+        \note[item]{The factors $a$ and $b$ have different dependence on the vector-axial couplings}
     \end{alertblock}
 \end{frame}
+
 
 \subsection{Simulation Procedure}
 \begin{frame}{Simulation Outline}
     \begin{enumerate}
-        \item Estimate $\sigma_{tot}$ and the maximum of $\frac{d\sigma}{d\Omega}\sin(\theta)$ using montecarlo integration
+        \item Estimate $\sigma_{tot}$ and the maximum of $\frac{d\sigma}{d\Omega}\sin(\theta)$ using Monte Carlo integration
         \note[item]{Calculate the maximum of $\frac{d\sigma}{d\Omega}\sin(\theta)$ using the samples of the function takin in the Monte Carlo integration}
 
         \item Calculate expected number of events $N_{avg} = L_{int} \cdot \sigma_{tot}$
         \item Sample one value, $N$, from the Poisson distribution with mean $N_{avg}$
-        \note[item]{Note, using the Poisson distribution is only nessisary if the number of expected events $N_{avg}$ is small. TODO rephrase}
+        \note[item]{Note, using the Poisson distribution is only necessary if the number of expected events $N_{avg}$ is small. TODO rephrase}
 
         \item Use Monte Carlo sampling to get $N$ random samples with distribution determined by $\frac{d\sigma}{d\Omega}$
-        \note[item]{This simulatates muon pair production events at a fixed eerngy with out accounting for effects in the detector . . .}
+        \note[item]{This simulates muon pair production events at a fixed energy with out accounting for effects in the detector . . .}
         \item Calculate $p_3^{\mu}$ from $E$ and $\theta$ for each sample and save to disk
     \end{enumerate}
-    \note[item]{With multiple runs at fixed integrated luminosity at a veriety of energies. TODO finish}
+    \note[item]{With multiple runs at fixed integrated luminosity at a variety of energies. TODO finish}
 \end{frame}
 
+
 \section{The Data}
-\subsection{Angular Distribution}
-\subsection{Cross Section vs Energy}
+\subsection{Angular and Energy Distributions}
+\begin{frame}{Angular Distribution}
+    \includegraphics[width=\textwidth]{./Figures/angular.png}
+\end{frame}
+
+
+\begin{frame}{Cross Section vs Energy}
+    \includegraphics[width=\textwidth]{./Figures/energy.png}
+\end{frame}
+
+
 \subsection{Forward Backward Asymmetry Equations (Optional?)}
 \subsection{Forward Backward Asymmetry}
-\begin{frame}
-    TODO fill in frames for data and results
-    \note[item]{Talk about the $A_{FB}$ asymmetry}
+\begin{frame}{Forward Backward Asymmetry}
+    \includegraphics[width=\textwidth]{./Figures/AFB.png}
 \end{frame}
 
 \end{fmffile}
