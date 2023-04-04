@@ -51,14 +51,14 @@
         \note{In its simplest form Monte Carlo integration is derived directly from the definition the average of a function over some domain. So the value of an integral can be estimated given you have an estimate of this average. If you compute the average by sampling the function at random points, in the domain, then the error in the estimate will be the standard error of the mean. Note that this can be generalized to higher dimensions but the relationship between the number of samples and the error remains the same.\vfill}
 
 %        \column{0.5\textwidth}
-        \includegraphics[height=0.5\textheight]{./Figures/angular.png}
+%        \includegraphics[height=0.5\textheight]{./Figures/angular.png}
 %    \end{columns}
 \end{frame}
 
 
 \begin{frame}{Mathematical Methods: Monte Carlo Sampling}{Rejection Sampling}
-    \begin{columns}
-        \column{0.5\textwidth}
+%    \begin{columns}
+%        \column{0.5\textwidth}
 		\begin{block}{Rejection Sampling}
 			Reproduce the distribution $f(x)$ on the domain $[a, b]$
 			\note[item]{Method for reproducing arbitrary distributions.}
@@ -70,9 +70,9 @@
         \end{block}
 
 		\note{Rejection sampling, a type of Monte Carlo sampling, is used to produce random samples from arbitrary distribution. The procedure consists of sampling a point in the domain and a value, between zero and one, from uniform distributions. This sample will be rejected, if the random value, from the unit interval, exceedes the ratio of the value of the function at the sampled point to the maximum of the the function in the domain. The samples which have not been rejected will reproduce the desired statistical distribution, but the maximum of the function over the domain must be known beforhand.\vfill}
-        \column{0.5\textwidth}
-        \includegraphics[width=\textwidth]{./Figures/angular.png}
-    \end{columns}
+%        \column{0.5\textwidth}
+%        \includegraphics[width=\textwidth]{./Figures/angular.png}
+%    \end{columns}
 \end{frame}
 
 
@@ -143,77 +143,93 @@
 
 
 \begin{frame}{Differential Cross Section}
-    Diagram amplitudes $A_{\gamma}$, $A_{Z}$
+    Diagram amplitudes: $A_{\gamma}$, $A_{Z}$
 
-    \begin{block}{$Z^0$ Feynman rules}
-        \begin{columns}
-            \column{0.4\textwidth}
-            \centering
-            \begin{block}{Propagator}
-                \centering
-                $\frac{-i(g_{\mu \nu} - q_{\mu}q_{\nu}/M_Z^2)}{q^2 - M_z^2 + iM_Z \Gamma_Z}$
-                \note[item]{The $Z^0$ boson propagator is that of a massive spin 1 particle}
-                \note[item]{The term $iM_Z\Gamma_Z$ is due to decay of the $Z^0$ boson}
-            \end{block}
-
-            \column{0.4\textwidth}
-            \centering
-            \begin{block}{Vertex factor}
-                \centering
-                $\frac{-ig_Z}{2}\gamma^{\mu}(c_v^f - c_A^f\gamma^5)$
-                \note[item]{The term $\gamma^5$ in the vertex factor lads to the antisymmetric factors of $\cos(\theta)$ in the spin averaged amplitude squared.}
-            \end{block}
-        \end{columns}
+    \begin{block}{$Z^0$ Vertex factor}
+        \begin{itemize}
+            \item $\frac{-ig_Z}{2}\gamma^{\mu}(c_V^f - c_A^f\gamma^5)$
+            \item For electorns and muons: $c_V^f = -\frac{1}{2} + 2\sin^2\theta_w$, $c_A^f = -\frac{1}{2}$
+            \item $g_z = \frac{g_e}{\sin\theta_w\cos\theta_w}$
+        \end{itemize}
+        \note[item]{The term $\gamma^5$ in the vertex factor leads to the antisymmetric factors of $\cos(\theta)$ in the spin averaged amplitude squared.}
     \end{block}
 
-    Spin averaged amplitude squared $<|A_{\gamma}|^2>$, $<|A_Z|^2>$ $<A_{cross}^2>$
-    \note[item]{All three terms have different dependence on the energy.}
-
-    \begin{alertblock}{Angular dependence of terms}
+    \begin{alertblock}{Angular dependence of $<|A|^2>$}
+        $<|A|^2> = <|A_{\gamma}|^2> + <|A_{Z}|^2> + <A_{\gamma}A_Z^* + A_ZA_{\gamma}^*>$
         \begin{itemize}
             \item $<|A_{\gamma}|^2> \propto 1 + \cos^2(\theta)$
             \item $<|A_Z|^2> \propto 1 + \cos^2(\theta) + a\cos(\theta)$
             \item $<A_{\gamma}A_{Z}^* + A_{Z}A_{\gamma}^*> \propto 1 + \cos^2(\theta) + b\cos(\theta)$
         \end{itemize}
+        \note[item]{All three terms have different dependence on the energy.}
         \note[item]{The factors $a$ and $b$ have different dependence on the vector-axial couplings}
     \end{alertblock}
+
+    \note{Unlike the scattering amplitude due to the photon, $A_Z$ contains factors of $\gamma^5$ and it is a function of a parameter called the weak mixing angle, $\theta_w$. When applying Casimir's trick these factors of $\gamma^5$, in the pure Z component and the cross terms, lead to factors of $\cos(\theta)$ which is antisymmetric about the center of the interval $[0, \pi]$. Note that the photon, Z boson and cross terms each have a differnt functional dependence on the energy, and the antisymmetric components of the Z boson and cross terms carry differnt factors of the weak mixing angle.\vfill}
 \end{frame}
 
 
-\subsection{Simulation Procedure}
-\begin{frame}{Simulation Outline}
-    \begin{enumerate}
-        \item Estimate $\sigma_{tot}$ and the maximum of $\frac{d\sigma}{d\Omega}\sin(\theta)$ using Monte Carlo integration
-        \note[item]{Calculate the maximum of $\frac{d\sigma}{d\Omega}\sin(\theta)$ using the samples of the function takin in the Monte Carlo integration}
+\subsection{Simulation Outline}
+\begin{frame}{Monte Carlo Simulation}
+    \begin{block}{Procedure}
+        \begin{enumerate}
+            \item Estimate $\sigma_{tot}$
+            \note[item]{Calculate the maximum of $\frac{d\sigma}{d\Omega}\sin(\theta)$ using the samples of the function takin in the Monte Carlo integration}
 
-        \item Calculate expected number of events $N_{avg} = L_{int} \cdot \sigma_{tot}$
-        \item Sample one value, $N$, from the Poisson distribution with mean $N_{avg}$
-        \note[item]{Note, using the Poisson distribution is only necessary if the number of expected events $N_{avg}$ is small. TODO rephrase}
+            \item Expected number of events $N_{avg}$
+    %        \item Sample from Poisson distribution with mean $N_{avg}$
+            \item Sample one value, $N \sim Poisson(N_{avg})$
+            \note[item]{Note, using the Poisson distribution is only necessary if the number of expected events $N_{avg}$ is small. TODO rephrase}
 
-        \item Use Monte Carlo sampling to get $N$ random samples with distribution determined by $\frac{d\sigma}{d\Omega}$
-        \note[item]{This simulates muon pair production events at a fixed energy with out accounting for effects in the detector . . .}
-        \item Calculate $p_3^{\mu}$ from $E$ and $\theta$ for each sample and save to disk
-    \end{enumerate}
-    \note[item]{With multiple runs at fixed integrated luminosity at a variety of energies. TODO finish}
+            \item Generate $N$ samples, $\theta \sim \frac{d\sigma}{d\Omega}d\Omega$
+            \note[item]{This simulates muon pair production events at a fixed energy with out accounting for effects in the detector . . .}
+            \item Calculate $p_3^{\mu}$
+        \end{enumerate}
+        \note[item]{With multiple runs at fixed integrated luminosity at a variety of energies. TODO finish}
+    \end{block}
+
+    \note{First, for a given energy estimate the total cross section and maximum of the differential cross section using Monte Carlo integration. Second, find the expected number of scattering events given the integrated luminosity. Third, get a random sample, $N$, from a Poisson distribution with mean equal to $N_{avg}$, note that this is only relevent when the expected number of particles small, so of order 1. Fourth, use rejection sampling to generate $N$ random samples from the distribution determined by the differential cross section. Finally, use the sampled angles and the predetermined energy to compute and record the 4-momentum of the muon. Repeating this procedure keeping the integrated luminosity constant but varying the energy can be used to probe the energy dependence of the cross section.\vfill}
 \end{frame}
 
 
 \section{The Data}
 \subsection{Angular and Energy Distributions}
 \begin{frame}{Angular Distribution}
-    \includegraphics[width=\textwidth]{./Figures/angular.png}
+    \centering
+    \includegraphics[height=0.8\textheight]{./Figures/angular_distribution.png}
+    \note[item]{Note the symmetry and asymmetry of the differnt components}
+    \begin{itemize}
+        \item Integrated luminosity at LEP (year 2000): $2.33\times10^{-11}$ $1/mb$ 
+        \note[item]{Expected results given the total luminosity of LEP for the year of 2000}
+        \note[item]{On close inspection the contribution from Z bosons has a slight asymmetry}
+    \end{itemize}
 \end{frame}
 
 
 \begin{frame}{Cross Section vs Energy}
-    \includegraphics[width=\textwidth]{./Figures/energy.png}
+    \includegraphics[width=\textwidth]{./Figures/energy_distribution.png}
+    \note[item]{fitting models to find the mass and decay width of the $Z^0$ boson.}
+    \note[item]{The theoretical curves shows the trend but to match the data it has to be binned.}
+    \begin{itemize}
+        \item Integrated luminosity at LEP (year 2000): $2.33\times10^{-11}$ $1/mb$
+        \item Energies upto the maximum beam energy of LEP: $[10m_{\mu}, 104.5GeV]$
+    \end{itemize}
 \end{frame}
 
 
-\subsection{Forward Backward Asymmetry Equations (Optional?)}
 \subsection{Forward Backward Asymmetry}
 \begin{frame}{Forward Backward Asymmetry}
-    \includegraphics[width=\textwidth]{./Figures/AFB.png}
+    \centering
+    \includegraphics[width=0.5\textwidth]{./Figures/AFB.png}
+    \note[item]{At large energy the majority of muons are traveling in the same direction as the original electrons.}
+    \note[item]{This mesurement can be used to determin the weak mixing angle by finding the best fit model given a range of parameters.}
+    \begin{block}{Asymmetry}
+        \begin{itemize}
+            \item $A_{FB} = \frac{N_F - N_B}{N_F + N_B}$
+            \item $N_F$, number of events with $0 < \theta < \pi/2$
+            \item $N_B$, number of events with $\pi/2  < \theta < \pi$
+        \end{itemize}
+    \end{block}
 \end{frame}
 
 \end{fmffile}
