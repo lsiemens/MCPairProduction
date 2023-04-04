@@ -29,6 +29,7 @@ Thomson [3]_ section 15.3.1
 
 from . import scattering
 from . import constants
+from . import utils
 
 from matplotlib import pyplot
 import numpy
@@ -85,6 +86,12 @@ def plot_angular_distribution(ax, Run_data, n_bins, resolution=100, Nsigma=1):
         diff_amplitude, label = differential_amplitudes[component]
         dsigma = scattering.dsigma_dOmega(E_data, theta_theory, diff_amplitude())*numpy.sin(theta_theory)
         ax.plot(theta_theory, normalization*dsigma, style, label=label)
+
+    num_ticks = 4
+    xticks = [i*numpy.pi/num_ticks for i in range(num_ticks + 1)]
+    xtick_labels = [utils.nice_ticks(i, num_ticks) for i in range(num_ticks + 1)]
+
+    ax.set_xticks(xticks, xtick_labels)
     ax.set_xlim(0, numpy.pi)
     ax.set_xlabel("$\\theta$ in radians")
     ax.set_ylabel("Scattering Events")
