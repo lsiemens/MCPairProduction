@@ -2,12 +2,13 @@
 \usepackage{feynmp} % setup feynmp
 \DeclareGraphicsRule{*}{mps}{*}{}
 \usepackage{tikz}
+\usepackage{wrapfig}
 
 % theme and general look
 \usetheme{Rochester}
 \usecolortheme{seahorse}
 
-\setbeameroption{show notes}
+\setbeameroption{hide notes}
 
 % title information
 \title[Muon Pair Production]{Muon Pair Production from Electron Positron Annihilation}
@@ -31,10 +32,12 @@
 \begin{frame}{Mathematical Methods: Monte Carlo Integration}
 %    \begin{columns}
 %        \column{0.5\textwidth}
-        Average of a function $<f(x)> = \frac{1}{b-a}\int_a^b f(x)dx$
+        \begin{itemize}
+            \item Using $\langle f(x) \rangle = \frac{1}{b-a}\int_a^b f(x)dx$
+        \end{itemize}
 
         \begin{block}{Monte Carlo Integration}
-            $\int_a^b f(x)dx = (b-a)<f(x)>$
+            $\int_a^b f(x)dx = (b-a) \langle f(x) \rangle$
         \end{block}
         \note[item]{Simplest version of Monte Carlo integration derived directly from the definition of the average of the function on a domain}
 
@@ -51,7 +54,9 @@
         \note{In its simplest form Monte Carlo integration is derived directly from the definition of the average of a function over some domain. So the value of an integral can be estimated given you have an estimate of this average. If you compute the average by sampling the function at random points in the domain, then the error in the estimate will be the standard error of the mean multiplied by the size of the domain. Note that this can be generalized to higher dimensions but the relationship between the number of samples and the error remains the same.\vfill}
 
 %        \column{0.5\textwidth}
-%        \includegraphics[height=0.5\textheight]{./Figures/angular.png}
+%        \begin{wrapfigure}{r}{0.5\textwidth}
+%            \includegraphics[width=0.48\textwidth]{./Figures/MCIntegral.png}
+%        \end{wrapfigure}
 %    \end{columns}
 \end{frame}
 
@@ -71,7 +76,7 @@
 
         \note{Rejection sampling, a type of Monte Carlo sampling, is used to produce random samples from a specified distribution. The procedure consists of sampling a point in the domain and a value between zero and one, from uniform distributions. This sample will be rejected, if the random value from the unit interval exceeded the ratio of the value of the function at the sampled point to the maximum of the the function on the domain. The samples which have not been rejected will reproduce the desired statistical distribution, but to use this method the maximum of the function over the domain must be known beforehand.\vfill}
 %        \column{0.5\textwidth}
-%        \includegraphics[width=\textwidth]{./Figures/angular.png}
+%        \includegraphics[width=\textwidth]{./Figures/MCSampling.png}
 %    \end{columns}
 \end{frame}
 
@@ -154,12 +159,12 @@
         \note[item]{The term $\gamma^5$ in the vertex factor leads to the antisymmetric factors of $\cos(\theta)$ in the spin averaged amplitude squared.}
     \end{block}
 
-    \begin{alertblock}{Angular dependence of $<|A|^2>$}
-        $<|A|^2> = <|A_{\gamma}|^2> + <|A_{Z}|^2> + <A_{\gamma}A_Z^* + A_ZA_{\gamma}^*>$
+    \begin{alertblock}{Angular dependence of $ \langle |A|^2 \rangle $}
+        $\langle |A|^2 \rangle = \langle |A_{\gamma}|^2 \rangle + \langle |A_{Z}|^2 \rangle + \langle A_{\gamma}A_Z^* + A_ZA_{\gamma}^* \rangle$
         \begin{itemize}
-            \item $<|A_{\gamma}|^2> \propto 1 + \cos^2(\theta)$
-            \item $<|A_Z|^2> \propto 1 + \cos^2(\theta) + a\cos(\theta)$
-            \item $<A_{\gamma}A_{Z}^* + A_{Z}A_{\gamma}^*> \propto 1 + \cos^2(\theta) + b\cos(\theta)$
+            \item $ \langle |A_{\gamma}|^2 \rangle \propto 1 + \cos^2(\theta)$
+            \item $ \langle |A_Z|^2 \rangle \propto 1 + \cos^2(\theta) + a\cos(\theta)$
+            \item $ \langle A_{\gamma}A_{Z}^* + A_{Z}A_{\gamma}^*\rangle \propto 1 + \cos^2(\theta) + b\cos(\theta)$
         \end{itemize}
         \note[item]{All three terms have different dependence on the energy.}
         \note[item]{The factors $a$ and $b$ have different dependence on the vector-axial couplings}
