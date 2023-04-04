@@ -1,4 +1,4 @@
-\documentclass{beamer}
+﻿\documentclass{beamer}
 \usepackage{feynmp} % setup feynmp
 \DeclareGraphicsRule{*}{mps}{*}{}
 \usepackage{tikz}
@@ -48,7 +48,7 @@
 
         \note[item]{Notice that the error is independent of the dimension of the integral.}
 
-        \note{In its simplest form Monte Carlo integration is derived directly from the definition the average of a function over some domain. So the value of an integral can be estimated given you have an estimate of this average. If you compute the average by sampling the function at random points, in the domain, then the error in the estimate will be the standard error of the mean. Note that this can be generalized to higher dimensions but the relationship between the number of samples and the error remains the same.\vfill}
+        \note{In its simplest form Monte Carlo integration is derived directly from the definition of the average of a function over some domain. So the value of an integral can be estimated given you have an estimate of this average. If you compute the average by sampling the function at random points in the domain, then the error in the estimate will be the standard error of the mean multiplied by the size of the domain. Note that this can be generalized to higher dimensions but the relationship between the number of samples and the error remains the same.\vfill}
 
 %        \column{0.5\textwidth}
 %        \includegraphics[height=0.5\textheight]{./Figures/angular.png}
@@ -69,7 +69,7 @@
             \note[item]{Note that the maximum of the function n the domain must be known beforehand.}
         \end{block}
 
-		\note{Rejection sampling, a type of Monte Carlo sampling, is used to produce random samples from arbitrary distribution. The procedure consists of sampling a point in the domain and a value, between zero and one, from uniform distributions. This sample will be rejected, if the random value, from the unit interval, exceedes the ratio of the value of the function at the sampled point to the maximum of the the function in the domain. The samples which have not been rejected will reproduce the desired statistical distribution, but the maximum of the function over the domain must be known beforhand.\vfill}
+        \note{Rejection sampling, a type of Monte Carlo sampling, is used to produce random samples from a specified distribution. The procedure consists of sampling a point in the domain and a value between zero and one, from uniform distributions. This sample will be rejected, if the random value from the unit interval exceeded the ratio of the value of the function at the sampled point to the maximum of the the function on the domain. The samples which have not been rejected will reproduce the desired statistical distribution, but to use this method the maximum of the function over the domain must be known beforehand.\vfill}
 %        \column{0.5\textwidth}
 %        \includegraphics[width=\textwidth]{./Figures/angular.png}
 %    \end{columns}
@@ -94,7 +94,7 @@
         \end{block}
         \note[item]{Note that the angle $\theta$ is the angle of the out going muon relative to the incoming electron.}
 
-        \note{Moving on to the physics of the simulation. As I said before I am simulating muon pair production. Recall that the total number of expected scattering events is given by the time integrated luminosity and total scattering cross section. In the differential cross section contabutions from boath the photon and Z boson Feynman diagrams are accounted for. Also notice that the angle theta corrisponds to the angle between the out going muon and the incomming electron.\vfill}
+        \note{Moving on to the physics of the simulation. As I said before I am simulating muon pair production. Recall that the total number of expected scattering events is given by the time integrated luminosity and total scattering cross section. The calculations used for the differential cross section contains contributions from both the photon and Z boson Feynman diagrams. Also, I should note that the angle theta corresponds to the angle between the out going muon and the incoming electron.\vfill}
 
         \column{0.40\textwidth}
         \begin{fmfgraph*}(100, 80)
@@ -147,7 +147,7 @@
 
     \begin{block}{$Z^0$ Vertex factor}
         \begin{itemize}
-            \item $\frac{-ig_Z}{2}\gamma^{\mu}(c_V^f - c_A^f\gamma^5)$
+            \item $\frac{-ig_z}{2}\gamma^{\mu}(c_V^f - c_A^f\gamma^5)$
             \item For electorns and muons: $c_V^f = -\frac{1}{2} + 2\sin^2\theta_w$, $c_A^f = -\frac{1}{2}$
             \item $g_z = \frac{g_e}{\sin\theta_w\cos\theta_w}$
         \end{itemize}
@@ -165,7 +165,7 @@
         \note[item]{The factors $a$ and $b$ have different dependence on the vector-axial couplings}
     \end{alertblock}
 
-    \note{Unlike the scattering amplitude due to the photon, $A_Z$ contains factors of $\gamma^5$ and it is a function of a parameter called the weak mixing angle, $\theta_w$. When applying Casimir's trick these factors of $\gamma^5$, in the pure Z component and the cross terms, lead to factors of $\cos(\theta)$ which is antisymmetric about the center of the interval $[0, \pi]$. Note that the photon, Z boson and cross terms each have a differnt functional dependence on the energy, and the antisymmetric components of the Z boson and cross terms carry differnt factors of the weak mixing angle.\vfill}
+    \note{Unlike the scattering amplitude due to the photon, the amplitude $A_Z$ contains factors of $\gamma^5$ and it is a function of a parameter called the weak mixing angle, $\theta_w$. Note the weak mixing angle defines the relationship between the electromagnetic and weak force. When applying Casimir's trick these factors of $\gamma^5$, in the pure Z boson component and in the cross terms, lead to factors of $\cos(\theta)$ which is antisymmetric about the centre of the interval $[0, \pi]$. Note that the photon term, the Z boson term and cross terms each have a different functional dependence on the energy, and the antisymmetric components of the Z boson term and the cross terms carry different factors of the weak mixing angle.\vfill}
 \end{frame}
 
 
@@ -188,7 +188,7 @@
         \note[item]{With multiple runs at fixed integrated luminosity at a variety of energies. TODO finish}
     \end{block}
 
-    \note{First, for a given energy estimate the total cross section and maximum of the differential cross section using Monte Carlo integration. Second, find the expected number of scattering events given the integrated luminosity. Third, get a random sample, $N$, from a Poisson distribution with mean equal to $N_{avg}$, note that this is only relevent when the expected number of particles small, so of order 1. Fourth, use rejection sampling to generate $N$ random samples from the distribution determined by the differential cross section. Finally, use the sampled angles and the predetermined energy to compute and record the 4-momentum of the muon. Repeating this procedure keeping the integrated luminosity constant but varying the energy can be used to probe the energy dependence of the cross section.\vfill}
+    \note{The procedure I used for simulating scattering events is as follows. \textbf{First}, for a given energy estimate the total cross section using Monte Carlo integration, and using the samples of the distribution generated for the integral, find the maximum of the differential cross section. \textbf{Second}, find the expected number of scattering events given the integrated luminosity and the total cross section. \textbf{Third}, get a random sample, labelled $N$, from a Poisson distribution with mean equal to the expected number of events, note that this step is only relevant when the expected number of scattering events is small, of order 10. \textbf{Fourth}, use rejection sampling to generate $N$ random angles from the distribution determined by the differential cross section. \textbf{Finally}, use the sampled angles and the energy to compute and record the 4-momentum of the muon. Repeating this procedure while keeping the integrated luminosity constant but varying the energy can be used to probe the energy dependence of the cross section.\vfill}
 \end{frame}
 
 
@@ -203,6 +203,8 @@
         \note[item]{Expected results given the total luminosity of LEP for the year of 2000}
         \note[item]{On close inspection the contribution from Z bosons has a slight asymmetry}
     \end{itemize}
+
+    \note{The first data set was generated with the integrated luminosity of the entirety of the year 2000 at the LEP, using a beam energy of 40 GeV. It should be noted that while the Z boson component looks symmetric at this scale, on close inspection it has a slight asymmetry. Also since the three components have different functional dependence on the energy the overall angular distribution will change as a function of energy and with varying degrees of asymmetry.}
 \end{frame}
 
 
@@ -214,6 +216,7 @@
         \item Integrated luminosity at LEP (year 2000): $2.33\times10^{-11}$ $1/mb$
         \item Energies upto the maximum beam energy of LEP: $[10m_{\mu}, 104.5GeV]$
     \end{itemize}
+    \note{The second run uses the same total integrated luminosity but split across multiple beam energies ranging from ten times the rest energy of the muon to the maximum beam energy of the LEP in the year 2000. On the left you can see the results from the simulation compared to the expected number of events, and that is further broken down into the photon and Z boson contributions. Also notice that while the simulated events follow the same general trend as the analytic result, in the regions where the expected number of events changes rapidly with a single bin the discrepancy is significant. But this is to be expected as a side effect of binning the simulated data, averaging the analytic result over each bin like in the graph on the right now produces a fair comparison and now there are no significant outliers.}
 \end{frame}
 
 
@@ -230,6 +233,7 @@
             \item $N_B$, number of events with $\pi/2  < \theta < \pi$
         \end{itemize}
     \end{block}
+    \note{Finally, considering the asymmetry in the angular distribution. The graph shown uses the same data set as in the previous slide, but for each energy bin the events have been separated into two groups, depending if the muon is moving forward along the direction in which the electron was moving. Using this the overall asymmetry in the muon distribution can be characterized. Notice, that as expected since QED does not violate parity, at low energy where the interaction is mediated by the photon the forward-backward asymmetry is approaching zero. Provided that the mass of the W boson has been measured in an anologus experement, measuring the mass of the Z boson provides one way to measure the weak mixing angle since the weak mixing angle is related to the ratio of the masses of Z and W bosons. Alternativly measurements of the forward backward asymmetry can be used to measure the weak mixing angle by finding a best fit out of models with different values for the weak mixing angle.}
 \end{frame}
 
 \end{fmffile}
