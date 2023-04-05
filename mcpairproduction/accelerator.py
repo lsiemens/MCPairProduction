@@ -27,6 +27,7 @@ Thomson [3]_ section 15.3.1
 
 """
 
+import os
 import numpy
 
 from . import sampling
@@ -60,6 +61,7 @@ class accelerator:
         else:
             mode = "w"
 
+        os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, mode) as fout:
             if not append:
                 fout.write("# Integrated Luminosity in MeV^2\n")

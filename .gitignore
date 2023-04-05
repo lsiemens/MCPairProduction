@@ -130,3 +130,6 @@ dmypy.json
 
 # Sphinx documantation folders
 doc/source/apidoc/*.rst
+
+# Graphics for the presentation
+*.png

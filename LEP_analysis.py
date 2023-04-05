@@ -9,7 +9,7 @@ from mcpairproduction import analysis
 path = "./scratch/"
 
 fig_path = "./presentation/Figures"
-save_fig = True
+save_fig = False
 scale = 1.4
 pyplot.rcParams.update({"savefig.bbox":"tight",
                         "savefig.dpi":400})
