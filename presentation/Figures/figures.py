@@ -15,8 +15,9 @@ from mcpairproduction import sampling
 
 save_fig = True
 scale = 1.5
+seed = 2
 pyplot.rcParams.update({"savefig.bbox":"tight",
-                        "savefig.dpi":400})
+                        "savefig.dpi":300})
 
 resolution = 100
 E = 20E3 # in MeV
@@ -30,19 +31,23 @@ normalization = 1/numpy.max(data)
 
 #  ------------    Monte Carlo Integraion
 Npoints = 20
+example_index = 5
 
-samples, _ = sampling.get_random_samples((Npoints,))
+samples, _ = sampling.get_random_samples((Npoints,), seed=seed)
 sampled_func = function(samples)
 
 sampled_mean = numpy.mean(sampled_func)
 
 marker_size = 4*pyplot.rcParams["lines.markersize"]**2
 
+for i,v in enumerate(samples):
+    print(i, v/numpy.pi)
+
 fig, ax = pyplot.subplots()
 ax.plot(domain, normalization*data, "k-", label="$f(x)$")
 ax.scatter(samples, normalization*sampled_func, marker="2", color="b", s=marker_size, label="Value at sample")
 ax.hlines(normalization*sampled_mean, 0, numpy.pi, linestyle="--", color="k", label="$f_{avg}$")
-ax.vlines(samples[-1], 0, normalization*function(samples[-1]), linestyle=":", color="b", label="Sample $x_i$")
+ax.vlines(samples[example_index], 0, normalization*function(samples[example_index]), linestyle=":", color="b", label="Sample $x_i$")
 ax.set_ylim(0, None)
 ax.set_xlim(0, numpy.pi)
 ax.set_xlabel("Domain")
@@ -60,7 +65,7 @@ pyplot.show()
 # -------------    Monte Carlo Sampling
 Npoints = 100
 
-samples = sampling.get_random_rejection_samples((Npoints,))
+samples = sampling.get_random_rejection_samples((Npoints,), seed=seed)
 theta = samples[0, :]
 v = samples[1, :]
 

@@ -12,7 +12,7 @@ fig_path = "./presentation/Figures"
 save_fig = False
 scale = 1.4
 pyplot.rcParams.update({"savefig.bbox":"tight",
-                        "savefig.dpi":400})
+                        "savefig.dpi":250})
 
 resolution = 1000
 n_bins = 32
