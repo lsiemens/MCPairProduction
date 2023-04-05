@@ -1,23 +1,13 @@
 """Sampling methods and Monte Carlo integration
 
-The estimate of the total cross section is computed from the differential
-cross section using Monte Carlo integration.
+Rejection sampling and Monte Carlo integration are introduced in the PDG
+book [1]_ section 42. For more on Monte Carlo integration and rejection
+sampling is given by Gibbs [2]_ Chapter 2, see section 2.2 and 2.3.7
 
-The differentail cross section is from Griffiths [1]_ Example 9.5
-Electron-Positron scattering near the Z pole, with *Review of Particle
-Physics* [2]_ as an additional refrence and source for physical constants.
-Equations for calculating the weak coupling to the Z boson are from
-Thomson [3]_ section 15.3.1
-
-.. [1] D. J. Griffiths, *Introduction to elementary particles*, 2nd,
-   rev. ed. Weinheim: Wiley-VCH, 2008.
-
-.. [2] R.L. Workman et al. (Particle Data Group), Prog. Theor. Exp. Phys.
+.. [1] R.L. Workman et al. (Particle Data Group), Prog. Theor. Exp. Phys.
    2022, 083C01 (2022)
 
-.. [3] M. Thomson, *Modern particle physics*. Cambridge: Cambridge
-   University Press, 2013.
-
+.. [2] W.R. Gibbs, Computation in Modern Physics, 3rd Ed
 """
 
 import numpy
@@ -25,7 +15,21 @@ import numpy
 def get_random_counts(expected_counts, seed=None):
     """Get random counts of events
 
-    draw random event counts using poisson distribution
+    Draw random event counts using a Poisson distribution.
+
+    Parameters
+    ----------
+    expected_counts : float
+        The mean of the Poisson distribution.
+    seed : None, integer
+        Seed value for the random number generator. If `seed` is None,
+        then numpy.random.default_rng will initalize with random entropy
+        from the OS.
+
+    Returns
+    -------
+    counts : integer
+        A random integer sampled from the Poisson distribution.
     """
     rng = numpy.random.default_rng(seed=seed)
     # currently (01/30/2023) default_rng uses the PCG-64 pseudo random
@@ -36,17 +40,16 @@ def get_random_counts(expected_counts, seed=None):
     return counts
 
 def get_random_samples(shape, seed=None):
-    """Generate random samples of (θ, φ)
+    """Generate random samples of an angle, θ
 
-    The samples are generated uniformly in the domain, with θ ∊ [0, 𝜋)
-    and φ ∊ [-𝜋, 𝜋). The size of the rectangular domain is also given.
+    The samples are generated uniformly in the domain, with θ ∊ [0, 𝜋).
+    The size of the rectangular domain is also given.
 
     Parameters
     ----------
     shape : tuple
-        Shape of array of sample point pairs. The resulting array of
-        samples will have the shape (*shape, 2).
-    seed : None, int
+        Shape of array of sample points.
+    seed : None, integer
         Seed value for the random number generator. If `seed` is None,
         then numpy.random.default_rng will initalize with random entropy
         from the OS.
@@ -54,7 +57,7 @@ def get_random_samples(shape, seed=None):
     Returns
     -------
     samples : array
-        Random samples in the domain with the shape (*shape, 2).
+        Random samples in the domain.
     domain_size : float
         Size of the rectangular domain.
     """
@@ -65,11 +68,9 @@ def get_random_samples(shape, seed=None):
     # currently (01/30/2023) default_rng uses the PCG-64 pseudo random
     # number generator by default.
 
-    # TODO mention removing phi
-
     samples = rng.uniform(theta_min, theta_max, shape)
     # Note, random.Generator.uniform samples on a half open [low, high)
-    # interval, so formaly samples with theta = 𝜋 or phi = 𝜋 are excluded.
+    # interval, so formaly samples with theta = 𝜋 are excluded.
 
     domain_size = 2*numpy.pi*(theta_max - theta_min)
 
@@ -79,17 +80,15 @@ def get_random_samples(shape, seed=None):
 def get_random_rejection_samples(shape, seed=None):
     """Generate random samples of (θ, v) for rejection sampling
 
-    TODO mention removing phi
-
-    The samples are generated uniformly in the domain, with θ ∊ [0, 𝜋),
-    φ ∊ [-𝜋, 𝜋) and v ∊ [0, 1).
+    The samples are generated uniformly in the domain, with θ ∊ [0, 𝜋)
+    and v ∊ [0, 1).
 
     Parameters
     ----------
     shape : tuple
         Shape of array of sample point pairs. The resulting array of
         samples will have the shape (2, *shape).
-    seed : None, int
+    seed : None, integer
         Seed value for the random number generator. If `seed` is None,
         then numpy.random.default_rng will initalize with random entropy
         from the OS.
@@ -99,7 +98,6 @@ def get_random_rejection_samples(shape, seed=None):
     samples : array
         Random samples in the domain with the shape (2, *shape).
     """
-    # remove phi [-pi, pi)
     theta_min_max = (0, numpy.pi)
     v_min_max = (0, 1)
 
@@ -113,36 +111,42 @@ def get_random_rejection_samples(shape, seed=None):
     samples[0] = theta
     samples[1] = v
     # Note, random.Generator.uniform samples on a half open [low, high)
-    # interval, so formaly samples with theta = 𝜋 or phi = 𝜋 are excluded.
+    # interval, so formaly samples with theta = 𝜋 or v = 1 are excluded.
 
     return samples
 
 
 def monte_carlo_integration(function, fArg, dx, N):
-    """MC integrate
+    """Monte Carlo integration
+
+    An implementation of Monte Carlo integration on a spherical
+    surface. Using `get_random_samples` to get N uniformly distributed
+    random samples θ on the domain [0, 𝜋). Where the function, g(θ), to
+    integrate over angle is function(θ)*dx(θ). The estimate of the
+    integral is V*E[g(θ)], where E[] is the mean of the samples and V
+    is the size of the domain. The maximum of g(θ) is computed for use
+    in rejection sampling.
 
     Parameters
     ----------
-    E : array
-        An array of energies to evaluat the total cross section at.
-    fermion_name : string
-        Name of the resulting fundimental fermion for the reaction.
-        Ex "mu" or "nu_e" ...
-    N : int
-        The number of samples to use in the the Monte Carlo integral for
-        each energy value.
+    funcion : callable
+        The function to integrate over the sphere.
+    fArg : float
+        Parameter to pass into `function`.
+    dx : callable
+        The differential element for the integral.
+    N : integer
+        The number of samples to use in the the Monte Carlo integral.
 
     Returns
     -------
-    σ : array
-        An array of estimates of the total cross section with the same
-        shape as the array `E`.
+    value : float
+        Integral of `function` over all the sphere.
     max_sample : float
-        The maximum sampled value of dσ/dΩ
+        The maximum sampled value of the integrand.
     """
     samples, domain_size = get_random_samples((N,))
 
-    # Use monte carlo integration for each energy in E
     function_samples = function(fArg, samples)*dx(samples)
     mean_sample = numpy.mean(function_samples)
     max_sample = numpy.max(function_samples)
@@ -151,26 +155,33 @@ def monte_carlo_integration(function, fArg, dx, N):
 
 
 def monte_carlo_integration_array(function, fArg, dx, N):
-    """MC integrate
+    """Monte Carlo integration for an array of parameters
+
+    An implementation of Monte Carlo integration on a spherical
+    surface. Using `get_random_samples` to get N uniformly distributed
+    random samples θ on the domain [0, 𝜋). Where the function, g(θ), to
+    integrate over angle is function(θ)*dx(θ). The estimate of the
+    integral is V*E[g(θ)], where E[] is the mean of the samples and V
+    is the size of the domain. The maximum of g(θ) is computed for use
+    in rejection sampling.
 
     Parameters
     ----------
-    E : array
-        An array of energies to evaluat the total cross section at.
-    fermion_name : string
-        Name of the resulting fundimental fermion for the reaction.
-        Ex "mu" or "nu_e" ...
-    N : int
-        The number of samples to use in the the Monte Carlo integral for
-        each energy value.
+    funcion : callable
+        The function to integrate over the sphere.
+    fArg : array
+        Parameter to pass into `function`.
+    dx : callable
+        The differential element for the integral.
+    N : integer
+        The number of samples to use in the the Monte Carlo integral.
 
     Returns
     -------
-    σ : array
-        An array of estimates of the total cross section with the same
-        shape as the array `E`.
-    max_sample : float
-        The maximum sampled value of dσ/dΩ
+    value : array
+        Integral of `function` over all the sphere.
+    max_sample : array
+        The maximum sampled value of the integrand.
     """
     samples, domain_size = get_random_samples((N, *fArg.shape))
 
@@ -182,24 +193,57 @@ def monte_carlo_integration_array(function, fArg, dx, N):
 
 
 def monte_carlo_sampling(function, fArg, dx, maximum, N):
-    """MC integrate
+    """Rejection sampling
 
-    Note fArg and maximum are not arrays
+    An implementation of rejection sampling on a spherical surface. Using
+    `get_random_rejection_samples` to get N uniformly distributed random
+    samples θ on the domain [0, 𝜋) along with corrisponding random values
+    v in the range [0, 1). Where the function, g(θ), to sample over angles
+    is function(θ)*dx(θ). Any sample with v > g(θ)/g_max is rejected.
+    This process is repreated to replace any rejected samples untill all
+    samples are accepted.
+
+    Parameters
+    ----------
+    funcion : callable
+        The function to sample on the sphere.
+    fArg : float
+        Parameter to pass into `function`.
+    dx : callable
+        The differential element
+    maximum : float
+        The maximum of function(fArg, θ)dx(θ).
+    N : integer
+        The number of samples to generate.
+
+    Returns
+    -------
+    samples : array
+        N random angles subject to the distribution `function(fArg, θ)`
+        over the sphere.
     """
     samples = numpy.empty(shape=(N,))
-    missing = N
+    missing = N # number of samples that need to be generated
+    # mask of samples that need to be generated
     missing_mask = numpy.ones(shape=(N,), dtype=numpy.bool)
 
-    # recursively resample points that get rejected
+    # recursively resample points that get rejected, untill no values
+    # are missing (ie all samples are accepted).
     while missing > 0:
+        # generate one sample for each one that is missing
         new_samples_v = get_random_rejection_samples((missing, ))
         new_samples, new_v = new_samples_v[0], new_samples_v[1]
         new_values = function(fArg, new_samples)*dx(new_samples)/maximum
 
+        # use missing_mask to insert new sampled angles into the array of samples
         samples[missing_mask] = new_samples
 
+        # mask of any of the new samples that are rejected
         new_missing_mask = new_v > new_values
+        # count howmany on the new samples are rejected
         new_missing = numpy.sum(new_missing_mask)
+
+        # use missing_mask to insert the new mask for the resampled values
         missing_mask[missing_mask] = new_missing_mask
         missing = numpy.sum(missing_mask)
     return samples

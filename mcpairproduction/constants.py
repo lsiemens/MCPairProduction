@@ -2,7 +2,7 @@
 
 Internal calculations should use natural units with ħ=c=1. Energies are
 in units of MeV if not otherwise specified. The PDG Book is the primary
-source for the physical constants, *Review of Particle Physics* [2]_.
+source for the physical constants, *Review of Particle Physics* [1]_.
 
 .. [1] R.L. Workman et al. (Particle Data Group), Prog. Theor. Exp. Phys.
    2022, 083C01 (2022)
@@ -10,8 +10,6 @@ source for the physical constants, *Review of Particle Physics* [2]_.
 """
 
 import numpy
-
-# Constants: values from PDG
 
 # Leptons
 M_e = 0.51099895000  # in MeV/c²; mass of the eletron
