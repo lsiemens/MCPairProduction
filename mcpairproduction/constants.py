@@ -50,7 +50,7 @@ fermions = {"nu_e": (1/2, 0),  "nu_mu": (1/2, 0), "nu_tau": (1/2, 0),
 
 
 def neutral_couplings(T_3, Q):
-    """Get the vector and axial-vector coupling constants.
+    """Get the vector and axial-vector coupling constants
 
     The coupling constants for a fermion are determined by the particle's
     weak isospin T₃ and charge Q, see PDG section 10.1 for more details.
