@@ -39,6 +39,7 @@ def get_random_counts(expected_counts, seed=None):
 
     return counts
 
+
 def get_random_samples(shape, seed=None):
     """Generate random samples of an angle, θ
 
@@ -116,7 +117,21 @@ def get_random_rejection_samples(shape, seed=None):
     return samples
 
 
-def monte_carlo_integration(function, fArg, dx, N):
+def dOmega(theta):
+    """Solid angle element
+
+    dΩ = sin(θ)dθdφ
+
+    Parameters
+    ----------
+    theta : array or float
+        Angular cordinate of the element
+
+    """
+    return numpy.sin(theta)
+
+
+def monte_carlo_integration(function, fArg, N, dx=dOmega):
     """Monte Carlo integration
 
     An implementation of Monte Carlo integration on a spherical
@@ -133,10 +148,10 @@ def monte_carlo_integration(function, fArg, dx, N):
         The function to integrate over the sphere.
     fArg : float
         Parameter to pass into `function`.
-    dx : callable
-        The differential element for the integral.
     N : integer
         The number of samples to use in the the Monte Carlo integral.
+    dx : callable
+        The differential element for the integral.
 
     Returns
     -------
@@ -154,7 +169,7 @@ def monte_carlo_integration(function, fArg, dx, N):
     return mean_sample*domain_size, max_sample
 
 
-def monte_carlo_integration_array(function, fArg, dx, N):
+def monte_carlo_integration_array(function, fArg, N, dx=dOmega):
     """Monte Carlo integration for an array of parameters
 
     An implementation of Monte Carlo integration on a spherical
@@ -171,10 +186,10 @@ def monte_carlo_integration_array(function, fArg, dx, N):
         The function to integrate over the sphere.
     fArg : array
         Parameter to pass into `function`.
-    dx : callable
-        The differential element for the integral.
     N : integer
         The number of samples to use in the the Monte Carlo integral.
+    dx : callable
+        The differential element for the integral.
 
     Returns
     -------
@@ -192,7 +207,7 @@ def monte_carlo_integration_array(function, fArg, dx, N):
     return mean_sample*domain_size, max_sample
 
 
-def monte_carlo_sampling(function, fArg, dx, maximum, N):
+def monte_carlo_sampling(function, fArg, maximum, N, dx=dOmega):
     """Rejection sampling
 
     An implementation of rejection sampling on a spherical surface. Using
@@ -209,12 +224,12 @@ def monte_carlo_sampling(function, fArg, dx, maximum, N):
         The function to sample on the sphere.
     fArg : float
         Parameter to pass into `function`.
-    dx : callable
-        The differential element
     maximum : float
         The maximum of function(fArg, θ)dx(θ).
     N : integer
         The number of samples to generate.
+    dx : callable
+        The differential element
 
     Returns
     -------
