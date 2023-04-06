@@ -74,7 +74,7 @@ def dsigma_dOmega(E, theta, A_2):
     return A_2(E, theta)/(16*numpy.pi*E)**2
 
 def get_A_tot2(fermion_name="mu"):
-    """Get total ⟨|A|²⟩ function
+    """Get ⟨|A|²⟩ function
 
     Get the total spin averaged scattering amplitude squared function
     for the interaction e⁻ + e⁺ →  f + f̄, where f is the specified
@@ -93,44 +93,164 @@ def get_A_tot2(fermion_name="mu"):
     Returns
     -------
     callable
-        
-        The differential cross section of the process for the given
-        energy and angle.
-
+        The function ⟨|A|²⟩ with function signature,
+            - ``E``: The energy of the incoming particle.
+            - ``theta``: The angle of the outgoin muon.
     """
     A_gamma2 = get_A_gamma2(fermion_name)
     A_Z2 = get_A_Z2(fermion_name)
     A_cross2 = get_A_cross2(fermion_name)
 
     def A_tot2(E, theta):
+        """The function ⟨|A|²⟩
+
+        The total spin averaged scattering amplitude squared.
+
+        Parameters
+        ----------
+        E : array or float
+            The energy of the incoming particle.
+        theta : array or float
+            The angle of the outgoing muon.
+        """
         return A_gamma2(E, theta) + A_Z2(E, theta) + A_cross2(E, theta)
     return A_tot2
 
 def get_A_gamma2(fermion_name="mu"):
+    """Get ⟨|A_𝛾|²⟩ function
+
+    Get the photon component of the spin averaged scattering amplitude
+    squared function for the interaction e⁻ + e⁺ →  f + f̄, where f is
+    the specified fermion. The equation is given below,
+
+    ⟨|A_𝛾|²⟩ = g_e⁴*(1 + cos(θ)²)
+
+    where g_e is the electromagnetic coupling constant.
+
+    Parameters
+    ----------
+    fermion_name : string
+        Name of the resulting fundimental fermion in the reaction.
+        Ex "mu" or "nu_e" ...
+
+    Returns
+    -------
+    callable
+        The function ⟨|A_𝛾|²⟩ with function signature,
+            - ``E``: The energy of the incoming particle.
+            - ``theta``: The angle of the outgoin muon.
+    """
     def A_gamma2(E, theta):
+        """The function ⟨|A_𝛾|²⟩
+
+        The photon component of the spin averaged scattering amplitude
+        squared.
+
+        Parameters
+        ----------
+        E : array or float
+            The energy of the incoming particle.
+        theta : array or float
+            The angle of the outgoing muon.
+        """
         return g_e**4*(1 + numpy.cos(theta)**2)
     return A_gamma2
 
 def get_A_Z2(fermion_name="mu"):
+    """Get ⟨|A_Z|²⟩ function
+
+    Get the Z boson component of the spin averaged scattering amplitude
+    squared function for the interaction e⁻ + e⁺ →  f + f̄, where f is
+    the specified fermion. The equations are given below,
+
+    C⁺ = (Cᵥ_e² + Cₐ_e²)(Cᵥ_𝜇² + Cₐ_𝜇²)
+    Cˣ = Cᵥ_e Cₐ_e Cᵥ_𝜇 Cₐ_𝜇
+    A = (g_z E)⁴/([4E² - M_z²]² + [M_z 𝚪_z]²)
+    ⟨|A_Z|²⟩ = A (C⁺(1 + cos(θ)²) + 8Cˣcos(θ))
+
+    where g_z is the neutral weak coupling, M_z is the mass of the Z boson,
+    𝚪_z is the decay width of the Z boson and Cᵥ_e, Cₐ_e, Cᵥ_𝜇, Cₐ_𝜇 are
+    the vector and axial-vector coupling constants of the electron and
+    the other fermion.
+
+    Parameters
+    ----------
+    fermion_name : string
+        Name of the resulting fundimental fermion in the reaction.
+        Ex "mu" or "nu_e" ...
+
+    Returns
+    -------
+    callable
+        The function ⟨|A_Z|²⟩ with function signature,
+            - ``E``: The energy of the incoming particle.
+            - ``theta``: The angle of the outgoin muon.
+    """
     c_Ve, c_Ae, c_Vf, c_Af = get_neutral_couplings(fermion_name)
     c_sum = (c_Ve**2 + c_Ae**2)*(c_Vf**2 + c_Af**2)
     c_product = c_Ve*c_Ae*c_Vf*c_Af
 
     def A_Z2(E, theta):
+        """The function ⟨|A_Z|²⟩
+
+        The Z boson component of the spin averaged scattering amplitude
+        squared.
+
+        Parameters
+        ----------
+        E : array or float
+            The energy of the incoming particle.
+        theta : array or float
+            The angle of the outgoing muon.
+        """
         A = (g_z*E)**4/((4*E**2 - M_z**2)**2 + (M_z*Gamma_z)**2)
         return A*(c_sum*(1 + numpy.cos(theta)**2) + 8*c_product*numpy.cos(theta))
     return A_Z2
 
 def get_A_cross2(fermion_name="mu"):
-    """
-    A = (g_z²E/[16𝜋])²/([4E² - M_z²]² + [M_z𝚪_z]²)
-    B = (c_Vf² + c_Af²)(c_Ve² + c_Ae²)
-    C = 8c_Vf c_Af c_Ve c_Ae
+    """Get ⟨A_𝛾 A⁺_Z + A_Z A⁺_𝛾⟩ function
 
+    Get the cross term component of the spin averaged scattering
+    amplitude squared function for the interaction e⁻ + e⁺ →  f + f̄,
+    where f is the specified fermion. The equations are given below,
+
+    A = 8(g_e g_z E²)²/([4E² - M_z²]² + [M_z 𝚪_z]²)
+    B = (1 - [M_z/(2 E)]²)
+    ⟨A_𝛾 A⁺_Z + A_Z A⁺_𝛾⟩ = AB(Cᵥ_e Cᵥ_𝜇[1 + cos(θ)²] + 2Cₐ_e Cₐ_𝜇cos(θ))
+
+    where g_e is the electromagnetic coupling, g_z is the neutral weak
+    coupling, M_z is the mass of the Z boson, 𝚪_z is the decay width of
+    the Z boson and Cᵥ_e, Cₐ_e, Cᵥ_𝜇, Cₐ_𝜇 are the vector and
+    axial-vector coupling constants of the electron and the other fermion.
+
+    Parameters
+    ----------
+    fermion_name : string
+        Name of the resulting fundimental fermion in the reaction.
+        Ex "mu" or "nu_e" ...
+
+    Returns
+    -------
+    callable
+        The function ⟨A_𝛾 A⁺_Z + A_Z A⁺_𝛾⟩ with function signature,
+            - ``E``: The energy of the incoming particle.
+            - ``theta``: The angle of the outgoin muon.
     """
     c_Ve, c_Ae, c_Vf, c_Af = get_neutral_couplings(fermion_name)
 
     def A_cross2(E, theta):
+        """The function ⟨A_𝛾 A⁺_Z + A_Z A⁺_𝛾⟩
+
+        The cross term component of the spin averaged scattering
+        amplitude squared.
+
+        Parameters
+        ----------
+        E : array or float
+            The energy of the incoming particle.
+        theta : array or float
+            The angle of the outgoing muon.
+        """
         A = 8*(g_e*g_z*E**2)**2/((4*E**2 - M_z**2)**2 + (M_z*Gamma_z)**2)
         B = (1 - (M_z/(2*E))**2)
         return A*B*(c_Ve*c_Vf*(1 + numpy.cos(theta)**2) + 2*c_Ae*c_Af*numpy.cos(theta))
