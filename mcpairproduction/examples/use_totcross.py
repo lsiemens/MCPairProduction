@@ -11,6 +11,8 @@ import numpy
 from .. import totcross
 
 def muon_Z_pole():
+    """Produce the plots for the first part of the project
+    """
     # update latex preamble
     pyplot.rcParams.update({
         "font.family": "serif",
