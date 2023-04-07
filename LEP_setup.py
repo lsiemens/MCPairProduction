@@ -6,9 +6,9 @@ e⁻ + e⁺ →  𝜇⁻ + 𝜇⁺ at LEP. For the integrated luminosity and bea
 of the LEP see [1]_.
 
 .. [1] Arduini, G., R. Assmann, R. Bailey, A. Butterworth, P. Collier,
-       K. Cornelis, S. Fartoukh, et al. “Electron-Positron Collisions at
-       209 GeV in LEP.” In PACS2001. Proceedings of the 2001 Particle
-       Accelerator Conference (Cat. No.01CH37268), 1:356–358 vol.1. IEEE,
+       K. Cornelis, S. Fartoukh, et al. "Electron-Positron Collisions at
+       209 GeV in LEP." In PACS2001. Proceedings of the 2001 Particle
+       Accelerator Conference (Cat. No.01CH37268), 1:356-358 vol.1. IEEE,
        2001.
 
 """

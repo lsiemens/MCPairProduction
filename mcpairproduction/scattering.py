@@ -29,9 +29,9 @@ equations for the differential cross section are given in section 2 of [2]_.
 .. [1] Griffiths, David J. Introduction to Elementary Particles. 2nd,
        rev. ed. Weinheim: Wiley-VCH, 2008.
 
-.. [2] Berends, F.A., R. Kleiss, and S. Jadach. “Radiative Corrections to
+.. [2] Berends, F.A., R. Kleiss, and S. Jadach. "Radiative Corrections to
        Muon Pair and Quark Pair Production in Electron-Positron Collisions
-       in the Z 0 Region.” Nuclear physics. B 202, no. 1 (1982): 63–88.
+       in the Z 0 Region." Nuclear physics. B 202, no. 1 (1982): 63-88.
 
 """
 
@@ -298,9 +298,9 @@ def get_neutral_couplings(fermion_name):
 def sigma_analytic(E, A_2_integrated):
     """Analytic cross section
 
-    Compute the analytic cross section. The cross section is σ = ∫(dσ/dΩ)dΩ
+    Compute the analytic cross section. The cross section is σ = ∬ (dσ/dΩ)dΩ
     where dσ/dΩ = ⟨|A|²⟩/(16𝜋E)². So expanding the integral then,
-    σ = ∫(dσ/dΩ)sin(θ)dθdφ = ∫⟨|A|²⟩sin(θ)dθ ∫(16𝜋E)⁻²dφ. Denoting the
+    σ = ∬ (dσ/dΩ)sin(θ)dθdφ = ∫⟨|A|²⟩sin(θ)dθ ∫(16𝜋E)⁻²dφ. Denoting the
     first term in this equation ⟨|A|²⟩_int then the analytic equation for
     the cross section is,
 
