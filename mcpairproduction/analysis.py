@@ -223,7 +223,7 @@ def plot_angular_distribution(ax, Run_data, n_bins, resolution=100,
     ax.set_xlim(0, numpy.pi)
     ax.set_xlabel("$\\theta$ in radians")
     ax.set_ylabel("Scattering Events")
-    ax.set_title(f"Angular distribution $\\frac{{d\\sigma}}{{d\\Omega}}$ at $\\sqrt{{s}} = {sqrt_s:.1f} GeV$")
+    ax.set_title(f"Angular distribution $\\frac{{d\\sigma}}{{d\\Omega}}\\sin(\\theta)$ at $\\sqrt{{s}} = {sqrt_s:.1f} GeV$")
     ax.legend()
 
 

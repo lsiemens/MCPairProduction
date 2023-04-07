@@ -16,11 +16,18 @@ from mcpairproduction import analysis
 path = "./scratch/"
 
 # options for the slid presentation
-fig_path = "./presentation/Figures"
 save_fig = False
+presentation = False
+if presentation:
+    fig_path = "./presentation/Figures"
+else:
+    fig_path = "../homework/phys424/project/Figures"
 scale = 1.4
 pyplot.rcParams.update({"savefig.bbox":"tight",
-                        "savefig.dpi":250})
+                        "savefig.dpi":250,
+                        "font.family":"serif",
+                        "pgf.rcfonts":False,
+                        "pgf.texsystem":"pdflatex"})
 
 # Plot options
 resolution = 1000 # resolution of the theoretical curves
@@ -47,11 +54,16 @@ for Run in Runs_fixed_E:
     if save_fig:
         E, _, _, _, _ = Run
         E = E[0]
-        size = fig.get_size_inches()
-        size = size/scale
-        fig.set_size_inches(size)
-        fname = f"{E/1E3:.0f}GeV_angular_distribution.png"
-        pyplot.savefig(os.path.join(fig_path, fname))
+        fname = f"{E/1E3:.0f}GeV_angular_distribution"
+        if presentation:
+            size = fig.get_size_inches()
+            size = size/scale
+            fig.set_size_inches(size)
+            ext = ".png"
+            pyplot.savefig(os.path.join(fig_path, fname + ext))
+        else:
+            ext = ".pgf"
+            pyplot.savefig(os.path.join(fig_path, fname + ext))
     pyplot.show()
 
 # plot the energy distribution for the energy sequence run and plots
@@ -69,11 +81,14 @@ analysis.plot_energy_distribution(ax2, Run, n_bins, resolution, Nsigma=Nsigma,
 
 pyplot.suptitle("Monte Carlo scattering events: " + analysis.reaction_name)
 if save_fig:
-    size = fig.get_size_inches()
-    size[0] = 1.75*size[0]
-    size = size/scale
-    fig.set_size_inches(size)
-    pyplot.savefig(os.path.join(fig_path, f"energy_distribution.png"))
+    if presentation:
+        size = fig.get_size_inches()
+        size[0] = 1.75*size[0]
+        size = size/scale
+        fig.set_size_inches(size)
+        pyplot.savefig(os.path.join(fig_path, f"energy_distribution.png"))
+    else:
+        pyplot.savefig(os.path.join(fig_path, "energy_distribution.pgf"))
 pyplot.show()
 
 fig, ax = pyplot.subplots()
@@ -81,6 +96,8 @@ analysis.plot_energy_distribution(ax, Run, n_bins, resolution,
                                   [0, numpy.pi/2], Nsigma,
                                   comparisons_energy)
 pyplot.title("Forward Events: $\\theta \in [0, \\pi/2]$")
+if save_fig and (not presentation):
+    pyplot.savefig(os.path.join(fig_path, "forward.pgf"))
 pyplot.show()
 
 fig, ax = pyplot.subplots()
@@ -88,15 +105,20 @@ analysis.plot_energy_distribution(ax, Run, n_bins, resolution,
                                   [numpy.pi/2, numpy.pi], Nsigma,
                                   comparisons_energy)
 pyplot.title("Backward Events: $\\theta \in [\\pi/2, \\pi]$")
+if save_fig and (not presentation):
+    pyplot.savefig(os.path.join(fig_path, "backward.pgf"))
 pyplot.show()
 
 # plot the forward-backward asymmetry
 fig, ax = pyplot.subplots()
 analysis.plot_FB_asymmetry(ax, Run, n_bins, resolution, Nsigma)
 if save_fig:
-    size = fig.get_size_inches()
-    size[0] = 1.75*size[0]
-    size = size/scale
-    fig.set_size_inches(size)
-    pyplot.savefig(os.path.join(fig_path, f"FB_asymmetry.png"))
+    if presentation:
+        size = fig.get_size_inches()
+        size[0] = 1.75*size[0]
+        size = size/scale
+        fig.set_size_inches(size)
+        pyplot.savefig(os.path.join(fig_path, "FB_asymmetry.png"))
+    else:
+        pyplot.savefig(os.path.join(fig_path, "FB_asymmetry.pgf"))
 pyplot.show()
