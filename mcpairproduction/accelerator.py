@@ -122,7 +122,8 @@ class accelerator:
             If True, append output to existing file.
         """
         # generate events
-        theta = sampling.monte_carlo_sampling(self.dsigma_dOmega, E, dsigma_max, N_events)
+        theta = sampling.monte_carlo_sampling(self.dsigma_dOmega, E,
+                                              dsigma_max, N_events)
 
         p_mag = numpy.sqrt(E**2 - self.M**2)
 
@@ -155,7 +156,8 @@ class accelerator:
         fname : string
             Name of data file.
         """
-        sigma_total, dsigma_max = sampling.monte_carlo_integration(self.dsigma_dOmega, E, self.samples_MC_int)
+        sigma_total, dsigma_max = sampling.monte_carlo_integration(
+                             self.dsigma_dOmega, E, self.samples_MC_int)
 
         # expected number of events
         expected_N_events = sigma_total*self.L_int
@@ -186,7 +188,8 @@ class accelerator:
             utils.progress_bar("Run sequence", i, len(E))
 
             # estimate total differential cross section
-            sigma_total, dsigma_max = sampling.monte_carlo_integration_array(self.dsigma_dOmega, run_E, self.samples_MC_int)
+            sigma_total, dsigma_max = sampling.monte_carlo_integration_array(
+                                self.dsigma_dOmega, run_E, self.samples_MC_int)
 
             # expected number of events
             expected_N_events = sigma_total*L_int

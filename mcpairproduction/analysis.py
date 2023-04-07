@@ -33,16 +33,24 @@ import numpy
 reaction_name = f"$e^- + e^+ \\rightarrow \\mu^- + \\mu^+$"
 
 # Components of the spin averaged scattering amplitude squared
-differential_amplitudes = {"total":(scattering.get_A_tot2, "$\\left|A\\right|^2$"),
-                           "gamma":(scattering.get_A_gamma2, "$\\left|A_{\\gamma}\\right|^2$"),
-                           "Z":(scattering.get_A_Z2, "$\\left|A_{Z}\\right|^2$"),
-                           "cross":(scattering.get_A_cross2, "$A_{\\gamma}A_{Z}^* + A_{Z}A_{\\gamma}^*$")}
+differential_amplitudes = {"total":(scattering.get_A_tot2,
+                                    "$\\left|A\\right|^2$"),
+                           "gamma":(scattering.get_A_gamma2,
+                                    "$\\left|A_{\\gamma}\\right|^2$"),
+                           "Z":(scattering.get_A_Z2,
+                                "$\\left|A_{Z}\\right|^2$"),
+                           "cross":(scattering.get_A_cross2,
+                                  "$A_{\\gamma}A_{Z}^* + A_{Z}A_{\\gamma}^*$")}
 
 # Components of the integrated spin averaged scattering amplitude squared
-integrated_amplitudes = {"total":(scattering.get_A_tot2_integrated, "$\\sigma_{total}$"),
-                         "gamma":(scattering.get_A_gamma2_integrated, "$\\sigma_{\\gamma}$"),
-                         "Z":(scattering.get_A_Z2_integrated, "$\\sigma_{Z}$"),
-                         "cross":(scattering.get_A_cross2_integrated, "$\\sigma_{cross}$")}
+integrated_amplitudes = {"total":(scattering.get_A_tot2_integrated,
+                                  "$\\sigma_{total}$"),
+                         "gamma":(scattering.get_A_gamma2_integrated,
+                                  "$\\sigma_{\\gamma}$"),
+                         "Z":(scattering.get_A_Z2_integrated,
+                              "$\\sigma_{Z}$"),
+                         "cross":(scattering.get_A_cross2_integrated,
+                                  "$\\sigma_{cross}$")}
 
 def load(fname):
     """Load data
@@ -69,7 +77,8 @@ def load(fname):
         The total integrated luminosity.
     """
 
-    E, p_mag, theta, phi = numpy.loadtxt(fname, delimiter=",", skiprows=2, unpack=True)
+    E, p_mag, theta, phi = numpy.loadtxt(fname, delimiter=",",
+                                         skiprows=2, unpack=True)
     with open(fname, "r") as fin:
         next(fin)
         line = fin.readline()
@@ -145,7 +154,8 @@ def theoretic_binning(x, y, bins, bin_width):
     return binned_x, binned_y
 
 
-def plot_angular_distribution(ax, Run_data, n_bins, resolution=100, Nsigma=1, comparisons=[("total", "k-", False)]):
+def plot_angular_distribution(ax, Run_data, n_bins, resolution=100,
+                              Nsigma=1, comparisons=[("total", "k-", False)]):
     """Plot scattering events vs angle
 
     Make plot of scattering events vs angle and compare against theoretical
@@ -177,23 +187,30 @@ def plot_angular_distribution(ax, Run_data, n_bins, resolution=100, Nsigma=1, co
 
     # calibrating the differential cross section to compair with the data
     tot_amplitude, _ = differential_amplitudes["total"]
-    ds_total = scattering.dsigma_dOmega(E_data, theta_theory, tot_amplitude())*numpy.sin(theta_theory)
+    ds_total = scattering.dsigma_dOmega(E_data, theta_theory, tot_amplitude())
+    ds_total = ds_total*numpy.sin(theta_theory)
 
     events_per_bin = len(theta_data)/n_bins
     normalization = events_per_bin/numpy.mean(ds_total)
 
     # make histogram of angular distribution
-    hist, hist_err, bins, bin_width = setup_histogram(theta_data, n_bins, (0, numpy.pi))
-    ax.bar(bins, hist, bin_width, align="edge", yerr=Nsigma*hist_err, color="b", ecolor="b", capsize=2, alpha=0.4, label="Data")
+    hist, hist_err, bins, bin_width = setup_histogram(theta_data, n_bins,
+                                                      (0, numpy.pi))
+    ax.bar(bins, hist, bin_width, align="edge", yerr=Nsigma*hist_err,
+           color="b", ecolor="b", capsize=2, alpha=0.4, label="Data")
 
     sqrt_s = 2*E_data/1E3 # in GeV
 
     for component, style, binning in comparisons:
         diff_amplitude, label = differential_amplitudes[component]
-        dsigma = scattering.dsigma_dOmega(E_data, theta_theory, diff_amplitude())*numpy.sin(theta_theory)
+        dsigma = scattering.dsigma_dOmega(E_data, theta_theory,
+                                          diff_amplitude())
+        dsigma = dsigma*numpy.sin(theta_theory)
 
         if binning:
-            theta_b, dsigma_b = theoretic_binning(theta_theory, normalization*dsigma, bins, bin_width)
+            theta_b, dsigma_b = theoretic_binning(theta_theory,
+                                                  normalization*dsigma,
+                                                  bins, bin_width)
             ax.plot(theta_b, dsigma_b, style, label=label)
         else:
             ax.plot(theta_theory, normalization*dsigma, style, label=label)
@@ -210,7 +227,9 @@ def plot_angular_distribution(ax, Run_data, n_bins, resolution=100, Nsigma=1, co
     ax.legend()
 
 
-def plot_energy_distribution(ax, Run_data, n_bins, resolution=100, theta_range=(0, numpy.pi), Nsigma=1, comparisons=[("total", "k-", False)]):
+def plot_energy_distribution(ax, Run_data, n_bins, resolution=100,
+                             theta_range=(0, numpy.pi), Nsigma=1,
+                             comparisons=[("total", "k-", False)]):
     """Plot scattering events vs energy
 
     Make plot of scattering events vs energy and compare against theoretical
@@ -243,21 +262,25 @@ def plot_energy_distribution(ax, Run_data, n_bins, resolution=100, theta_range=(
     E_range = (numpy.min(E_data), numpy.max(E_data))
     E_theory = numpy.linspace(*E_range, resolution)
 
-    mask = numpy.logical_and(theta_data >= theta_range[0], theta_data <= theta_range[1])
-    hist, hist_err, bins, bin_width = setup_histogram(E_data[mask], n_bins, E_range)
+    mask = numpy.logical_and(theta_data >= theta_range[0],
+                             theta_data <= theta_range[1])
+    hist, hist_err, bins, bin_width = setup_histogram(E_data[mask],
+                                                      n_bins, E_range)
 
     # convert to sqrt(s) in GeV
     bins, bin_width = 2*bins/1E3, 2*bin_width/1E3
     sqrt_s = 2*E_theory/1E3
 
-    ax.bar(bins, hist, bin_width, align="edge", yerr=Nsigma*hist_err, color="b", ecolor="b", capsize=2, alpha=0.4, label="Data")
+    ax.bar(bins, hist, bin_width, align="edge", yerr=Nsigma*hist_err,
+           color="b", ecolor="b", capsize=2, alpha=0.4, label="Data")
 
     for component, style, binning in comparisons:
         int_amplitude, label = integrated_amplitudes[component]
         sigma = scattering.sigma_analytic(E_theory, int_amplitude(theta_range=theta_range))
 
         if binning:
-            E_b, sigma_b = theoretic_binning(sqrt_s, sigma*L_int/n_bins, bins, bin_width)
+            E_b, sigma_b = theoretic_binning(sqrt_s, sigma*L_int/n_bins,
+                                             bins, bin_width)
             ax.semilogy(E_b, sigma_b, style, label=label + " binned")
         else:
             ax.semilogy(sqrt_s, sigma*L_int/n_bins, style, label=label)
@@ -295,8 +318,10 @@ def plot_FB_asymmetry(ax, Run_data, n_bins, resolution=100, Nsigma=1):
     front_mask = theta_data <= numpy.pi/2
     back_mask = numpy.logical_not(front_mask)
 
-    Fhist, Fhist_err, bins, bin_width = setup_histogram(E_data[front_mask], n_bins, E_range)
-    Bhist, Bhist_err, bins, bin_width = setup_histogram(E_data[back_mask], n_bins, E_range)
+    Fhist, Fhist_err, bins, bin_width = setup_histogram(E_data[front_mask],
+                                                        n_bins, E_range)
+    Bhist, Bhist_err, bins, bin_width = setup_histogram(E_data[back_mask],
+                                                        n_bins, E_range)
 
     A_FB = (Fhist - Bhist)/(Fhist + Bhist)
     A_FB_err = (2*Fhist*Bhist/(Fhist + Bhist)**2)*numpy.sqrt((Fhist_err/Fhist)**2 + (Bhist_err/Bhist)**2)
@@ -305,7 +330,8 @@ def plot_FB_asymmetry(ax, Run_data, n_bins, resolution=100, Nsigma=1):
     bins, bin_width = 2*bins/1E3, 2*bin_width/1E3
     sqrt_s = 2*E_theory/1E3
 
-    ax.bar(bins, A_FB, bin_width, align="edge", yerr=Nsigma*A_FB_err, color="b", ecolor="b", capsize=2, alpha=0.4, label="Data")
+    ax.bar(bins, A_FB, bin_width, align="edge", yerr=Nsigma*A_FB_err,
+           color="b", ecolor="b", capsize=2, alpha=0.4, label="Data")
 
     int_amplitude, _ = integrated_amplitudes["total"]
     sigma_F = scattering.sigma_analytic(E_theory, int_amplitude(theta_range=[0, numpy.pi/2]))

@@ -40,7 +40,8 @@ def nice_ticks(numerator, denominator, symbol="\\pi"):
     string
         Tick label as simplified fraction.
     """
-    denominator, numerator = denominator//numpy.gcd(denominator, numerator), numerator//numpy.gcd(denominator, numerator)
+    denominator, numerator = (denominator//numpy.gcd(denominator, numerator),
+                              numerator//numpy.gcd(denominator, numerator))
     if (numerator == 0):
         return "$0$"
     if (denominator == 1) and (numerator == 1):

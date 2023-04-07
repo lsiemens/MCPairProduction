@@ -250,7 +250,7 @@ def monte_carlo_sampling(function, fArg, maximum, N, dx=dOmega):
         new_samples, new_v = new_samples_v[0], new_samples_v[1]
         new_values = function(fArg, new_samples)*dx(new_samples)/maximum
 
-        # use missing_mask to insert new sampled angles into the array of samples
+        # use missing_mask to update samples with new_samples
         samples[missing_mask] = new_samples
 
         # mask of any of the new samples that are rejected
