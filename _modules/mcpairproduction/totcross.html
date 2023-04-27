@@ -101,25 +101,25 @@
 <span class="kn">import</span> <span class="nn">numpy</span>
 
 <span class="c1"># Constants: values from PDG values</span>
-<span class="n">M_z</span> <span class="o">=</span> <span class="mf">9.11876E4</span>  <span class="c1"># in MeV/c²; mass of the Z boson</span>
-<span class="n">Gamma_z</span> <span class="o">=</span> <span class="mf">2.4952E3</span>  <span class="c1"># in MeV/hbar; decay rate of Z boson</span>
-<span class="n">hbarc2</span> <span class="o">=</span> <span class="mf">3.893793721E5</span>  <span class="c1"># in MeV²mbarn; conversion factor (ħc)²</span>
+<span class="n">M_z</span> <span class="o">=</span> <span class="mf">9.11876E4</span>  <span class="c1">#: mass of the Z boson in MeV/c²</span>
+<span class="n">Gamma_z</span> <span class="o">=</span> <span class="mf">2.4952E3</span>  <span class="c1">#: decay rate of Z boson in MeV/hbar</span>
+<span class="n">hbarc2</span> <span class="o">=</span> <span class="mf">3.893793721E5</span>  <span class="c1">#: conversion factor (ħc)² in MeV²mbarn</span>
 <span class="c1"># unitless constants</span>
-<span class="n">alpha</span> <span class="o">=</span> <span class="mf">7.29735256E-3</span>  <span class="c1"># fine-structure constant</span>
-<span class="n">sin2_theta_w</span> <span class="o">=</span> <span class="mf">0.2312</span>  <span class="c1"># sin²(θ_w) where θ_w is the weak mixing angle</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">7.29735256E-3</span>  <span class="c1">#: the fine-structure constant</span>
+<span class="n">sin2_theta_w</span> <span class="o">=</span> <span class="mf">0.2312</span>  <span class="c1">#: sin²(θ_w) where θ_w is the weak mixing angle</span>
 
 <span class="c1"># calculating the coupling to the Z boson</span>
-<span class="c1"># The electromagnetic coupling constant is g_e² = 4𝜋*𝛼 (note g_e equal</span>
-<span class="c1"># to the elementary electric charge in natural units). This is related</span>
-<span class="c1"># to the coupling constant for the Z boson g_z by the equation</span>
-<span class="c1"># g_e = g_z cos(θ_w)sin(θ_w). Using these equations the constant g_z in</span>
-<span class="c1"># terms of fine structure constant and weak mixing angle is</span>
-<span class="c1"># g_z = sqrt(4𝜋*𝛼/[sin²(θ_w)(1 - sin²(θ_w))])</span>
+<span class="c1">#: The electromagnetic coupling constant is g_e² = 4𝜋*𝛼 (note g_e equal</span>
+<span class="c1">#: to the elementary electric charge in natural units). This is related</span>
+<span class="c1">#: to the coupling constant for the Z boson g_z by the equation</span>
+<span class="c1">#: g_e = g_z cos(θ_w)sin(θ_w). Using these equations the constant g_z in</span>
+<span class="c1">#: terms of fine structure constant and weak mixing angle is</span>
+<span class="c1">#: g_z = sqrt(4𝜋*𝛼/[sin²(θ_w)(1 - sin²(θ_w))])</span>
 <span class="n">g_z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">alpha</span><span class="o">/</span><span class="p">(</span><span class="n">sin2_theta_w</span> <span class="o">-</span> <span class="n">sin2_theta_w</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
 
-<span class="c1"># a dictionary of fermion labels, all of the entries contain a tuple of</span>
-<span class="c1"># the particle&#39;s weak isospin T_3 and charge Q. The tuples have the</span>
-<span class="c1"># format (T_3, Q)</span>
+<span class="c1">#: a dictionary of fermion labels, all of the entries contain a tuple of</span>
+<span class="c1">#: the particle&#39;s weak isospin T_3 and charge Q. The tuples have the</span>
+<span class="c1">#: format (T_3, Q)</span>
 <span class="n">fermions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;nu_e&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>  <span class="s2">&quot;nu_mu&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">&quot;nu_tau&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
             <span class="s2">&quot;e&quot;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>   <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>  <span class="s2">&quot;tau&quot;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
             <span class="s2">&quot;u&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">),</span>   <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">),</span>   <span class="s2">&quot;t&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">),</span>

@@ -49,14 +49,21 @@
 <li class="toctree-l3"><a class="reference internal" href="mcpairproduction.sampling.html">mcpairproduction.sampling module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mcpairproduction.scattering.html">mcpairproduction.scattering module</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">mcpairproduction.totcross module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.totcross.Gamma_z"><code class="docutils literal notranslate"><span class="pre">Gamma_z</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.totcross.M_z"><code class="docutils literal notranslate"><span class="pre">M_z</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.totcross.alpha"><code class="docutils literal notranslate"><span class="pre">alpha</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.totcross.dsigma_dOmega"><code class="docutils literal notranslate"><span class="pre">dsigma_dOmega()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.totcross.fermions"><code class="docutils literal notranslate"><span class="pre">fermions</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.totcross.g_z"><code class="docutils literal notranslate"><span class="pre">g_z</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.totcross.get_random_rejection_samples"><code class="docutils literal notranslate"><span class="pre">get_random_rejection_samples()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.totcross.get_random_samples"><code class="docutils literal notranslate"><span class="pre">get_random_samples()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.totcross.get_reaction_equation"><code class="docutils literal notranslate"><span class="pre">get_reaction_equation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.totcross.hbarc2"><code class="docutils literal notranslate"><span class="pre">hbarc2</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.totcross.neutral_couplings"><code class="docutils literal notranslate"><span class="pre">neutral_couplings()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.totcross.plot_compare"><code class="docutils literal notranslate"><span class="pre">plot_compare()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.totcross.sigma_analytic"><code class="docutils literal notranslate"><span class="pre">sigma_analytic()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.totcross.sigma_estimate"><code class="docutils literal notranslate"><span class="pre">sigma_estimate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.totcross.sin2_theta_w"><code class="docutils literal notranslate"><span class="pre">sin2_theta_w</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="mcpairproduction.utils.html">mcpairproduction.utils module</a></li>
@@ -123,6 +130,24 @@ rev. ed. Weinheim: Wiley-VCH, 2008.</p>
 University Press, 2013.</p>
 </dd>
 </dl>
+<dl class="py data">
+<dt class="sig sig-object py" id="mcpairproduction.totcross.Gamma_z">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.totcross.</span></span><span class="sig-name descname"><span class="pre">Gamma_z</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2495.2</span></em><a class="headerlink" href="#mcpairproduction.totcross.Gamma_z" title="Permalink to this definition"></a></dt>
+<dd><p>decay rate of Z boson in MeV/hbar</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="mcpairproduction.totcross.M_z">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.totcross.</span></span><span class="sig-name descname"><span class="pre">M_z</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">91187.6</span></em><a class="headerlink" href="#mcpairproduction.totcross.M_z" title="Permalink to this definition"></a></dt>
+<dd><p>mass of the Z boson in MeV/c²</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="mcpairproduction.totcross.alpha">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.totcross.</span></span><span class="sig-name descname"><span class="pre">alpha</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.00729735256</span></em><a class="headerlink" href="#mcpairproduction.totcross.alpha" title="Permalink to this definition"></a></dt>
+<dd><p>the fine-structure constant</p>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="mcpairproduction.totcross.dsigma_dOmega">
 <span class="sig-prename descclassname"><span class="pre">mcpairproduction.totcross.</span></span><span class="sig-name descname"><span class="pre">dsigma_dOmega</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fermion_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/totcross.html#dsigma_dOmega"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.totcross.dsigma_dOmega" title="Permalink to this definition"></a></dt>
@@ -162,6 +187,25 @@ the given E and theta.</p>
 </dl>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="mcpairproduction.totcross.fermions">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.totcross.</span></span><span class="sig-name descname"><span class="pre">fermions</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'b':</span> <span class="pre">(-0.5,</span> <span class="pre">-0.3333333333333333),</span> <span class="pre">'c':</span> <span class="pre">(0.5,</span> <span class="pre">0.6666666666666666),</span> <span class="pre">'d':</span> <span class="pre">(-0.5,</span> <span class="pre">-0.3333333333333333),</span> <span class="pre">'e':</span> <span class="pre">(-0.5,</span> <span class="pre">-1),</span> <span class="pre">'mu':</span> <span class="pre">(-0.5,</span> <span class="pre">-1),</span> <span class="pre">'nu_e':</span> <span class="pre">(0.5,</span> <span class="pre">0),</span> <span class="pre">'nu_mu':</span> <span class="pre">(0.5,</span> <span class="pre">0),</span> <span class="pre">'nu_tau':</span> <span class="pre">(0.5,</span> <span class="pre">0),</span> <span class="pre">'s':</span> <span class="pre">(-0.5,</span> <span class="pre">-0.3333333333333333),</span> <span class="pre">'t':</span> <span class="pre">(0.5,</span> <span class="pre">0.6666666666666666),</span> <span class="pre">'tau':</span> <span class="pre">(-0.5,</span> <span class="pre">-1),</span> <span class="pre">'u':</span> <span class="pre">(0.5,</span> <span class="pre">0.6666666666666666)}</span></em><a class="headerlink" href="#mcpairproduction.totcross.fermions" title="Permalink to this definition"></a></dt>
+<dd><p>a dictionary of fermion labels, all of the entries contain a tuple of
+the particle’s weak isospin T_3 and charge Q. The tuples have the
+format (T_3, Q)</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="mcpairproduction.totcross.g_z">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.totcross.</span></span><span class="sig-name descname"><span class="pre">g_z</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.718268787189576</span></em><a class="headerlink" href="#mcpairproduction.totcross.g_z" title="Permalink to this definition"></a></dt>
+<dd><p>The electromagnetic coupling constant is g_e² = 4𝜋*𝛼 (note g_e equal
+to the elementary electric charge in natural units). This is related
+to the coupling constant for the Z boson g_z by the equation
+g_e = g_z cos(θ_w)sin(θ_w). Using these equations the constant g_z in
+terms of fine structure constant and weak mixing angle is
+g_z = sqrt(4𝜋*𝛼/[sin²(θ_w)(1 - sin²(θ_w))])</p>
 </dd></dl>
 
 <dl class="py function">
@@ -239,6 +283,12 @@ Ex “mu” or “nu_e” …</p>
 </dl>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="mcpairproduction.totcross.hbarc2">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.totcross.</span></span><span class="sig-name descname"><span class="pre">hbarc2</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">389379.3721</span></em><a class="headerlink" href="#mcpairproduction.totcross.hbarc2" title="Permalink to this definition"></a></dt>
+<dd><p>conversion factor (ħc)² in MeV²mbarn</p>
 </dd></dl>
 
 <dl class="py function">
@@ -356,6 +406,12 @@ shape as the array <cite>E</cite>.</p>
 </dl>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="mcpairproduction.totcross.sin2_theta_w">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.totcross.</span></span><span class="sig-name descname"><span class="pre">sin2_theta_w</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.2312</span></em><a class="headerlink" href="#mcpairproduction.totcross.sin2_theta_w" title="Permalink to this definition"></a></dt>
+<dd><p>sin²(θ_w) where θ_w is the weak mixing angle</p>
 </dd></dl>
 
 </section>
