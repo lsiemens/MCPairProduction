@@ -4,24 +4,24 @@ The differential cross section and the analytic equation for the cross
 section for components due to the photon the Z boson and the interference
 of these two. These equations are derived for the two tree order diagrams
 of the process e⁻ + e⁺ →  𝜇⁻ + 𝜇⁺. The analytic functions for the cross
-section are given interms of the indefinite integral of the differential
+section are given in terms of the indefinite integral of the differential
 cross section so that the cross section over an arbitrary range of angles
-can be found in adition to the total cross section. The differential
-scattering cross sections are given in the centre of momentum frame for
-the ultrarelitivistic limit and defined such that the angle θ is the
+can be found in addition to the total cross section. The differential
+scattering cross sections are given in the center of momentum frame for
+the ultrarelativistic limit and defined such that the angle θ is the
 angle of the outgoing muon relative to the incoming electron.
 
-While these equation where derived spesificaly for the process
+While these equation where derived specifically for the process
 e⁻ + e⁺ →  𝜇⁻ + 𝜇⁺ they are applicable more broadly. The equations can
 be used for process of the form e⁻ + e⁺ →  f + f̄, where f is one of the
-following fermions: muon, tauon, electron neutreno, muon neutreno and
-tau neutreno. Note that in the case where the fermion is a neutrino then
-only the Z boson componet is relevent.
+following fermions: muon, tauon, electron neutrino, muon neutrino and
+tau neutrino. Note that in the case where the fermion is a neutrino then
+only the Z boson component is relevant.
 
 Note, internal calculations use natural units with ħ=c=1. Energies are
 in units of MeV if not otherwise specified.
 
-The differentail cross sections for the photon and Z boson terms are
+The differential cross sections for the photon and Z boson terms are
 given in Griffiths [1]_ Section 8.1 Hadron production in e⁺e⁻ Collisions
 and Example 9.5 Electron-Positron scattering near the Z pole. The full
 equations for the differential cross section are given in section 2 of [2]_.
@@ -44,7 +44,7 @@ from .constants import M_z, Gamma_z, g_e, g_z
 def dsigma_dOmega(E, theta, A_2):
     """Differential cross section
 
-    Compute the differential cross section interms of the scattering
+    Compute the differential cross section in terms of the scattering
     amplitude squared. This equation is given for the center of momentum
     frame.
 
@@ -80,7 +80,7 @@ def get_A_tot2(fermion_name="mu"):
 
     Get the total spin averaged scattering amplitude squared function
     for the interaction e⁻ + e⁺ →  f + f̄, where f is the specified
-    fermion. The total amplitude squared can be expressed interms of the
+    fermion. The total amplitude squared can be expressed in terms of the
     following three components: photon term, Z boson term and the cross
     terms. The equation is given below,
 
@@ -89,7 +89,7 @@ def get_A_tot2(fermion_name="mu"):
     Parameters
     ----------
     fermion_name : string
-        Name of the resulting fundimental fermion in the reaction.
+        Name of the resulting fundamental fermion in the reaction.
         Ex "mu" or "nu_e" ...
 
     Returns
@@ -97,7 +97,7 @@ def get_A_tot2(fermion_name="mu"):
     callable
         The function ⟨|A|²⟩ with arguments,
             - ``E``: The energy of the incoming particle.
-            - ``theta``: The angle of the outgoin muon.
+            - ``theta``: The angle of the outgoing muon.
     """
     A_gamma2 = get_A_gamma2(fermion_name)
     A_Z2 = get_A_Z2(fermion_name)
@@ -133,7 +133,7 @@ def get_A_gamma2(fermion_name="mu"):
     Parameters
     ----------
     fermion_name : string
-        Name of the resulting fundimental fermion in the reaction.
+        Name of the resulting fundamental fermion in the reaction.
         Ex "mu" or "nu_e" ...
 
     Returns
@@ -141,7 +141,7 @@ def get_A_gamma2(fermion_name="mu"):
     callable
         The function ⟨|A_𝛾|²⟩ with arguments,
             - ``E``: The energy of the incoming particle.
-            - ``theta``: The angle of the outgoin muon.
+            - ``theta``: The angle of the outgoing muon.
     """
     def A_gamma2(E, theta):
         """The function ⟨|A_𝛾|²⟩
@@ -180,7 +180,7 @@ def get_A_Z2(fermion_name="mu"):
     Parameters
     ----------
     fermion_name : string
-        Name of the resulting fundimental fermion in the reaction.
+        Name of the resulting fundamental fermion in the reaction.
         Ex "mu" or "nu_e" ...
 
     Returns
@@ -188,7 +188,7 @@ def get_A_Z2(fermion_name="mu"):
     callable
         The function ⟨|A_Z|²⟩ with arguments,
             - ``E``: The energy of the incoming particle.
-            - ``theta``: The angle of the outgoin muon.
+            - ``theta``: The angle of the outgoing muon.
     """
     c_Ve, c_Ae, c_Vf, c_Af = get_neutral_couplings(fermion_name)
     c_sum = (c_Ve**2 + c_Ae**2)*(c_Vf**2 + c_Af**2)
@@ -231,7 +231,7 @@ def get_A_cross2(fermion_name="mu"):
     Parameters
     ----------
     fermion_name : string
-        Name of the resulting fundimental fermion in the reaction.
+        Name of the resulting fundamental fermion in the reaction.
         Ex "mu" or "nu_e" ...
 
     Returns
@@ -239,7 +239,7 @@ def get_A_cross2(fermion_name="mu"):
     callable
         The function ⟨A_𝛾 A⁺_Z + A_Z A⁺_𝛾⟩ with arguments,
             - ``E``: The energy of the incoming particle.
-            - ``theta``: The angle of the outgoin muon.
+            - ``theta``: The angle of the outgoing muon.
     """
     c_Ve, c_Ae, c_Vf, c_Af = get_neutral_couplings(fermion_name)
 
@@ -273,7 +273,7 @@ def get_neutral_couplings(fermion_name):
     Parameters
     ----------
     fermion_name : string
-        Name of the resulting fundimental fermion in the reaction.
+        Name of the resulting fundamental fermion in the reaction.
         Ex "mu" or "nu_e" ...
 
     Returns
@@ -331,7 +331,7 @@ def get_A_tot2_integrated(fermion_name="mu", theta_range=[0, numpy.pi]):
     Get the total integrated spin averaged scattering amplitude squared
     function for the interaction e⁻ + e⁺ →  f + f̄, where f is the
     specified fermion. The total amplitude squared can be expressed
-    interms of the following three components: photon term, Z boson term
+    in terms of the following three components: photon term, Z boson term
     and the cross terms. The equation is given below,
 
     ⟨|A|²⟩_int = ⟨|A_𝛾|²⟩_int + ⟨|A_Z|²⟩_int + ⟨A_𝛾 A⁺_Z + A_Z A⁺_𝛾⟩_int
@@ -342,7 +342,7 @@ def get_A_tot2_integrated(fermion_name="mu", theta_range=[0, numpy.pi]):
     Parameters
     ----------
     fermion_name : string
-        Name of the resulting fundimental fermion in the reaction.
+        Name of the resulting fundamental fermion in the reaction.
         Ex "mu" or "nu_e" ...
     theta_range : list
         The bounds of integration.
@@ -387,7 +387,7 @@ def get_A_gamma2_integrated(fermion_name="mu", theta_range=[0, numpy.pi]):
     Parameters
     ----------
     fermion_name : string
-        Name of the resulting fundimental fermion in the reaction.
+        Name of the resulting fundamental fermion in the reaction.
         Ex "mu" or "nu_e" ...
     theta_range : array or float
         The bounds of integration.
@@ -436,7 +436,7 @@ def get_A_Z2_integrated(fermion_name="mu", theta_range=[0, numpy.pi]):
     Parameters
     ----------
     fermion_name : string
-        Name of the resulting fundimental fermion in the reaction.
+        Name of the resulting fundamental fermion in the reaction.
         Ex "mu" or "nu_e" ...
     theta_range : array or float
         The bounds of integration.
@@ -490,7 +490,7 @@ def get_A_cross2_integrated(fermion_name="mu", theta_range=[0, numpy.pi]):
     Parameters
     ----------
     fermion_name : string
-        Name of the resulting fundimental fermion in the reaction.
+        Name of the resulting fundamental fermion in the reaction.
         Ex "mu" or "nu_e" ...
     theta_range : array or float
         The bounds of integration.

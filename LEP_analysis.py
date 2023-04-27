@@ -2,7 +2,7 @@
 """Analysis of LEP simulation data
 
 This script produce plots of the simulated scattering events, and
-optionaly it prepares and saves the plots for the the slide presentation
+optionally it prepares and saves the plots for the the slide presentation
 on this project.
 """
 

@@ -12,7 +12,7 @@ is as follows,
     N_e = σ 𝓛_int
 
     Where σ is the total cross section and 𝓛_int is the time integrated
-    luminosity. Asumming the scattering events occur randomly with a
+    luminosity. Assuming the scattering events occur randomly with a
     constant frequency, then the number of events expected within a
     fixed time interval is described by a Poisson distribution. Generate
     a random number N from a Poisson distribution, with mean N_e, to use
@@ -56,7 +56,7 @@ from . import utils
 class accelerator:
     """Simulate particle accelerator
 
-    Simulate scattering events at a single beam energy or for a seqience
+    Simulate scattering events at a single beam energy or for a sequence
     of beam energies.
 
     Attributes
@@ -77,7 +77,7 @@ class accelerator:
         Run Monte Carlo integration for sequence of energies.
     """
     def __init__(self, L_int, dsigma_dOmega, M):
-        """Initalize an accelerator
+        """Initialize an accelerator
 
         Setup an accelerator for a specified interaction with a given
         integrated luminosity to be used for simulations.
@@ -110,7 +110,7 @@ class accelerator:
         Parameters
         ----------
         E : float
-            The beam energy at wich the simulation is running.
+            The beam energy at which the simulation is running.
         dsigma_max : float
             Maximum of the distribution given by the differential cross
             section.
@@ -152,7 +152,7 @@ class accelerator:
         Parameters
         ----------
         E : float
-            The beam energy at wich the simulation is running.
+            The beam energy at which the simulation is running.
         fname : string
             Name of data file.
         """

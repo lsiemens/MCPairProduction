@@ -23,7 +23,7 @@ def get_random_counts(expected_counts, seed=None):
         The mean of the Poisson distribution.
     seed : None, integer
         Seed value for the random number generator. If `seed` is None,
-        then numpy.random.default_rng will initalize with random entropy
+        then numpy.random.default_rng will initialize with random entropy
         from the OS.
 
     Returns
@@ -52,7 +52,7 @@ def get_random_samples(shape, seed=None):
         Shape of array of sample points.
     seed : None, integer
         Seed value for the random number generator. If `seed` is None,
-        then numpy.random.default_rng will initalize with random entropy
+        then numpy.random.default_rng will initialize with random entropy
         from the OS.
 
     Returns
@@ -91,7 +91,7 @@ def get_random_rejection_samples(shape, seed=None):
         samples will have the shape (2, *shape).
     seed : None, integer
         Seed value for the random number generator. If `seed` is None,
-        then numpy.random.default_rng will initalize with random entropy
+        then numpy.random.default_rng will initialize with random entropy
         from the OS.
 
     Returns
@@ -125,7 +125,7 @@ def dOmega(theta):
     Parameters
     ----------
     theta : array or float
-        Angular cordinate of the element
+        Angular coordinate of the element
 
     """
     return numpy.sin(theta)
@@ -144,7 +144,7 @@ def monte_carlo_integration(function, fArg, N, dx=dOmega):
 
     Parameters
     ----------
-    funcion : callable
+    function : callable
         The function to integrate over the sphere.
     fArg : float
         Parameter to pass into `function`.
@@ -182,7 +182,7 @@ def monte_carlo_integration_array(function, fArg, N, dx=dOmega):
 
     Parameters
     ----------
-    funcion : callable
+    function : callable
         The function to integrate over the sphere.
     fArg : array
         Parameter to pass into `function`.
@@ -212,15 +212,15 @@ def monte_carlo_sampling(function, fArg, maximum, N, dx=dOmega):
 
     An implementation of rejection sampling on a spherical surface. Using
     `get_random_rejection_samples` to get N uniformly distributed random
-    samples θ on the domain [0, 𝜋) along with corrisponding random values
+    samples θ on the domain [0, 𝜋) along with corresponding random values
     v in the range [0, 1). Where the function, g(θ), to sample over angles
     is function(θ)*dx(θ). Any sample with v > g(θ)/g_max is rejected.
-    This process is repreated to replace any rejected samples untill all
+    This process is repeated to replace any rejected samples until all
     samples are accepted.
 
     Parameters
     ----------
-    funcion : callable
+    function : callable
         The function to sample on the sphere.
     fArg : float
         Parameter to pass into `function`.

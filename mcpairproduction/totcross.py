@@ -8,9 +8,9 @@ using Monte Carlo integration.
 Note, internal calculations use natural units with ħ=c=1. Energies are
 in units of MeV if not otherwise specified.
 
-The differentail cross section is from Griffiths [1]_ Example 9.5
+The differential cross section is from Griffiths [1]_ Example 9.5
 Electron-Positron scattering near the Z pole, with *Review of Particle
-Physics* [2]_ as an additional refrence and source for physical constants.
+Physics* [2]_ as an additional reference and source for physical constants.
 Equations for calculating the weak coupling to the Z boson are from
 Thomson [3]_ section 15.3.1
 
@@ -67,7 +67,7 @@ def neutral_couplings(T_3, Q):
 
     c_A = T₃
 
-    Note in PDG material the coupling constants are reffered to as g_V and g_A.
+    Note in PDG material the coupling constants are referred to as g_V and g_A.
 
     Parameters
     ----------
@@ -89,10 +89,10 @@ def dsigma_dOmega(E, theta, fermion_name):
 
     Compute the differential cross section for the interaction
     e⁻ + e⁺ →  f + f̄ mediated by a Z boson. Note f may be any
-    fundimental fermion other than the electron, that case has not
+    fundamental fermion other than the electron, that case has not
     been implemented.
 
-    The differental cross section dσ/dΩ for these interactions is
+    The differential cross section dσ/dΩ for these interactions is
     given by the equation below.
 
     A = (g_z²E/[16𝜋])²/([4E² - M_z²]² + [M_z𝚪_z]²)
@@ -114,13 +114,13 @@ def dsigma_dOmega(E, theta, fermion_name):
     theta : array or float
         The angle relative to the beam line of the resulting fermions.
     fermion_name : string
-        Name of the resulting fundimental fermion for the reaction.
+        Name of the resulting fundamental fermion for the reaction.
         Ex "mu" or "nu_e" ...
 
     Returns
     -------
     dσ/dΩ : array or float
-        The differential cross section of the spesified interaction for
+        The differential cross section of the specified interaction for
         the given E and theta.
     """
     if fermion_name == "e":
@@ -156,13 +156,13 @@ def sigma_analytic(E, fermion_name):
     theta : array or float
         The angle relative to the beam line of the resulting fermions.
     fermion_name : string
-        Name of the resulting fundimental fermion for the reaction.
+        Name of the resulting fundamental fermion for the reaction.
         Ex "mu" or "nu_e" ...
 
     Returns
     -------
     σ : array or float
-        The total cross section of the spesified interaction for the
+        The total cross section of the specified interaction for the
         given E and theta.
     """
     # get the weak neutral coupling constants
@@ -192,7 +192,7 @@ def get_random_samples(shape, seed=None):
         samples will have the shape (*shape, 2).
     seed : None, int
         Seed value for the random number generator. If `seed` is None,
-        then numpy.random.default_rng will initalize with random entropy
+        then numpy.random.default_rng will initialize with random entropy
         from the OS.
 
     Returns
@@ -231,7 +231,7 @@ def get_random_rejection_samples(shape, seed=None):
         samples will have the shape (*shape, 3).
     seed : None, int
         Seed value for the random number generator. If `seed` is None,
-        then numpy.random.default_rng will initalize with random entropy
+        then numpy.random.default_rng will initialize with random entropy
         from the OS.
 
     Returns
@@ -264,9 +264,9 @@ def sigma_estimate(E, fermion_name, N):
     Parameters
     ----------
     E : array
-        An array of energies to evaluat the total cross section at.
+        An array of energies to evaluate the total cross section at.
     fermion_name : string
-        Name of the resulting fundimental fermion for the reaction.
+        Name of the resulting fundamental fermion for the reaction.
         Ex "mu" or "nu_e" ...
     N : int
         The number of samples to use in the the Monte Carlo integral for
@@ -300,13 +300,13 @@ def get_reaction_equation(fermion_name):
     Parameters
     ----------
     fermion_name : string
-        Name of the resulting fundimental fermion for the reaction.
+        Name of the resulting fundamental fermion for the reaction.
         Ex "mu" or "nu_e" ...
 
     Returns
     -------
     string
-        Latex formated reaction equation.
+        Latex formatted reaction equation.
     """
     names = {"nu_e": ("\\nu_e", "\\overline{\\nu}_e"),
              "nu_mu": ("\\nu_\\mu", "\\overline{\\nu}_\\mu"),
@@ -330,7 +330,7 @@ def plot_compare(ax, fermion_name, range, MCsamples, resolution=100, logaxis=Tru
     ax : pyplot axis
         The axis on which to make the plot.
     fermion_name : string
-        Name of the resulting fundimental fermion for the reaction.
+        Name of the resulting fundamental fermion for the reaction.
         Ex "mu" or "nu_e" ...
     range : tuple
         Range of energy to plot in MeV, or the logarithm of the energies
@@ -341,7 +341,7 @@ def plot_compare(ax, fermion_name, range, MCsamples, resolution=100, logaxis=Tru
     resolution : int
         The resolution of sampled energy values.
     logaxis : boolean
-        If true, the plot will be displaid with log-log axis.
+        If true, the plot will be displayed with log-log axis.
     """
     if logaxis:
         E_MC = 10**numpy.linspace(*range, resolution)

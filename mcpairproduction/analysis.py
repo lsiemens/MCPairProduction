@@ -12,7 +12,7 @@ where N_F is the number of events at a given energy with 0 < θ < 𝜋/2 and
 N_B is the number of events at a given energy with 𝜋/2 < θ < 𝜋.
 
 For more information about the forward-backward asymmetry see the PDG
-book [1]_ section 10.5.1 Electro weak physics off the Z pole and Thomson
+book [1]_ section 10.5.1 Electroweak physics off the Z pole and Thomson
 [3]_ chapter 16 section 2.2 Measurements of the weak mixing angle.
 
 .. [1] R.L. Workman et al. (Particle Data Group), Prog. Theor. Exp. Phys.
@@ -69,7 +69,7 @@ def load(fname):
     p_mag : array
         Magnitude of the 3-momentum of the particle.
     theta : array
-        Angle of the 3-momentum relative to the incomming electron.
+        Angle of the 3-momentum relative to the incoming electron.
     phi : array
         Azimuthal angle of the particle, by convention the coordinate
         system is selected such that φ = 0.
@@ -294,7 +294,7 @@ def plot_energy_distribution(ax, Run_data, n_bins, resolution=100,
 def plot_FB_asymmetry(ax, Run_data, n_bins, resolution=100, Nsigma=1):
     """Plot the Forward-Backward asymmetry
 
-    Make plot of forward-backward asymetry vs energy and compare against
+    Make plot of forward-backward asymmetry vs energy and compare against
     theoretical predictions.
 
     Parameters

@@ -5,7 +5,7 @@ import sys
 import numpy
 
 def progress_bar(message, step, max, divisions=10):
-    """Update commandline progress bar
+    """Update command line progress bar
 
     Parameters
     ----------

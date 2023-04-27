@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Suplimental figures for the presentation
+Supplemental figures for the presentation
 """
 
 import sys

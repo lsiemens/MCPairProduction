@@ -62,7 +62,7 @@ def neutral_couplings(T_3, Q):
 
     c_A = T₃
 
-    Note in PDG material the coupling constants are reffered to as g_V and g_A.
+    Note in PDG material the coupling constants are referred to as g_V and g_A.
 
     Parameters
     ----------
