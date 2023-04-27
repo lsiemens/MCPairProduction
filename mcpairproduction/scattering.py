@@ -168,8 +168,11 @@ def get_A_Z2(fermion_name="mu"):
     the specified fermion. The equations are given below,
 
     C⁺ = (Cᵥ_e² + Cₐ_e²)(Cᵥ_𝜇² + Cₐ_𝜇²)
+
     Cˣ = Cᵥ_e Cₐ_e Cᵥ_𝜇 Cₐ_𝜇
+
     A = (g_z E)⁴/([4E² - M_z²]² + [M_z 𝚪_z]²)
+
     ⟨|A_Z|²⟩ = A (C⁺(1 + cos(θ)²) + 8Cˣcos(θ))
 
     where g_z is the neutral weak coupling, M_z is the mass of the Z boson,
@@ -220,7 +223,9 @@ def get_A_cross2(fermion_name="mu"):
     where f is the specified fermion. The equations are given below,
 
     A = 8(g_e g_z E²)²/([4E² - M_z²]² + [M_z 𝚪_z]²)
+
     B = (1 - [M_z/(2 E)]²)
+
     ⟨A_𝛾 A⁺_Z + A_Z A⁺_𝛾⟩ = AB(Cᵥ_e Cᵥ_𝜇[1 + cos(θ)²] + 2Cₐ_e Cₐ_𝜇cos(θ))
 
     where g_e is the electromagnetic coupling, g_z is the neutral weak
@@ -379,6 +384,7 @@ def get_A_gamma2_integrated(fermion_name="mu", theta_range=[0, numpy.pi]):
     where f is the specified fermion. The equation is given below,
 
     F(θ) = g_e⁴*(cos(θ) + cos(θ)³/3)
+
     ⟨|A_𝛾|²⟩_int = F(b) - F(a)
 
     where g_e is the electromagnetic coupling constant and [a, b] is the
@@ -423,9 +429,13 @@ def get_A_Z2_integrated(fermion_name="mu", theta_range=[0, numpy.pi]):
     where f is the specified fermion. The equations are given below,
 
     C⁺ = (Cᵥ_e² + Cₐ_e²)(Cᵥ_𝜇² + Cₐ_𝜇²)
+
     Cˣ = Cᵥ_e Cₐ_e Cᵥ_𝜇 Cₐ_𝜇
+
     A = (g_z E)⁴/([4E² - M_z²]² + [M_z 𝚪_z]²)
+
     F(θ) = A (C⁺(cos(θ) + cos(θ)³/3) + 4Cˣcos(θ)²)
+
     ⟨|A_Z|²⟩ = F(b) - F(a)
 
     where g_z is the neutral weak coupling, M_z is the mass of the Z boson,
@@ -477,8 +487,11 @@ def get_A_cross2_integrated(fermion_name="mu", theta_range=[0, numpy.pi]):
     where f is the specified fermion. The equations are given below,
 
     A = 8(g_e g_z E²)²/([4E² - M_z²]² + [M_z 𝚪_z]²)
+
     B = (1 - [M_z/(2 E)]²)
+
     F(θ) = AB(Cᵥ_e Cᵥ_𝜇[cos(θ) + cos(θ)³/3] + Cₐ_e Cₐ_𝜇cos(θ)²)
+
     ⟨A_𝛾 A⁺_Z + A_Z A⁺_𝛾⟩ = F(b) - F(a)
 
     where g_e is the electromagnetic coupling, g_z is the neutral weak
