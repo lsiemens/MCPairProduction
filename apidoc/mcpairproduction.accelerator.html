@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mcpairproduction.accelerator module &mdash; MCPairProduction: Phys 424 Project  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mcpairproduction.analysis module" href="mcpairproduction.analysis.html" />
+    <link rel="prev" title="mcpairproduction.examples.use_totcross module" href="mcpairproduction.examples.use_totcross.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> MCPairProduction: Phys 424 Project
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="mcpairproduction.html">mcpairproduction package</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="mcpairproduction.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="mcpairproduction.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">mcpairproduction.accelerator module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.accelerator.accelerator"><code class="docutils literal notranslate"><span class="pre">accelerator</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.analysis.html">mcpairproduction.analysis module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.constants.html">mcpairproduction.constants module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.sampling.html">mcpairproduction.sampling module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.scattering.html">mcpairproduction.scattering module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.totcross.html">mcpairproduction.totcross module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.utils.html">mcpairproduction.utils module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="LEP_analysis.html">LEP_analysis module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LEP_setup.html">LEP_setup module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_examples.html">run_examples module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MCPairProduction: Phys 424 Project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="mcpairproduction.html">mcpairproduction package</a></li>
+      <li class="breadcrumb-item active">mcpairproduction.accelerator module</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-mcpairproduction.accelerator">
+<span id="mcpairproduction-accelerator-module"></span><h1>mcpairproduction.accelerator module<a class="headerlink" href="#module-mcpairproduction.accelerator" title="Permalink to this heading"></a></h1>
+<p>Simulate particle accelerator</p>
+<p>Setup and run Monte Carlo simulations of a particle accelerator using the
+center of momentum frame for a single process. The simulation procedure
+is as follows,</p>
+<blockquote>
+<div><p>Use Monte Carlo integration and Monte Carlo sampling to simulate
+scattering events at a fixed energy. The total cross section σ is
+estimated using Monte Carlo integration. The expected number of
+scattering events, N_e, is given by the equation,</p>
+<p>N_e = σ 𝓛_int</p>
+<p>Where σ is the total cross section and 𝓛_int is the time integrated
+luminosity. Assuming the scattering events occur randomly with a
+constant frequency, then the number of events expected within a
+fixed time interval is described by a Poisson distribution. Generate
+a random number N from a Poisson distribution, with mean N_e, to use
+as the number of scattering events during a run. Use rejection
+sampling to generate N samples of random angles from the distribution
+given by the differential cross section. The magnitude of the
+3-momentum of the outgoing particle is,</p>
+<p>p = sqrt(E² - m²)</p>
+<p>where E is the energy of the particle and m is the mass of the
+particle. Data entries are saved as (E, p, θ, φ). The processes being
+simulated are planer (since there are two outgoing particles) and the
+distribution is uniform in the azimuthal angle, so with out loss of
+generality φ = 0.</p>
+</div></blockquote>
+<p>Note, internal calculations use natural units with ħ=c=1. Energies are
+in units of MeV if not otherwise specified.</p>
+<p>For more on beam luminosity see Griffiths <a class="reference internal" href="#r820c6ad5b43d-1" id="id1">[1]</a> chapter 6 section 1.2 Cross
+Sections, the PDG book <a class="reference internal" href="#r820c6ad5b43d-2" id="id2">[2]</a> section 31.1 Energy and Luminosity or Thomson
+<a class="reference internal" href="#r820c6ad5b43d-3" id="id3">[3]</a> chapter 1 section 4 Measurements at particle accelerators.</p>
+<dl class="citation">
+<dt class="label" id="r820c6ad5b43d-1"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>D. J. Griffiths, <em>Introduction to elementary particles</em>, 2nd,
+rev. ed. Weinheim: Wiley-VCH, 2008.</p>
+</dd>
+<dt class="label" id="r820c6ad5b43d-2"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dd><p>R.L. Workman et al. (Particle Data Group), Prog. Theor. Exp. Phys.
+2022, 083C01 (2022)</p>
+</dd>
+<dt class="label" id="r820c6ad5b43d-3"><span class="brackets"><a class="fn-backref" href="#id3">3</a></span></dt>
+<dd><p>M. Thomson, <em>Modern particle physics</em>. Cambridge: Cambridge
+University Press, 2013.</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="mcpairproduction.accelerator.accelerator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mcpairproduction.accelerator.</span></span><span class="sig-name descname"><span class="pre">accelerator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L_int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsigma_dOmega</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/accelerator.html#accelerator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.accelerator.accelerator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Simulate particle accelerator</p>
+<p>Simulate scattering events at a single beam energy or for a sequence
+of beam energies.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>L_int</strong><span class="classifier">float</span></dt><dd><p>The integrated luminosity of simulation runs.</p>
+</dd>
+<dt><strong>dsigma_dOmega</strong><span class="classifier">callable</span></dt><dd><p>The differential cross of the interaction process.</p>
+</dd>
+<dt><strong>M</strong><span class="classifier">float</span></dt><dd><p>The mass of the outgoing particle.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 67%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>run(E, fname)</strong></p></td>
+<td><p>Run Monte Carlo integration at specified energy.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>run_sequence(E, fname)</strong></p></td>
+<td><p>Run Monte Carlo integration for sequence of energies.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="mcpairproduction.accelerator.accelerator.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/accelerator.html#accelerator.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.accelerator.accelerator.run" title="Permalink to this definition"></a></dt>
+<dd><p>Run simulation at fixed energy</p>
+<p>Simulate scattering events at a given energy. For more detail
+see the module docstring.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>E</strong><span class="classifier">float</span></dt><dd><p>The beam energy at which the simulation is running.</p>
+</dd>
+<dt><strong>fname</strong><span class="classifier">string</span></dt><dd><p>Name of data file.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mcpairproduction.accelerator.accelerator.run_sequence">
+<span class="sig-name descname"><span class="pre">run_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/accelerator.html#accelerator.run_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.accelerator.accelerator.run_sequence" title="Permalink to this definition"></a></dt>
+<dd><p>Run simulation for a sequence of energies</p>
+<p>Simulate scattering events for each energy in the sequence and
+split the total integrated luminosity evenly across all of the
+runs. For more detail see the module docstring.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>E</strong><span class="classifier">array</span></dt><dd><p>Sequence of beam energies at which to run the simulation.</p>
+</dd>
+<dt><strong>fname</strong><span class="classifier">string</span></dt><dd><p>Name of data file.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="mcpairproduction.examples.use_totcross.html" class="btn btn-neutral float-left" title="mcpairproduction.examples.use_totcross module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mcpairproduction.analysis.html" class="btn btn-neutral float-right" title="mcpairproduction.analysis module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Luke Siemens.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

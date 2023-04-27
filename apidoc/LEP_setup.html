@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>run_examples module &mdash; MCPairProduction: Phys 424 Project  documentation</title>
+  <title>LEP_setup module &mdash; MCPairProduction: Phys 424 Project  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -20,7 +20,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="LEP_setup module" href="LEP_setup.html" /> 
+    <link rel="next" title="run_examples module" href="run_examples.html" />
+    <link rel="prev" title="LEP_analysis module" href="LEP_analysis.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,8 +44,11 @@
 </ul>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="LEP_analysis.html">LEP_analysis module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="LEP_setup.html">LEP_setup module</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">run_examples module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">LEP_setup module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#LEP_setup.dsigma_dOmega"><code class="docutils literal notranslate"><span class="pre">dsigma_dOmega()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_examples.html">run_examples module</a></li>
 </ul>
 
         </div>
@@ -61,7 +65,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a></li>
-      <li class="breadcrumb-item active">run_examples module</li>
+      <li class="breadcrumb-item active">LEP_setup module</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -70,18 +74,45 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-run_examples">
-<span id="run-examples-module"></span><h1>run_examples module<a class="headerlink" href="#module-run_examples" title="Permalink to this heading"></a></h1>
-<p>Run examples and tests</p>
-<p>This script runs examples and tests for validating mcpairproduction
-against the code for the first part of the project.</p>
+  <section id="module-LEP_setup">
+<span id="lep-setup-module"></span><h1>LEP_setup module<a class="headerlink" href="#module-LEP_setup" title="Permalink to this heading"></a></h1>
+<p>Setup LEP simulation</p>
+<p>This script simulates particle scattering by the process
+e⁻ + e⁺ →  𝜇⁻ + 𝜇⁺ at LEP. For the integrated luminosity and beam energy
+of the LEP see <a class="reference internal" href="#ra5ce5735bd87-1" id="id1">[1]</a>.</p>
+<dl class="citation">
+<dt class="label" id="ra5ce5735bd87-1"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Arduini, G., R. Assmann, R. Bailey, A. Butterworth, P. Collier,
+K. Cornelis, S. Fartoukh, et al. “Electron-Positron Collisions at
+209 GeV in LEP.” In PACS2001. Proceedings of the 2001 Particle
+Accelerator Conference (Cat. No.01CH37268), 1:356-358 vol.1. IEEE,
+2001.</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="LEP_setup.dsigma_dOmega">
+<span class="sig-prename descclassname"><span class="pre">LEP_setup.</span></span><span class="sig-name descname"><span class="pre">dsigma_dOmega</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/LEP_setup.html#dsigma_dOmega"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#LEP_setup.dsigma_dOmega" title="Permalink to this definition"></a></dt>
+<dd><p>Differential scattering cross section</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>E</strong><span class="classifier">array</span></dt><dd><p>The beam energy.</p>
+</dd>
+<dt><strong>theta</strong><span class="classifier">array</span></dt><dd><p>The angle of the outgoing muon.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="LEP_setup.html" class="btn btn-neutral float-left" title="LEP_setup module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="LEP_analysis.html" class="btn btn-neutral float-left" title="LEP_analysis module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="run_examples.html" class="btn btn-neutral float-right" title="run_examples module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

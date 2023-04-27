@@ -1,0 +1,7 @@
+mcpairproduction.scattering module
+==================================
+
+.. automodule:: mcpairproduction.scattering
+   :members:
+   :undoc-members:
+   :show-inheritance:

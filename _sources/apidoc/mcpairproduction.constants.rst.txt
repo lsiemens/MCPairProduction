@@ -1,0 +1,7 @@
+mcpairproduction.constants module
+=================================
+
+.. automodule:: mcpairproduction.constants
+   :members:
+   :undoc-members:
+   :show-inheritance:

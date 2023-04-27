@@ -1,0 +1,29 @@
+mcpairproduction package
+========================
+
+.. automodule:: mcpairproduction
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 1
+
+   mcpairproduction.examples
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   mcpairproduction.accelerator
+   mcpairproduction.analysis
+   mcpairproduction.constants
+   mcpairproduction.sampling
+   mcpairproduction.scattering
+   mcpairproduction.totcross
+   mcpairproduction.utils

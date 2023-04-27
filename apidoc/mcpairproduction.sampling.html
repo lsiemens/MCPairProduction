@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mcpairproduction.sampling module &mdash; MCPairProduction: Phys 424 Project  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mcpairproduction.scattering module" href="mcpairproduction.scattering.html" />
+    <link rel="prev" title="mcpairproduction.constants module" href="mcpairproduction.constants.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> MCPairProduction: Phys 424 Project
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="mcpairproduction.html">mcpairproduction package</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="mcpairproduction.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="mcpairproduction.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.accelerator.html">mcpairproduction.accelerator module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.analysis.html">mcpairproduction.analysis module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.constants.html">mcpairproduction.constants module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">mcpairproduction.sampling module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.sampling.dOmega"><code class="docutils literal notranslate"><span class="pre">dOmega()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.sampling.get_random_counts"><code class="docutils literal notranslate"><span class="pre">get_random_counts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.sampling.get_random_rejection_samples"><code class="docutils literal notranslate"><span class="pre">get_random_rejection_samples()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.sampling.get_random_samples"><code class="docutils literal notranslate"><span class="pre">get_random_samples()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.sampling.monte_carlo_integration"><code class="docutils literal notranslate"><span class="pre">monte_carlo_integration()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.sampling.monte_carlo_integration_array"><code class="docutils literal notranslate"><span class="pre">monte_carlo_integration_array()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.sampling.monte_carlo_sampling"><code class="docutils literal notranslate"><span class="pre">monte_carlo_sampling()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.scattering.html">mcpairproduction.scattering module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.totcross.html">mcpairproduction.totcross module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.utils.html">mcpairproduction.utils module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="LEP_analysis.html">LEP_analysis module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LEP_setup.html">LEP_setup module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_examples.html">run_examples module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MCPairProduction: Phys 424 Project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="mcpairproduction.html">mcpairproduction package</a></li>
+      <li class="breadcrumb-item active">mcpairproduction.sampling module</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-mcpairproduction.sampling">
+<span id="mcpairproduction-sampling-module"></span><h1>mcpairproduction.sampling module<a class="headerlink" href="#module-mcpairproduction.sampling" title="Permalink to this heading"></a></h1>
+<p>Sampling methods and Monte Carlo integration</p>
+<p>Rejection sampling and Monte Carlo integration are introduced in the PDG
+book <a class="reference internal" href="#ra9a3b4cb7c36-1" id="id1">[1]</a> section 42. For more on Monte Carlo integration and rejection
+sampling is given by Gibbs <a class="reference internal" href="#ra9a3b4cb7c36-2" id="id2">[2]</a> Chapter 2, see section 2.2 and 2.3.7</p>
+<dl class="citation">
+<dt class="label" id="ra9a3b4cb7c36-1"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>R.L. Workman et al. (Particle Data Group), Prog. Theor. Exp. Phys.
+2022, 083C01 (2022)</p>
+</dd>
+<dt class="label" id="ra9a3b4cb7c36-2"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dd><p>W.R. Gibbs, Computation in Modern Physics, 3rd Ed</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.sampling.dOmega">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.sampling.</span></span><span class="sig-name descname"><span class="pre">dOmega</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/sampling.html#dOmega"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.sampling.dOmega" title="Permalink to this definition"></a></dt>
+<dd><p>Solid angle element</p>
+<p>dΩ = sin(θ)dθdφ</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>theta</strong><span class="classifier">array or float</span></dt><dd><p>Angular coordinate of the element</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.sampling.get_random_counts">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.sampling.</span></span><span class="sig-name descname"><span class="pre">get_random_counts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expected_counts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/sampling.html#get_random_counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.sampling.get_random_counts" title="Permalink to this definition"></a></dt>
+<dd><p>Get random counts of events</p>
+<p>Draw random event counts using a Poisson distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>expected_counts</strong><span class="classifier">float</span></dt><dd><p>The mean of the Poisson distribution.</p>
+</dd>
+<dt><strong>seed</strong><span class="classifier">None, integer</span></dt><dd><p>Seed value for the random number generator. If <cite>seed</cite> is None,
+then numpy.random.default_rng will initialize with random entropy
+from the OS.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>counts</strong><span class="classifier">integer</span></dt><dd><p>A random integer sampled from the Poisson distribution.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.sampling.get_random_rejection_samples">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.sampling.</span></span><span class="sig-name descname"><span class="pre">get_random_rejection_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/sampling.html#get_random_rejection_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.sampling.get_random_rejection_samples" title="Permalink to this definition"></a></dt>
+<dd><p>Generate random samples of (θ, v) for rejection sampling</p>
+<p>The samples are generated uniformly in the domain, with θ ∊ [0, 𝜋)
+and v ∊ [0, 1).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>shape</strong><span class="classifier">tuple</span></dt><dd><p>Shape of array of sample point pairs. The resulting array of
+samples will have the shape (2, <a href="#id3"><span class="problematic" id="id4">*</span></a>shape).</p>
+</dd>
+<dt><strong>seed</strong><span class="classifier">None, integer</span></dt><dd><p>Seed value for the random number generator. If <cite>seed</cite> is None,
+then numpy.random.default_rng will initialize with random entropy
+from the OS.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>samples</strong><span class="classifier">array</span></dt><dd><p>Random samples in the domain with the shape (2, <a href="#id5"><span class="problematic" id="id6">*</span></a>shape).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.sampling.get_random_samples">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.sampling.</span></span><span class="sig-name descname"><span class="pre">get_random_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/sampling.html#get_random_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.sampling.get_random_samples" title="Permalink to this definition"></a></dt>
+<dd><p>Generate random samples of an angle, θ</p>
+<p>The samples are generated uniformly in the domain, with θ ∊ [0, 𝜋).
+The size of the rectangular domain is also given.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>shape</strong><span class="classifier">tuple</span></dt><dd><p>Shape of array of sample points.</p>
+</dd>
+<dt><strong>seed</strong><span class="classifier">None, integer</span></dt><dd><p>Seed value for the random number generator. If <cite>seed</cite> is None,
+then numpy.random.default_rng will initialize with random entropy
+from the OS.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>samples</strong><span class="classifier">array</span></dt><dd><p>Random samples in the domain.</p>
+</dd>
+<dt><strong>domain_size</strong><span class="classifier">float</span></dt><dd><p>Size of the rectangular domain.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.sampling.monte_carlo_integration">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.sampling.</span></span><span class="sig-name descname"><span class="pre">monte_carlo_integration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fArg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dx=&lt;function</span> <span class="pre">dOmega&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/sampling.html#monte_carlo_integration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.sampling.monte_carlo_integration" title="Permalink to this definition"></a></dt>
+<dd><p>Monte Carlo integration</p>
+<p>An implementation of Monte Carlo integration on a spherical
+surface. Using <cite>get_random_samples</cite> to get N uniformly distributed
+random samples θ on the domain [0, 𝜋). Where the function, g(θ), to
+integrate over angle is function(θ)*dx(θ). The estimate of the
+integral is V*E[g(θ)], where E[] is the mean of the samples and V
+is the size of the domain. The maximum of g(θ) is computed for use
+in rejection sampling.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>function</strong><span class="classifier">callable</span></dt><dd><p>The function to integrate over the sphere.</p>
+</dd>
+<dt><strong>fArg</strong><span class="classifier">float</span></dt><dd><p>Parameter to pass into <cite>function</cite>.</p>
+</dd>
+<dt><strong>N</strong><span class="classifier">integer</span></dt><dd><p>The number of samples to use in the the Monte Carlo integral.</p>
+</dd>
+<dt><strong>dx</strong><span class="classifier">callable</span></dt><dd><p>The differential element for the integral.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>value</strong><span class="classifier">float</span></dt><dd><p>Integral of <cite>function</cite> over all the sphere.</p>
+</dd>
+<dt><strong>max_sample</strong><span class="classifier">float</span></dt><dd><p>The maximum sampled value of the integrand.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.sampling.monte_carlo_integration_array">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.sampling.</span></span><span class="sig-name descname"><span class="pre">monte_carlo_integration_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fArg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dx=&lt;function</span> <span class="pre">dOmega&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/sampling.html#monte_carlo_integration_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.sampling.monte_carlo_integration_array" title="Permalink to this definition"></a></dt>
+<dd><p>Monte Carlo integration for an array of parameters</p>
+<p>An implementation of Monte Carlo integration on a spherical
+surface. Using <cite>get_random_samples</cite> to get N uniformly distributed
+random samples θ on the domain [0, 𝜋). Where the function, g(θ), to
+integrate over angle is function(θ)*dx(θ). The estimate of the
+integral is V*E[g(θ)], where E[] is the mean of the samples and V
+is the size of the domain. The maximum of g(θ) is computed for use
+in rejection sampling.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>function</strong><span class="classifier">callable</span></dt><dd><p>The function to integrate over the sphere.</p>
+</dd>
+<dt><strong>fArg</strong><span class="classifier">array</span></dt><dd><p>Parameter to pass into <cite>function</cite>.</p>
+</dd>
+<dt><strong>N</strong><span class="classifier">integer</span></dt><dd><p>The number of samples to use in the the Monte Carlo integral.</p>
+</dd>
+<dt><strong>dx</strong><span class="classifier">callable</span></dt><dd><p>The differential element for the integral.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>value</strong><span class="classifier">array</span></dt><dd><p>Integral of <cite>function</cite> over all the sphere.</p>
+</dd>
+<dt><strong>max_sample</strong><span class="classifier">array</span></dt><dd><p>The maximum sampled value of the integrand.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.sampling.monte_carlo_sampling">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.sampling.</span></span><span class="sig-name descname"><span class="pre">monte_carlo_sampling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fArg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dx=&lt;function</span> <span class="pre">dOmega&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/sampling.html#monte_carlo_sampling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.sampling.monte_carlo_sampling" title="Permalink to this definition"></a></dt>
+<dd><p>Rejection sampling</p>
+<p>An implementation of rejection sampling on a spherical surface. Using
+<cite>get_random_rejection_samples</cite> to get N uniformly distributed random
+samples θ on the domain [0, 𝜋) along with corresponding random values
+v in the range [0, 1). Where the function, g(θ), to sample over angles
+is function(θ)*dx(θ). Any sample with v &gt; g(θ)/g_max is rejected.
+This process is repeated to replace any rejected samples until all
+samples are accepted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>function</strong><span class="classifier">callable</span></dt><dd><p>The function to sample on the sphere.</p>
+</dd>
+<dt><strong>fArg</strong><span class="classifier">float</span></dt><dd><p>Parameter to pass into <cite>function</cite>.</p>
+</dd>
+<dt><strong>maximum</strong><span class="classifier">float</span></dt><dd><p>The maximum of function(fArg, θ)dx(θ).</p>
+</dd>
+<dt><strong>N</strong><span class="classifier">integer</span></dt><dd><p>The number of samples to generate.</p>
+</dd>
+<dt><strong>dx</strong><span class="classifier">callable</span></dt><dd><p>The differential element</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>samples</strong><span class="classifier">array</span></dt><dd><p>N random angles subject to the distribution <cite>function(fArg, θ)</cite>
+over the sphere.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="mcpairproduction.constants.html" class="btn btn-neutral float-left" title="mcpairproduction.constants module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mcpairproduction.scattering.html" class="btn btn-neutral float-right" title="mcpairproduction.scattering module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Luke Siemens.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

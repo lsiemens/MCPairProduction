@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mcpairproduction.totcross &mdash; MCPairProduction: Phys 424 Project  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> MCPairProduction: Phys 424 Project
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../apidoc/mcpairproduction.html">mcpairproduction package</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../apidoc/LEP_analysis.html">LEP_analysis module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apidoc/LEP_setup.html">LEP_setup module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apidoc/run_examples.html">run_examples module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MCPairProduction: Phys 424 Project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">mcpairproduction.totcross</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for mcpairproduction.totcross</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Estimate total cross sections of neutral weak interactions.</span>
+
+<span class="sd">Estimates the total interaction cross section for electron positron</span>
+<span class="sd">scattering mediated by the Z boson e⁻ + e⁺ →  f + f̄. The estimate of</span>
+<span class="sd">the total cross section is computed from the differential cross section</span>
+<span class="sd">using Monte Carlo integration.</span>
+
+<span class="sd">Note, internal calculations use natural units with ħ=c=1. Energies are</span>
+<span class="sd">in units of MeV if not otherwise specified.</span>
+
+<span class="sd">The differential cross section is from Griffiths [1]_ Example 9.5</span>
+<span class="sd">Electron-Positron scattering near the Z pole, with *Review of Particle</span>
+<span class="sd">Physics* [2]_ as an additional reference and source for physical constants.</span>
+<span class="sd">Equations for calculating the weak coupling to the Z boson are from</span>
+<span class="sd">Thomson [3]_ section 15.3.1</span>
+
+<span class="sd">.. [1] D. J. Griffiths, *Introduction to elementary particles*, 2nd,</span>
+<span class="sd">   rev. ed. Weinheim: Wiley-VCH, 2008.</span>
+
+<span class="sd">.. [2] R.L. Workman et al. (Particle Data Group), Prog. Theor. Exp. Phys.</span>
+<span class="sd">   2022, 083C01 (2022)</span>
+
+<span class="sd">.. [3] M. Thomson, *Modern particle physics*. Cambridge: Cambridge</span>
+<span class="sd">   University Press, 2013.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="c1"># Constants: values from PDG values</span>
+<span class="n">M_z</span> <span class="o">=</span> <span class="mf">9.11876E4</span>  <span class="c1"># in MeV/c²; mass of the Z boson</span>
+<span class="n">Gamma_z</span> <span class="o">=</span> <span class="mf">2.4952E3</span>  <span class="c1"># in MeV/hbar; decay rate of Z boson</span>
+<span class="n">hbarc2</span> <span class="o">=</span> <span class="mf">3.893793721E5</span>  <span class="c1"># in MeV²mbarn; conversion factor (ħc)²</span>
+<span class="c1"># unitless constants</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">7.29735256E-3</span>  <span class="c1"># fine-structure constant</span>
+<span class="n">sin2_theta_w</span> <span class="o">=</span> <span class="mf">0.2312</span>  <span class="c1"># sin²(θ_w) where θ_w is the weak mixing angle</span>
+
+<span class="c1"># calculating the coupling to the Z boson</span>
+<span class="c1"># The electromagnetic coupling constant is g_e² = 4𝜋*𝛼 (note g_e equal</span>
+<span class="c1"># to the elementary electric charge in natural units). This is related</span>
+<span class="c1"># to the coupling constant for the Z boson g_z by the equation</span>
+<span class="c1"># g_e = g_z cos(θ_w)sin(θ_w). Using these equations the constant g_z in</span>
+<span class="c1"># terms of fine structure constant and weak mixing angle is</span>
+<span class="c1"># g_z = sqrt(4𝜋*𝛼/[sin²(θ_w)(1 - sin²(θ_w))])</span>
+<span class="n">g_z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">alpha</span><span class="o">/</span><span class="p">(</span><span class="n">sin2_theta_w</span> <span class="o">-</span> <span class="n">sin2_theta_w</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="c1"># a dictionary of fermion labels, all of the entries contain a tuple of</span>
+<span class="c1"># the particle&#39;s weak isospin T_3 and charge Q. The tuples have the</span>
+<span class="c1"># format (T_3, Q)</span>
+<span class="n">fermions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;nu_e&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>  <span class="s2">&quot;nu_mu&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">&quot;nu_tau&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="s2">&quot;e&quot;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>   <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>  <span class="s2">&quot;tau&quot;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+            <span class="s2">&quot;u&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">),</span>   <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">),</span>   <span class="s2">&quot;t&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">),</span>
+            <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">),</span> <span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">),</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">)}</span>
+
+
+<div class="viewcode-block" id="neutral_couplings"><a class="viewcode-back" href="../../apidoc/mcpairproduction.totcross.html#mcpairproduction.totcross.neutral_couplings">[docs]</a><span class="k">def</span> <span class="nf">neutral_couplings</span><span class="p">(</span><span class="n">T_3</span><span class="p">,</span> <span class="n">Q</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the vector and axial-vector coupling constants.</span>
+
+<span class="sd">    The coupling constants for a fermion are determined by the particle&#39;s</span>
+<span class="sd">    weak isospin T₃ and charge Q, see PDG section 10.1 for more details.</span>
+<span class="sd">    The vector coupling is,</span>
+
+<span class="sd">    c_V = T₃ - 2Qsin²(θ_w)</span>
+
+<span class="sd">    where θ_w is the weak mixing angle. The axial-vector coupling is,</span>
+
+<span class="sd">    c_A = T₃</span>
+
+<span class="sd">    Note in PDG material the coupling constants are referred to as g_V and g_A.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    T_3 : float</span>
+<span class="sd">        The weak isospin of the fermion.</span>
+<span class="sd">    Q : float</span>
+<span class="sd">        The electric charge of the fermion.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (c_V, c_A) : tuple</span>
+<span class="sd">        The vector and axial-vector coupling constants.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">T_3</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="n">Q</span><span class="o">*</span><span class="n">sin2_theta_w</span><span class="p">,</span> <span class="n">T_3</span></div>
+
+
+<div class="viewcode-block" id="dsigma_dOmega"><a class="viewcode-back" href="../../apidoc/mcpairproduction.totcross.html#mcpairproduction.totcross.dsigma_dOmega">[docs]</a><span class="k">def</span> <span class="nf">dsigma_dOmega</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">fermion_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Differential cross section for electron positron scattering.</span>
+
+<span class="sd">    Compute the differential cross section for the interaction</span>
+<span class="sd">    e⁻ + e⁺ →  f + f̄ mediated by a Z boson. Note f may be any</span>
+<span class="sd">    fundamental fermion other than the electron, that case has not</span>
+<span class="sd">    been implemented.</span>
+
+<span class="sd">    The differential cross section dσ/dΩ for these interactions is</span>
+<span class="sd">    given by the equation below.</span>
+
+<span class="sd">    A = (g_z²E/[16𝜋])²/([4E² - M_z²]² + [M_z𝚪_z]²)</span>
+<span class="sd">    B = (c_Vf² + c_Af²)(c_Ve² + c_Ae²)</span>
+<span class="sd">    C = 8c_Vf c_Af c_Ve c_Ae</span>
+
+<span class="sd">    dσ/dΩ = A(B[1 + cos²(θ)] - C*cos(θ))</span>
+
+<span class="sd">    where g_z is the neutral coupling constant, E is the energy of the</span>
+<span class="sd">    incoming electron and positron, c_Ve, c_Ae are the neutral vector</span>
+<span class="sd">    and axial vector couplings of the electron, c_Vf, c_Af are the</span>
+<span class="sd">    neutral vector and axial vector couplings of resulting fermions,</span>
+<span class="sd">    M_z is the mass of the Z boson and 𝚪_z is the decay rate of the Z boson.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    E : array or float</span>
+<span class="sd">        The energy of the incoming particles in the center of mass frame.</span>
+<span class="sd">    theta : array or float</span>
+<span class="sd">        The angle relative to the beam line of the resulting fermions.</span>
+<span class="sd">    fermion_name : string</span>
+<span class="sd">        Name of the resulting fundamental fermion for the reaction.</span>
+<span class="sd">        Ex &quot;mu&quot; or &quot;nu_e&quot; ...</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dσ/dΩ : array or float</span>
+<span class="sd">        The differential cross section of the specified interaction for</span>
+<span class="sd">        the given E and theta.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">fermion_name</span> <span class="o">==</span> <span class="s2">&quot;e&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid particle label: </span><span class="si">{</span><span class="n">fermion_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                          <span class="s2">&quot;The reaction e⁻ + e⁺ →  e⁻ + e⁺ is not implemented.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># get the weak neutral coupling constants</span>
+    <span class="c1"># coupling constants for the electron</span>
+    <span class="n">c_Ve</span><span class="p">,</span> <span class="n">c_Ae</span> <span class="o">=</span> <span class="n">neutral_couplings</span><span class="p">(</span><span class="o">*</span><span class="n">fermions</span><span class="p">[</span><span class="s2">&quot;e&quot;</span><span class="p">])</span>
+
+    <span class="c1"># fermion coupling constants for the other fermion</span>
+    <span class="n">c_Vf</span><span class="p">,</span> <span class="n">c_Af</span> <span class="o">=</span> <span class="n">neutral_couplings</span><span class="p">(</span><span class="o">*</span><span class="n">fermions</span><span class="p">[</span><span class="n">fermion_name</span><span class="p">])</span>
+
+    <span class="c1"># precompute terms for the differential cross section</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="p">(</span><span class="n">g_z</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">E</span><span class="o">/</span><span class="p">(</span><span class="mi">16</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">((</span><span class="mi">4</span><span class="o">*</span><span class="n">E</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">M_z</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">M_z</span><span class="o">*</span><span class="n">Gamma_z</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_Vf</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">c_Af</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">c_Ve</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">c_Ae</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="mi">8</span><span class="o">*</span><span class="n">c_Vf</span><span class="o">*</span><span class="n">c_Af</span><span class="o">*</span><span class="n">c_Ve</span><span class="o">*</span><span class="n">c_Ae</span>
+
+    <span class="c1"># the differential cross section</span>
+    <span class="k">return</span> <span class="n">A</span><span class="o">*</span><span class="p">(</span><span class="n">B</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">C</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="sigma_analytic"><a class="viewcode-back" href="../../apidoc/mcpairproduction.totcross.html#mcpairproduction.totcross.sigma_analytic">[docs]</a><span class="k">def</span> <span class="nf">sigma_analytic</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">fermion_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Total cross section for electron positron scattering.</span>
+
+<span class="sd">    The total cross section computed by analytical integration of the</span>
+<span class="sd">    differential cross section equation found in dsigma_dOmega.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    E : array or float</span>
+<span class="sd">        The energy of the incoming positron and electron.</span>
+<span class="sd">    theta : array or float</span>
+<span class="sd">        The angle relative to the beam line of the resulting fermions.</span>
+<span class="sd">    fermion_name : string</span>
+<span class="sd">        Name of the resulting fundamental fermion for the reaction.</span>
+<span class="sd">        Ex &quot;mu&quot; or &quot;nu_e&quot; ...</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    σ : array or float</span>
+<span class="sd">        The total cross section of the specified interaction for the</span>
+<span class="sd">        given E and theta.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># get the weak neutral coupling constants</span>
+    <span class="c1"># coupling constants for the electrons</span>
+    <span class="n">c_Ve</span><span class="p">,</span> <span class="n">c_Ae</span> <span class="o">=</span> <span class="n">neutral_couplings</span><span class="p">(</span><span class="o">*</span><span class="n">fermions</span><span class="p">[</span><span class="s2">&quot;e&quot;</span><span class="p">])</span>
+
+    <span class="c1"># fermion coupling constants for the other fermion</span>
+    <span class="n">c_Vf</span><span class="p">,</span> <span class="n">c_Af</span> <span class="o">=</span> <span class="n">neutral_couplings</span><span class="p">(</span><span class="o">*</span><span class="n">fermions</span><span class="p">[</span><span class="n">fermion_name</span><span class="p">])</span>
+
+    <span class="c1"># Calculate the total cross section</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="p">(</span><span class="n">g_z</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">E</span><span class="o">/</span><span class="p">(</span><span class="mi">16</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">((</span><span class="mi">4</span><span class="o">*</span><span class="n">E</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">M_z</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">M_z</span><span class="o">*</span><span class="n">Gamma_z</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_Vf</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">c_Af</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">c_Ve</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">c_Ae</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="mi">16</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">A</span><span class="o">*</span><span class="n">B</span><span class="o">/</span><span class="mi">3</span></div>
+
+
+<div class="viewcode-block" id="get_random_samples"><a class="viewcode-back" href="../../apidoc/mcpairproduction.totcross.html#mcpairproduction.totcross.get_random_samples">[docs]</a><span class="k">def</span> <span class="nf">get_random_samples</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate random samples of (θ, φ)</span>
+
+<span class="sd">    The samples are generated uniformly in the domain, with θ ∊ [0, 𝜋)</span>
+<span class="sd">    and φ ∊ [-𝜋, 𝜋). The size of the rectangular domain is also given.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    shape : tuple</span>
+<span class="sd">        Shape of array of sample point pairs. The resulting array of</span>
+<span class="sd">        samples will have the shape (*shape, 2).</span>
+<span class="sd">    seed : None, int</span>
+<span class="sd">        Seed value for the random number generator. If `seed` is None,</span>
+<span class="sd">        then numpy.random.default_rng will initialize with random entropy</span>
+<span class="sd">        from the OS.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    samples : array</span>
+<span class="sd">        Random samples in the domain with the shape (*shape, 2).</span>
+<span class="sd">    domain_size : float</span>
+<span class="sd">        Size of the rectangular domain.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">theta_phi_min</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">])</span>
+    <span class="n">theta_phi_max</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">])</span>
+
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+    <span class="c1"># currently (01/30/2023) default_rng uses the PCG-64 pseudo random</span>
+    <span class="c1"># number generator by default.</span>
+
+    <span class="n">samples</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">theta_phi_min</span><span class="p">,</span> <span class="n">theta_phi_max</span><span class="p">,</span> <span class="p">(</span><span class="o">*</span><span class="n">shape</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="c1"># Note, random.Generator.uniform samples on a half open [low, high)</span>
+    <span class="c1"># interval, so formaly samples with theta = 𝜋 or phi = 𝜋 are excluded.</span>
+
+    <span class="n">domain_size</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">theta_phi_max</span> <span class="o">-</span> <span class="n">theta_phi_min</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">samples</span><span class="p">,</span> <span class="n">domain_size</span></div>
+
+
+<div class="viewcode-block" id="get_random_rejection_samples"><a class="viewcode-back" href="../../apidoc/mcpairproduction.totcross.html#mcpairproduction.totcross.get_random_rejection_samples">[docs]</a><span class="k">def</span> <span class="nf">get_random_rejection_samples</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate random samples of (θ, φ, x) for rejection sampling</span>
+
+<span class="sd">    The samples are generated uniformly in the domain, with θ ∊ [0, 𝜋),</span>
+<span class="sd">    φ ∊ [-𝜋, 𝜋) and x ∊ [0, 1).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    shape : tuple</span>
+<span class="sd">        Shape of array of sample point pairs. The resulting array of</span>
+<span class="sd">        samples will have the shape (*shape, 3).</span>
+<span class="sd">    seed : None, int</span>
+<span class="sd">        Seed value for the random number generator. If `seed` is None,</span>
+<span class="sd">        then numpy.random.default_rng will initialize with random entropy</span>
+<span class="sd">        from the OS.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    samples : array</span>
+<span class="sd">        Random samples in the domain with the shape (*shape, 3).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">theta_phi_x_min</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="n">theta_phi_x_max</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+    <span class="c1"># currently (01/30/2023) default_rng uses the PCG-64 pseudo random</span>
+    <span class="c1"># number generator by default.</span>
+
+    <span class="n">samples</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">theta_phi_x_min</span><span class="p">,</span> <span class="n">theta_phi_x_max</span><span class="p">,</span> <span class="p">(</span><span class="o">*</span><span class="n">shape</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="c1"># Note, random.Generator.uniform samples on a half open [low, high)</span>
+    <span class="c1"># interval, so formaly samples with theta = 𝜋 or phi = 𝜋 are excluded.</span>
+
+    <span class="k">return</span> <span class="n">samples</span></div>
+
+
+<div class="viewcode-block" id="sigma_estimate"><a class="viewcode-back" href="../../apidoc/mcpairproduction.totcross.html#mcpairproduction.totcross.sigma_estimate">[docs]</a><span class="k">def</span> <span class="nf">sigma_estimate</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">fermion_name</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Estimate the total cross section.</span>
+
+<span class="sd">    Use Monte Carlo integration to find the total cross section from the</span>
+<span class="sd">    differential cross section dσ/dΩ, note dΩ = sin(θ)dθdφ. Then the</span>
+<span class="sd">    total cross section is σ = ∬ (dσ/dΩ)sin(θ)dθdφ over the rectangular</span>
+<span class="sd">    domain with θ ∊ [0, 𝜋) and φ ∊ [-𝜋, 𝜋).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    E : array</span>
+<span class="sd">        An array of energies to evaluate the total cross section at.</span>
+<span class="sd">    fermion_name : string</span>
+<span class="sd">        Name of the resulting fundamental fermion for the reaction.</span>
+<span class="sd">        Ex &quot;mu&quot; or &quot;nu_e&quot; ...</span>
+<span class="sd">    N : int</span>
+<span class="sd">        The number of samples to use in the the Monte Carlo integral for</span>
+<span class="sd">        each energy value.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    σ : array</span>
+<span class="sd">        An array of estimates of the total cross section with the same</span>
+<span class="sd">        shape as the array `E`.</span>
+<span class="sd">    max_sample : float</span>
+<span class="sd">        The maximum sampled value of dσ/dΩ</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">samples</span><span class="p">,</span> <span class="n">domain_size</span> <span class="o">=</span> <span class="n">get_random_samples</span><span class="p">((</span><span class="o">*</span><span class="n">E</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span>
+
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Use monte carlo integration for each energy in E</span>
+    <span class="n">function_samples</span> <span class="o">=</span> <span class="n">dsigma_dOmega</span><span class="p">(</span><span class="n">E</span><span class="p">[:,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span> <span class="n">theta</span><span class="p">,</span> <span class="n">fermion_name</span><span class="p">)</span>
+    <span class="n">mean_sample</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">function_samples</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">max_sample</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">function_samples</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># Note dΩ = sin(θ)dθdφ</span>
+
+    <span class="k">return</span> <span class="n">mean_sample</span><span class="o">*</span><span class="n">domain_size</span><span class="p">,</span> <span class="n">max_sample</span></div>
+
+
+<div class="viewcode-block" id="get_reaction_equation"><a class="viewcode-back" href="../../apidoc/mcpairproduction.totcross.html#mcpairproduction.totcross.get_reaction_equation">[docs]</a><span class="k">def</span> <span class="nf">get_reaction_equation</span><span class="p">(</span><span class="n">fermion_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get reaction equation for latex.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fermion_name : string</span>
+<span class="sd">        Name of the resulting fundamental fermion for the reaction.</span>
+<span class="sd">        Ex &quot;mu&quot; or &quot;nu_e&quot; ...</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    string</span>
+<span class="sd">        Latex formatted reaction equation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;nu_e&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">nu_e&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">overline{</span><span class="se">\\</span><span class="s2">nu}_e&quot;</span><span class="p">),</span>
+             <span class="s2">&quot;nu_mu&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">nu_</span><span class="se">\\</span><span class="s2">mu&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">overline{</span><span class="se">\\</span><span class="s2">nu}_</span><span class="se">\\</span><span class="s2">mu&quot;</span><span class="p">),</span>
+             <span class="s2">&quot;nu_tau&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">nu_</span><span class="se">\\</span><span class="s2">tau&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">overline{</span><span class="se">\\</span><span class="s2">nu}_</span><span class="se">\\</span><span class="s2">tau&quot;</span><span class="p">),</span>
+             <span class="s2">&quot;e&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;e^-&quot;</span><span class="p">,</span> <span class="s2">&quot;e^+&quot;</span><span class="p">),</span>
+             <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">mu^-&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">mu^+&quot;</span><span class="p">),</span>
+             <span class="s2">&quot;tau&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">tau^-&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">tau^+&quot;</span><span class="p">),</span>
+             <span class="s2">&quot;u&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;u&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">overline</span><span class="si">{u}</span><span class="s2">&quot;</span><span class="p">),</span> <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">overline</span><span class="si">{d}</span><span class="s2">&quot;</span><span class="p">),</span>
+             <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">overline</span><span class="si">{c}</span><span class="s2">&quot;</span><span class="p">),</span> <span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;s&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">overline</span><span class="si">{s}</span><span class="s2">&quot;</span><span class="p">),</span>
+             <span class="s2">&quot;t&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">overline</span><span class="si">{t}</span><span class="s2">&quot;</span><span class="p">),</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">overline</span><span class="si">{b}</span><span class="s2">&quot;</span><span class="p">)}</span>
+    <span class="n">f</span><span class="p">,</span> <span class="n">fbar</span> <span class="o">=</span> <span class="n">names</span><span class="p">[</span><span class="n">fermion_name</span><span class="p">]</span>
+    <span class="n">base_reaction</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;$e^+ + e^- </span><span class="se">\\</span><span class="s2">rightarrow </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2"> + </span><span class="si">{</span><span class="n">fbar</span><span class="si">}</span><span class="s2">$&quot;</span>
+    <span class="k">return</span> <span class="n">base_reaction</span></div>
+
+<div class="viewcode-block" id="plot_compare"><a class="viewcode-back" href="../../apidoc/mcpairproduction.totcross.html#mcpairproduction.totcross.plot_compare">[docs]</a><span class="k">def</span> <span class="nf">plot_compare</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">fermion_name</span><span class="p">,</span> <span class="nb">range</span><span class="p">,</span> <span class="n">MCsamples</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">logaxis</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make plot of estimated total cross section</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ax : pyplot axis</span>
+<span class="sd">        The axis on which to make the plot.</span>
+<span class="sd">    fermion_name : string</span>
+<span class="sd">        Name of the resulting fundamental fermion for the reaction.</span>
+<span class="sd">        Ex &quot;mu&quot; or &quot;nu_e&quot; ...</span>
+<span class="sd">    range : tuple</span>
+<span class="sd">        Range of energy to plot in MeV, or the logarithm of the energies</span>
+<span class="sd">        if using logarithmic axes.</span>
+<span class="sd">    MCsamples : int</span>
+<span class="sd">        The number of samples to use in the the Monte Carlo integral for</span>
+<span class="sd">        each energy value.</span>
+<span class="sd">    resolution : int</span>
+<span class="sd">        The resolution of sampled energy values.</span>
+<span class="sd">    logaxis : boolean</span>
+<span class="sd">        If true, the plot will be displayed with log-log axis.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">logaxis</span><span class="p">:</span>
+        <span class="n">E_MC</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">*</span><span class="nb">range</span><span class="p">,</span> <span class="n">resolution</span><span class="p">)</span>
+        <span class="n">E_analytic</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">*</span><span class="nb">range</span><span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">resolution</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">E_MC</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">*</span><span class="nb">range</span><span class="p">,</span> <span class="n">resolution</span><span class="p">)</span>
+        <span class="n">E_analytic</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">*</span><span class="nb">range</span><span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">resolution</span><span class="p">)</span>
+
+    <span class="n">cross_section</span><span class="p">,</span> <span class="n">max_dsigma</span> <span class="o">=</span> <span class="n">sigma_estimate</span><span class="p">(</span><span class="n">E_MC</span><span class="p">,</span> <span class="n">fermion_name</span><span class="p">,</span> <span class="n">MCsamples</span><span class="p">)</span>
+    <span class="c1"># convert cross_section from MeV² to mbarn</span>
+    <span class="n">cross_section</span> <span class="o">=</span> <span class="n">hbarc2</span><span class="o">*</span><span class="n">cross_section</span>
+    <span class="n">analytic</span> <span class="o">=</span> <span class="n">hbarc2</span><span class="o">*</span><span class="n">sigma_analytic</span><span class="p">(</span><span class="n">E_analytic</span><span class="p">,</span> <span class="n">fermion_name</span><span class="p">)</span>
+
+    <span class="c1"># graphing using the total energy of the two particles in GeV</span>
+    <span class="n">E_MC</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">E_MC</span><span class="o">/</span><span class="mi">1000</span>
+    <span class="n">E_analytic</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">E_analytic</span><span class="o">/</span><span class="mi">1000</span>
+
+    <span class="n">MC_label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">sigma_</span><span class="se">{{</span><span class="s2">Monte</span><span class="se">\\</span><span class="s2"> Carlo</span><span class="se">}}</span><span class="s2">$, </span><span class="si">{</span><span class="n">MCsamples</span><span class="si">}</span><span class="s2"> samples&quot;</span>
+    <span class="n">analytic_label</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">sigma_{{Analytical}}$&quot;</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">E_MC</span><span class="p">,</span> <span class="n">cross_section</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">MC_label</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">logaxis</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">E_analytic</span><span class="p">,</span> <span class="n">analytic</span><span class="p">,</span> <span class="s2">&quot;k-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">analytic_label</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">E_analytic</span><span class="p">,</span> <span class="n">analytic</span><span class="p">,</span> <span class="s2">&quot;k-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">analytic_label</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">E_MC</span><span class="p">,</span> <span class="n">hbarc2</span><span class="o">*</span><span class="mi">4</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">max_dsigma</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;max sample&quot;</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">E_MC</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2"> GeV to </span><span class="si">{</span><span class="n">E_MC</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2"> GeV&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Total Energy $E_</span><span class="si">{cm}</span><span class="s2">$ in GeV&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Total cross section in mbarn&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Luke Siemens.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

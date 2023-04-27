@@ -1,0 +1,7 @@
+mcpairproduction.examples.use\_totcross module
+==============================================
+
+.. automodule:: mcpairproduction.examples.use_totcross
+   :members:
+   :undoc-members:
+   :show-inheritance:

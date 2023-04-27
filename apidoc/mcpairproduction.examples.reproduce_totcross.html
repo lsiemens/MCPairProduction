@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mcpairproduction.examples.reproduce_totcross module &mdash; MCPairProduction: Phys 424 Project  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mcpairproduction.examples.use_totcross module" href="mcpairproduction.examples.use_totcross.html" />
+    <link rel="prev" title="mcpairproduction.examples package" href="mcpairproduction.examples.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> MCPairProduction: Phys 424 Project
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="mcpairproduction.html">mcpairproduction package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="mcpairproduction.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="mcpairproduction.examples.html">mcpairproduction.examples package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="mcpairproduction.examples.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mcpairproduction.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="LEP_analysis.html">LEP_analysis module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LEP_setup.html">LEP_setup module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_examples.html">run_examples module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MCPairProduction: Phys 424 Project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="mcpairproduction.html">mcpairproduction package</a></li>
+          <li class="breadcrumb-item"><a href="mcpairproduction.examples.html">mcpairproduction.examples package</a></li>
+      <li class="breadcrumb-item active">mcpairproduction.examples.reproduce_totcross module</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-mcpairproduction.examples.reproduce_totcross">
+<span id="mcpairproduction-examples-reproduce-totcross-module"></span><h1>mcpairproduction.examples.reproduce_totcross module<a class="headerlink" href="#module-mcpairproduction.examples.reproduce_totcross" title="Permalink to this heading"></a></h1>
+<p>Validate new code</p>
+<p>Reproduce the results of totcross using the new sampling and scattering
+modules. Use the differential cross section for only the Z boson component
+of the process e⁻ + e⁺ → 𝜇⁻ + 𝜇⁺ to validate the new code against the
+the module totcross.py produced for the first part of the project.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.examples.reproduce_totcross.compare_angular_distributions">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.examples.reproduce_totcross.</span></span><span class="sig-name descname"><span class="pre">compare_angular_distributions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/examples/reproduce_totcross.html#compare_angular_distributions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.examples.reproduce_totcross.compare_angular_distributions" title="Permalink to this definition"></a></dt>
+<dd><p>Compare angular distrbitions</p>
+<p>Produce a plot to check if the new code can reproduce the angular
+distribution found by totcross. Note totcross only uses the Z
+component of the differential cross section.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.examples.reproduce_totcross.compare_energy_distributions">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.examples.reproduce_totcross.</span></span><span class="sig-name descname"><span class="pre">compare_energy_distributions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/examples/reproduce_totcross.html#compare_energy_distributions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.examples.reproduce_totcross.compare_energy_distributions" title="Permalink to this definition"></a></dt>
+<dd><p>Compare energy distrbitions</p>
+<p>Produce a plot to check if the new code can reproduce the energy
+distribution found by totcross. Note tot cross only uses the Z
+component of the differential cross section.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.examples.reproduce_totcross.dsigma_dOmega_Z">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.examples.reproduce_totcross.</span></span><span class="sig-name descname"><span class="pre">dsigma_dOmega_Z</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/examples/reproduce_totcross.html#dsigma_dOmega_Z"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.examples.reproduce_totcross.dsigma_dOmega_Z" title="Permalink to this definition"></a></dt>
+<dd><p>differential cross section using the new modules</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="mcpairproduction.examples.html" class="btn btn-neutral float-left" title="mcpairproduction.examples package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mcpairproduction.examples.use_totcross.html" class="btn btn-neutral float-right" title="mcpairproduction.examples.use_totcross module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Luke Siemens.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

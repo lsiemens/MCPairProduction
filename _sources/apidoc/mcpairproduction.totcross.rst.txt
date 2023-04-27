@@ -1,0 +1,7 @@
+mcpairproduction.totcross module
+================================
+
+.. automodule:: mcpairproduction.totcross
+   :members:
+   :undoc-members:
+   :show-inheritance:

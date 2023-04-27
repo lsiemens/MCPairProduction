@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mcpairproduction.sampling &mdash; MCPairProduction: Phys 424 Project  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> MCPairProduction: Phys 424 Project
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../apidoc/mcpairproduction.html">mcpairproduction package</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../apidoc/LEP_analysis.html">LEP_analysis module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apidoc/LEP_setup.html">LEP_setup module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apidoc/run_examples.html">run_examples module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MCPairProduction: Phys 424 Project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">mcpairproduction.sampling</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for mcpairproduction.sampling</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Sampling methods and Monte Carlo integration</span>
+
+<span class="sd">Rejection sampling and Monte Carlo integration are introduced in the PDG</span>
+<span class="sd">book [1]_ section 42. For more on Monte Carlo integration and rejection</span>
+<span class="sd">sampling is given by Gibbs [2]_ Chapter 2, see section 2.2 and 2.3.7</span>
+
+<span class="sd">.. [1] R.L. Workman et al. (Particle Data Group), Prog. Theor. Exp. Phys.</span>
+<span class="sd">   2022, 083C01 (2022)</span>
+
+<span class="sd">.. [2] W.R. Gibbs, Computation in Modern Physics, 3rd Ed</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<div class="viewcode-block" id="get_random_counts"><a class="viewcode-back" href="../../apidoc/mcpairproduction.sampling.html#mcpairproduction.sampling.get_random_counts">[docs]</a><span class="k">def</span> <span class="nf">get_random_counts</span><span class="p">(</span><span class="n">expected_counts</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get random counts of events</span>
+
+<span class="sd">    Draw random event counts using a Poisson distribution.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    expected_counts : float</span>
+<span class="sd">        The mean of the Poisson distribution.</span>
+<span class="sd">    seed : None, integer</span>
+<span class="sd">        Seed value for the random number generator. If `seed` is None,</span>
+<span class="sd">        then numpy.random.default_rng will initialize with random entropy</span>
+<span class="sd">        from the OS.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    counts : integer</span>
+<span class="sd">        A random integer sampled from the Poisson distribution.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+    <span class="c1"># currently (01/30/2023) default_rng uses the PCG-64 pseudo random</span>
+    <span class="c1"># number generator by default.</span>
+
+    <span class="n">counts</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="n">expected_counts</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">counts</span></div>
+
+
+<div class="viewcode-block" id="get_random_samples"><a class="viewcode-back" href="../../apidoc/mcpairproduction.sampling.html#mcpairproduction.sampling.get_random_samples">[docs]</a><span class="k">def</span> <span class="nf">get_random_samples</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate random samples of an angle, θ</span>
+
+<span class="sd">    The samples are generated uniformly in the domain, with θ ∊ [0, 𝜋).</span>
+<span class="sd">    The size of the rectangular domain is also given.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    shape : tuple</span>
+<span class="sd">        Shape of array of sample points.</span>
+<span class="sd">    seed : None, integer</span>
+<span class="sd">        Seed value for the random number generator. If `seed` is None,</span>
+<span class="sd">        then numpy.random.default_rng will initialize with random entropy</span>
+<span class="sd">        from the OS.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    samples : array</span>
+<span class="sd">        Random samples in the domain.</span>
+<span class="sd">    domain_size : float</span>
+<span class="sd">        Size of the rectangular domain.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">theta_min</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">theta_max</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span>
+
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+    <span class="c1"># currently (01/30/2023) default_rng uses the PCG-64 pseudo random</span>
+    <span class="c1"># number generator by default.</span>
+
+    <span class="n">samples</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">theta_min</span><span class="p">,</span> <span class="n">theta_max</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+    <span class="c1"># Note, random.Generator.uniform samples on a half open [low, high)</span>
+    <span class="c1"># interval, so formaly samples with theta = 𝜋 are excluded.</span>
+
+    <span class="n">domain_size</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="p">(</span><span class="n">theta_max</span> <span class="o">-</span> <span class="n">theta_min</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">samples</span><span class="p">,</span> <span class="n">domain_size</span></div>
+
+
+<div class="viewcode-block" id="get_random_rejection_samples"><a class="viewcode-back" href="../../apidoc/mcpairproduction.sampling.html#mcpairproduction.sampling.get_random_rejection_samples">[docs]</a><span class="k">def</span> <span class="nf">get_random_rejection_samples</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate random samples of (θ, v) for rejection sampling</span>
+
+<span class="sd">    The samples are generated uniformly in the domain, with θ ∊ [0, 𝜋)</span>
+<span class="sd">    and v ∊ [0, 1).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    shape : tuple</span>
+<span class="sd">        Shape of array of sample point pairs. The resulting array of</span>
+<span class="sd">        samples will have the shape (2, *shape).</span>
+<span class="sd">    seed : None, integer</span>
+<span class="sd">        Seed value for the random number generator. If `seed` is None,</span>
+<span class="sd">        then numpy.random.default_rng will initialize with random entropy</span>
+<span class="sd">        from the OS.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    samples : array</span>
+<span class="sd">        Random samples in the domain with the shape (2, *shape).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">theta_min_max</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">v_min_max</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+    <span class="c1"># currently (01/30/2023) default_rng uses the PCG-64 pseudo random</span>
+    <span class="c1"># number generator by default.</span>
+
+    <span class="n">samples</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="o">*</span><span class="n">shape</span><span class="p">))</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">*</span><span class="n">theta_min_max</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">*</span><span class="n">v_min_max</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+    <span class="n">samples</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">theta</span>
+    <span class="n">samples</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+    <span class="c1"># Note, random.Generator.uniform samples on a half open [low, high)</span>
+    <span class="c1"># interval, so formaly samples with theta = 𝜋 or v = 1 are excluded.</span>
+
+    <span class="k">return</span> <span class="n">samples</span></div>
+
+
+<div class="viewcode-block" id="dOmega"><a class="viewcode-back" href="../../apidoc/mcpairproduction.sampling.html#mcpairproduction.sampling.dOmega">[docs]</a><span class="k">def</span> <span class="nf">dOmega</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Solid angle element</span>
+
+<span class="sd">    dΩ = sin(θ)dθdφ</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    theta : array or float</span>
+<span class="sd">        Angular coordinate of the element</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="monte_carlo_integration"><a class="viewcode-back" href="../../apidoc/mcpairproduction.sampling.html#mcpairproduction.sampling.monte_carlo_integration">[docs]</a><span class="k">def</span> <span class="nf">monte_carlo_integration</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">fArg</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">dOmega</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Monte Carlo integration</span>
+
+<span class="sd">    An implementation of Monte Carlo integration on a spherical</span>
+<span class="sd">    surface. Using `get_random_samples` to get N uniformly distributed</span>
+<span class="sd">    random samples θ on the domain [0, 𝜋). Where the function, g(θ), to</span>
+<span class="sd">    integrate over angle is function(θ)*dx(θ). The estimate of the</span>
+<span class="sd">    integral is V*E[g(θ)], where E[] is the mean of the samples and V</span>
+<span class="sd">    is the size of the domain. The maximum of g(θ) is computed for use</span>
+<span class="sd">    in rejection sampling.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    function : callable</span>
+<span class="sd">        The function to integrate over the sphere.</span>
+<span class="sd">    fArg : float</span>
+<span class="sd">        Parameter to pass into `function`.</span>
+<span class="sd">    N : integer</span>
+<span class="sd">        The number of samples to use in the the Monte Carlo integral.</span>
+<span class="sd">    dx : callable</span>
+<span class="sd">        The differential element for the integral.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    value : float</span>
+<span class="sd">        Integral of `function` over all the sphere.</span>
+<span class="sd">    max_sample : float</span>
+<span class="sd">        The maximum sampled value of the integrand.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">samples</span><span class="p">,</span> <span class="n">domain_size</span> <span class="o">=</span> <span class="n">get_random_samples</span><span class="p">((</span><span class="n">N</span><span class="p">,))</span>
+
+    <span class="n">function_samples</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">fArg</span><span class="p">,</span> <span class="n">samples</span><span class="p">)</span><span class="o">*</span><span class="n">dx</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+    <span class="n">mean_sample</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">function_samples</span><span class="p">)</span>
+    <span class="n">max_sample</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">function_samples</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mean_sample</span><span class="o">*</span><span class="n">domain_size</span><span class="p">,</span> <span class="n">max_sample</span></div>
+
+
+<div class="viewcode-block" id="monte_carlo_integration_array"><a class="viewcode-back" href="../../apidoc/mcpairproduction.sampling.html#mcpairproduction.sampling.monte_carlo_integration_array">[docs]</a><span class="k">def</span> <span class="nf">monte_carlo_integration_array</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">fArg</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">dOmega</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Monte Carlo integration for an array of parameters</span>
+
+<span class="sd">    An implementation of Monte Carlo integration on a spherical</span>
+<span class="sd">    surface. Using `get_random_samples` to get N uniformly distributed</span>
+<span class="sd">    random samples θ on the domain [0, 𝜋). Where the function, g(θ), to</span>
+<span class="sd">    integrate over angle is function(θ)*dx(θ). The estimate of the</span>
+<span class="sd">    integral is V*E[g(θ)], where E[] is the mean of the samples and V</span>
+<span class="sd">    is the size of the domain. The maximum of g(θ) is computed for use</span>
+<span class="sd">    in rejection sampling.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    function : callable</span>
+<span class="sd">        The function to integrate over the sphere.</span>
+<span class="sd">    fArg : array</span>
+<span class="sd">        Parameter to pass into `function`.</span>
+<span class="sd">    N : integer</span>
+<span class="sd">        The number of samples to use in the the Monte Carlo integral.</span>
+<span class="sd">    dx : callable</span>
+<span class="sd">        The differential element for the integral.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    value : array</span>
+<span class="sd">        Integral of `function` over all the sphere.</span>
+<span class="sd">    max_sample : array</span>
+<span class="sd">        The maximum sampled value of the integrand.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">samples</span><span class="p">,</span> <span class="n">domain_size</span> <span class="o">=</span> <span class="n">get_random_samples</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="o">*</span><span class="n">fArg</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+
+    <span class="n">function_samples</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">fArg</span><span class="p">,</span> <span class="n">samples</span><span class="p">)</span><span class="o">*</span><span class="n">dx</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+    <span class="n">mean_sample</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">function_samples</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">max_sample</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">function_samples</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mean_sample</span><span class="o">*</span><span class="n">domain_size</span><span class="p">,</span> <span class="n">max_sample</span></div>
+
+
+<div class="viewcode-block" id="monte_carlo_sampling"><a class="viewcode-back" href="../../apidoc/mcpairproduction.sampling.html#mcpairproduction.sampling.monte_carlo_sampling">[docs]</a><span class="k">def</span> <span class="nf">monte_carlo_sampling</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">fArg</span><span class="p">,</span> <span class="n">maximum</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">dOmega</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rejection sampling</span>
+
+<span class="sd">    An implementation of rejection sampling on a spherical surface. Using</span>
+<span class="sd">    `get_random_rejection_samples` to get N uniformly distributed random</span>
+<span class="sd">    samples θ on the domain [0, 𝜋) along with corresponding random values</span>
+<span class="sd">    v in the range [0, 1). Where the function, g(θ), to sample over angles</span>
+<span class="sd">    is function(θ)*dx(θ). Any sample with v &gt; g(θ)/g_max is rejected.</span>
+<span class="sd">    This process is repeated to replace any rejected samples until all</span>
+<span class="sd">    samples are accepted.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    function : callable</span>
+<span class="sd">        The function to sample on the sphere.</span>
+<span class="sd">    fArg : float</span>
+<span class="sd">        Parameter to pass into `function`.</span>
+<span class="sd">    maximum : float</span>
+<span class="sd">        The maximum of function(fArg, θ)dx(θ).</span>
+<span class="sd">    N : integer</span>
+<span class="sd">        The number of samples to generate.</span>
+<span class="sd">    dx : callable</span>
+<span class="sd">        The differential element</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    samples : array</span>
+<span class="sd">        N random angles subject to the distribution `function(fArg, θ)`</span>
+<span class="sd">        over the sphere.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">samples</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">N</span><span class="p">,))</span>
+    <span class="n">missing</span> <span class="o">=</span> <span class="n">N</span> <span class="c1"># number of samples that need to be generated</span>
+    <span class="c1"># mask of samples that need to be generated</span>
+    <span class="n">missing_mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">N</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+
+    <span class="c1"># recursively resample points that get rejected, untill no values</span>
+    <span class="c1"># are missing (ie all samples are accepted).</span>
+    <span class="k">while</span> <span class="n">missing</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># generate one sample for each one that is missing</span>
+        <span class="n">new_samples_v</span> <span class="o">=</span> <span class="n">get_random_rejection_samples</span><span class="p">((</span><span class="n">missing</span><span class="p">,</span> <span class="p">))</span>
+        <span class="n">new_samples</span><span class="p">,</span> <span class="n">new_v</span> <span class="o">=</span> <span class="n">new_samples_v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">new_samples_v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">new_values</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">fArg</span><span class="p">,</span> <span class="n">new_samples</span><span class="p">)</span><span class="o">*</span><span class="n">dx</span><span class="p">(</span><span class="n">new_samples</span><span class="p">)</span><span class="o">/</span><span class="n">maximum</span>
+
+        <span class="c1"># use missing_mask to update samples with new_samples</span>
+        <span class="n">samples</span><span class="p">[</span><span class="n">missing_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_samples</span>
+
+        <span class="c1"># mask of any of the new samples that are rejected</span>
+        <span class="n">new_missing_mask</span> <span class="o">=</span> <span class="n">new_v</span> <span class="o">&gt;</span> <span class="n">new_values</span>
+        <span class="c1"># count howmany on the new samples are rejected</span>
+        <span class="n">new_missing</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">new_missing_mask</span><span class="p">)</span>
+
+        <span class="c1"># use missing_mask to insert the new mask for the resampled values</span>
+        <span class="n">missing_mask</span><span class="p">[</span><span class="n">missing_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_missing_mask</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">missing_mask</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">samples</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Luke Siemens.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

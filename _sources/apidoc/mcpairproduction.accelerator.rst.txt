@@ -1,0 +1,7 @@
+mcpairproduction.accelerator module
+===================================
+
+.. automodule:: mcpairproduction.accelerator
+   :members:
+   :undoc-members:
+   :show-inheritance:

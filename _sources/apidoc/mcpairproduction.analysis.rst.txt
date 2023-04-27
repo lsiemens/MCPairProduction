@@ -1,0 +1,7 @@
+mcpairproduction.analysis module
+================================
+
+.. automodule:: mcpairproduction.analysis
+   :members:
+   :undoc-members:
+   :show-inheritance:

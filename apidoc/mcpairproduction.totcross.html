@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mcpairproduction.totcross module &mdash; MCPairProduction: Phys 424 Project  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mcpairproduction.utils module" href="mcpairproduction.utils.html" />
+    <link rel="prev" title="mcpairproduction.scattering module" href="mcpairproduction.scattering.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> MCPairProduction: Phys 424 Project
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="mcpairproduction.html">mcpairproduction package</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="mcpairproduction.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="mcpairproduction.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.accelerator.html">mcpairproduction.accelerator module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.analysis.html">mcpairproduction.analysis module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.constants.html">mcpairproduction.constants module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.sampling.html">mcpairproduction.sampling module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.scattering.html">mcpairproduction.scattering module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">mcpairproduction.totcross module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.totcross.dsigma_dOmega"><code class="docutils literal notranslate"><span class="pre">dsigma_dOmega()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.totcross.get_random_rejection_samples"><code class="docutils literal notranslate"><span class="pre">get_random_rejection_samples()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.totcross.get_random_samples"><code class="docutils literal notranslate"><span class="pre">get_random_samples()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.totcross.get_reaction_equation"><code class="docutils literal notranslate"><span class="pre">get_reaction_equation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.totcross.neutral_couplings"><code class="docutils literal notranslate"><span class="pre">neutral_couplings()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.totcross.plot_compare"><code class="docutils literal notranslate"><span class="pre">plot_compare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.totcross.sigma_analytic"><code class="docutils literal notranslate"><span class="pre">sigma_analytic()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.totcross.sigma_estimate"><code class="docutils literal notranslate"><span class="pre">sigma_estimate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.utils.html">mcpairproduction.utils module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="LEP_analysis.html">LEP_analysis module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LEP_setup.html">LEP_setup module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_examples.html">run_examples module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MCPairProduction: Phys 424 Project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="mcpairproduction.html">mcpairproduction package</a></li>
+      <li class="breadcrumb-item active">mcpairproduction.totcross module</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-mcpairproduction.totcross">
+<span id="mcpairproduction-totcross-module"></span><h1>mcpairproduction.totcross module<a class="headerlink" href="#module-mcpairproduction.totcross" title="Permalink to this heading"></a></h1>
+<p>Estimate total cross sections of neutral weak interactions.</p>
+<p>Estimates the total interaction cross section for electron positron
+scattering mediated by the Z boson e⁻ + e⁺ →  f + f̄. The estimate of
+the total cross section is computed from the differential cross section
+using Monte Carlo integration.</p>
+<p>Note, internal calculations use natural units with ħ=c=1. Energies are
+in units of MeV if not otherwise specified.</p>
+<p>The differential cross section is from Griffiths <a class="reference internal" href="#rdb75db67ed8b-1" id="id1">[1]</a> Example 9.5
+Electron-Positron scattering near the Z pole, with <em>Review of Particle
+Physics</em> <a class="reference internal" href="#rdb75db67ed8b-2" id="id2">[2]</a> as an additional reference and source for physical constants.
+Equations for calculating the weak coupling to the Z boson are from
+Thomson <a class="reference internal" href="#rdb75db67ed8b-3" id="id3">[3]</a> section 15.3.1</p>
+<dl class="citation">
+<dt class="label" id="rdb75db67ed8b-1"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>D. J. Griffiths, <em>Introduction to elementary particles</em>, 2nd,
+rev. ed. Weinheim: Wiley-VCH, 2008.</p>
+</dd>
+<dt class="label" id="rdb75db67ed8b-2"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dd><p>R.L. Workman et al. (Particle Data Group), Prog. Theor. Exp. Phys.
+2022, 083C01 (2022)</p>
+</dd>
+<dt class="label" id="rdb75db67ed8b-3"><span class="brackets"><a class="fn-backref" href="#id3">3</a></span></dt>
+<dd><p>M. Thomson, <em>Modern particle physics</em>. Cambridge: Cambridge
+University Press, 2013.</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.totcross.dsigma_dOmega">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.totcross.</span></span><span class="sig-name descname"><span class="pre">dsigma_dOmega</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fermion_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/totcross.html#dsigma_dOmega"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.totcross.dsigma_dOmega" title="Permalink to this definition"></a></dt>
+<dd><p>Differential cross section for electron positron scattering.</p>
+<p>Compute the differential cross section for the interaction
+e⁻ + e⁺ →  f + f̄ mediated by a Z boson. Note f may be any
+fundamental fermion other than the electron, that case has not
+been implemented.</p>
+<p>The differential cross section dσ/dΩ for these interactions is
+given by the equation below.</p>
+<p>A = (g_z²E/[16𝜋])²/([4E² - M_z²]² + [M_z𝚪_z]²)
+B = (c_Vf² + c_Af²)(c_Ve² + c_Ae²)
+C = 8c_Vf c_Af c_Ve c_Ae</p>
+<p>dσ/dΩ = A(B[1 + cos²(θ)] - C*cos(θ))</p>
+<p>where g_z is the neutral coupling constant, E is the energy of the
+incoming electron and positron, c_Ve, c_Ae are the neutral vector
+and axial vector couplings of the electron, c_Vf, c_Af are the
+neutral vector and axial vector couplings of resulting fermions,
+M_z is the mass of the Z boson and 𝚪_z is the decay rate of the Z boson.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>E</strong><span class="classifier">array or float</span></dt><dd><p>The energy of the incoming particles in the center of mass frame.</p>
+</dd>
+<dt><strong>theta</strong><span class="classifier">array or float</span></dt><dd><p>The angle relative to the beam line of the resulting fermions.</p>
+</dd>
+<dt><strong>fermion_name</strong><span class="classifier">string</span></dt><dd><p>Name of the resulting fundamental fermion for the reaction.
+Ex “mu” or “nu_e” …</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>dσ/dΩ</strong><span class="classifier">array or float</span></dt><dd><p>The differential cross section of the specified interaction for
+the given E and theta.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.totcross.get_random_rejection_samples">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.totcross.</span></span><span class="sig-name descname"><span class="pre">get_random_rejection_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/totcross.html#get_random_rejection_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.totcross.get_random_rejection_samples" title="Permalink to this definition"></a></dt>
+<dd><p>Generate random samples of (θ, φ, x) for rejection sampling</p>
+<p>The samples are generated uniformly in the domain, with θ ∊ [0, 𝜋),
+φ ∊ [-𝜋, 𝜋) and x ∊ [0, 1).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>shape</strong><span class="classifier">tuple</span></dt><dd><p>Shape of array of sample point pairs. The resulting array of
+samples will have the shape (<a href="#id4"><span class="problematic" id="id5">*</span></a>shape, 3).</p>
+</dd>
+<dt><strong>seed</strong><span class="classifier">None, int</span></dt><dd><p>Seed value for the random number generator. If <cite>seed</cite> is None,
+then numpy.random.default_rng will initialize with random entropy
+from the OS.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>samples</strong><span class="classifier">array</span></dt><dd><p>Random samples in the domain with the shape (<a href="#id6"><span class="problematic" id="id7">*</span></a>shape, 3).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.totcross.get_random_samples">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.totcross.</span></span><span class="sig-name descname"><span class="pre">get_random_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/totcross.html#get_random_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.totcross.get_random_samples" title="Permalink to this definition"></a></dt>
+<dd><p>Generate random samples of (θ, φ)</p>
+<p>The samples are generated uniformly in the domain, with θ ∊ [0, 𝜋)
+and φ ∊ [-𝜋, 𝜋). The size of the rectangular domain is also given.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>shape</strong><span class="classifier">tuple</span></dt><dd><p>Shape of array of sample point pairs. The resulting array of
+samples will have the shape (<a href="#id8"><span class="problematic" id="id9">*</span></a>shape, 2).</p>
+</dd>
+<dt><strong>seed</strong><span class="classifier">None, int</span></dt><dd><p>Seed value for the random number generator. If <cite>seed</cite> is None,
+then numpy.random.default_rng will initialize with random entropy
+from the OS.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>samples</strong><span class="classifier">array</span></dt><dd><p>Random samples in the domain with the shape (<a href="#id10"><span class="problematic" id="id11">*</span></a>shape, 2).</p>
+</dd>
+<dt><strong>domain_size</strong><span class="classifier">float</span></dt><dd><p>Size of the rectangular domain.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.totcross.get_reaction_equation">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.totcross.</span></span><span class="sig-name descname"><span class="pre">get_reaction_equation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fermion_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/totcross.html#get_reaction_equation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.totcross.get_reaction_equation" title="Permalink to this definition"></a></dt>
+<dd><p>Get reaction equation for latex.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>fermion_name</strong><span class="classifier">string</span></dt><dd><p>Name of the resulting fundamental fermion for the reaction.
+Ex “mu” or “nu_e” …</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>string</dt><dd><p>Latex formatted reaction equation.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.totcross.neutral_couplings">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.totcross.</span></span><span class="sig-name descname"><span class="pre">neutral_couplings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T_3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/totcross.html#neutral_couplings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.totcross.neutral_couplings" title="Permalink to this definition"></a></dt>
+<dd><p>Get the vector and axial-vector coupling constants.</p>
+<p>The coupling constants for a fermion are determined by the particle’s
+weak isospin T₃ and charge Q, see PDG section 10.1 for more details.
+The vector coupling is,</p>
+<p>c_V = T₃ - 2Qsin²(θ_w)</p>
+<p>where θ_w is the weak mixing angle. The axial-vector coupling is,</p>
+<p>c_A = T₃</p>
+<p>Note in PDG material the coupling constants are referred to as g_V and g_A.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>T_3</strong><span class="classifier">float</span></dt><dd><p>The weak isospin of the fermion.</p>
+</dd>
+<dt><strong>Q</strong><span class="classifier">float</span></dt><dd><p>The electric charge of the fermion.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>(c_V, c_A)</strong><span class="classifier">tuple</span></dt><dd><p>The vector and axial-vector coupling constants.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.totcross.plot_compare">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.totcross.</span></span><span class="sig-name descname"><span class="pre">plot_compare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fermion_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MCsamples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logaxis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/totcross.html#plot_compare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.totcross.plot_compare" title="Permalink to this definition"></a></dt>
+<dd><p>Make plot of estimated total cross section</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ax</strong><span class="classifier">pyplot axis</span></dt><dd><p>The axis on which to make the plot.</p>
+</dd>
+<dt><strong>fermion_name</strong><span class="classifier">string</span></dt><dd><p>Name of the resulting fundamental fermion for the reaction.
+Ex “mu” or “nu_e” …</p>
+</dd>
+<dt><strong>range</strong><span class="classifier">tuple</span></dt><dd><p>Range of energy to plot in MeV, or the logarithm of the energies
+if using logarithmic axes.</p>
+</dd>
+<dt><strong>MCsamples</strong><span class="classifier">int</span></dt><dd><p>The number of samples to use in the the Monte Carlo integral for
+each energy value.</p>
+</dd>
+<dt><strong>resolution</strong><span class="classifier">int</span></dt><dd><p>The resolution of sampled energy values.</p>
+</dd>
+<dt><strong>logaxis</strong><span class="classifier">boolean</span></dt><dd><p>If true, the plot will be displayed with log-log axis.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.totcross.sigma_analytic">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.totcross.</span></span><span class="sig-name descname"><span class="pre">sigma_analytic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fermion_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/totcross.html#sigma_analytic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.totcross.sigma_analytic" title="Permalink to this definition"></a></dt>
+<dd><p>Total cross section for electron positron scattering.</p>
+<p>The total cross section computed by analytical integration of the
+differential cross section equation found in dsigma_dOmega.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>E</strong><span class="classifier">array or float</span></dt><dd><p>The energy of the incoming positron and electron.</p>
+</dd>
+<dt><strong>theta</strong><span class="classifier">array or float</span></dt><dd><p>The angle relative to the beam line of the resulting fermions.</p>
+</dd>
+<dt><strong>fermion_name</strong><span class="classifier">string</span></dt><dd><p>Name of the resulting fundamental fermion for the reaction.
+Ex “mu” or “nu_e” …</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>σ</strong><span class="classifier">array or float</span></dt><dd><p>The total cross section of the specified interaction for the
+given E and theta.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.totcross.sigma_estimate">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.totcross.</span></span><span class="sig-name descname"><span class="pre">sigma_estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fermion_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/totcross.html#sigma_estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.totcross.sigma_estimate" title="Permalink to this definition"></a></dt>
+<dd><p>Estimate the total cross section.</p>
+<p>Use Monte Carlo integration to find the total cross section from the
+differential cross section dσ/dΩ, note dΩ = sin(θ)dθdφ. Then the
+total cross section is σ = ∬ (dσ/dΩ)sin(θ)dθdφ over the rectangular
+domain with θ ∊ [0, 𝜋) and φ ∊ [-𝜋, 𝜋).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>E</strong><span class="classifier">array</span></dt><dd><p>An array of energies to evaluate the total cross section at.</p>
+</dd>
+<dt><strong>fermion_name</strong><span class="classifier">string</span></dt><dd><p>Name of the resulting fundamental fermion for the reaction.
+Ex “mu” or “nu_e” …</p>
+</dd>
+<dt><strong>N</strong><span class="classifier">int</span></dt><dd><p>The number of samples to use in the the Monte Carlo integral for
+each energy value.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>σ</strong><span class="classifier">array</span></dt><dd><p>An array of estimates of the total cross section with the same
+shape as the array <cite>E</cite>.</p>
+</dd>
+<dt><strong>max_sample</strong><span class="classifier">float</span></dt><dd><p>The maximum sampled value of dσ/dΩ</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="mcpairproduction.scattering.html" class="btn btn-neutral float-left" title="mcpairproduction.scattering module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mcpairproduction.utils.html" class="btn btn-neutral float-right" title="mcpairproduction.utils module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Luke Siemens.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

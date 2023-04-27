@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mcpairproduction.analysis &mdash; MCPairProduction: Phys 424 Project  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> MCPairProduction: Phys 424 Project
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../apidoc/mcpairproduction.html">mcpairproduction package</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../apidoc/LEP_analysis.html">LEP_analysis module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apidoc/LEP_setup.html">LEP_setup module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apidoc/run_examples.html">run_examples module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MCPairProduction: Phys 424 Project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">mcpairproduction.analysis</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for mcpairproduction.analysis</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Analyze particle scattering event data</span>
+
+<span class="sd">This module contains functions to make plots of the scattering event</span>
+<span class="sd">data. Plots of the angular distribution of events, plots of the energy</span>
+<span class="sd">distribution of events and plots of the forward-backward asymmetry can</span>
+<span class="sd">be produced. The forward-backward asymmetry characterizes the degree of </span>
+<span class="sd">asymmetry in the angular distribution at a given energy. It is defined as,</span>
+
+<span class="sd">A_FB = (N_F - N_B)/(N_F + N_B)</span>
+
+<span class="sd">where N_F is the number of events at a given energy with 0 &lt; θ &lt; 𝜋/2 and</span>
+<span class="sd">N_B is the number of events at a given energy with 𝜋/2 &lt; θ &lt; 𝜋.</span>
+
+<span class="sd">For more information about the forward-backward asymmetry see the PDG</span>
+<span class="sd">book [1]_ section 10.5.1 Electroweak physics off the Z pole and Thomson</span>
+<span class="sd">[3]_ chapter 16 section 2.2 Measurements of the weak mixing angle.</span>
+
+<span class="sd">.. [1] R.L. Workman et al. (Particle Data Group), Prog. Theor. Exp. Phys.</span>
+<span class="sd">   2022, 083C01 (2022)</span>
+
+<span class="sd">.. [2] M. Thomson, *Modern particle physics*. Cambridge: Cambridge</span>
+<span class="sd">   University Press, 2013.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">scattering</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">constants</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
+
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="n">reaction_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;$e^- + e^+ </span><span class="se">\\</span><span class="s2">rightarrow </span><span class="se">\\</span><span class="s2">mu^- + </span><span class="se">\\</span><span class="s2">mu^+$&quot;</span>
+
+<span class="c1"># Components of the spin averaged scattering amplitude squared</span>
+<span class="n">differential_amplitudes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;total&quot;</span><span class="p">:(</span><span class="n">scattering</span><span class="o">.</span><span class="n">get_A_tot2</span><span class="p">,</span>
+                                    <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">left|A</span><span class="se">\\</span><span class="s2">right|^2$&quot;</span><span class="p">),</span>
+                           <span class="s2">&quot;gamma&quot;</span><span class="p">:(</span><span class="n">scattering</span><span class="o">.</span><span class="n">get_A_gamma2</span><span class="p">,</span>
+                                    <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">left|A_{</span><span class="se">\\</span><span class="s2">gamma}</span><span class="se">\\</span><span class="s2">right|^2$&quot;</span><span class="p">),</span>
+                           <span class="s2">&quot;Z&quot;</span><span class="p">:(</span><span class="n">scattering</span><span class="o">.</span><span class="n">get_A_Z2</span><span class="p">,</span>
+                                <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">left|A_</span><span class="si">{Z}</span><span class="se">\\</span><span class="s2">right|^2$&quot;</span><span class="p">),</span>
+                           <span class="s2">&quot;cross&quot;</span><span class="p">:(</span><span class="n">scattering</span><span class="o">.</span><span class="n">get_A_cross2</span><span class="p">,</span>
+                                  <span class="s2">&quot;$A_{</span><span class="se">\\</span><span class="s2">gamma}A_</span><span class="si">{Z}</span><span class="s2">^* + A_</span><span class="si">{Z}</span><span class="s2">A_{</span><span class="se">\\</span><span class="s2">gamma}^*$&quot;</span><span class="p">)}</span>
+
+<span class="c1"># Components of the integrated spin averaged scattering amplitude squared</span>
+<span class="n">integrated_amplitudes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;total&quot;</span><span class="p">:(</span><span class="n">scattering</span><span class="o">.</span><span class="n">get_A_tot2_integrated</span><span class="p">,</span>
+                                  <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">sigma_</span><span class="si">{total}</span><span class="s2">$&quot;</span><span class="p">),</span>
+                         <span class="s2">&quot;gamma&quot;</span><span class="p">:(</span><span class="n">scattering</span><span class="o">.</span><span class="n">get_A_gamma2_integrated</span><span class="p">,</span>
+                                  <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">sigma_{</span><span class="se">\\</span><span class="s2">gamma}$&quot;</span><span class="p">),</span>
+                         <span class="s2">&quot;Z&quot;</span><span class="p">:(</span><span class="n">scattering</span><span class="o">.</span><span class="n">get_A_Z2_integrated</span><span class="p">,</span>
+                              <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">sigma_</span><span class="si">{Z}</span><span class="s2">$&quot;</span><span class="p">),</span>
+                         <span class="s2">&quot;cross&quot;</span><span class="p">:(</span><span class="n">scattering</span><span class="o">.</span><span class="n">get_A_cross2_integrated</span><span class="p">,</span>
+                                  <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">sigma_</span><span class="si">{cross}</span><span class="s2">$&quot;</span><span class="p">)}</span>
+
+<div class="viewcode-block" id="load"><a class="viewcode-back" href="../../apidoc/mcpairproduction.analysis.html#mcpairproduction.analysis.load">[docs]</a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load data</span>
+
+<span class="sd">    Load scattering event data from produced by accelerator.py</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fname : string</span>
+<span class="sd">        Name of the data file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    E : array</span>
+<span class="sd">        Energy of the particle.</span>
+<span class="sd">    p_mag : array</span>
+<span class="sd">        Magnitude of the 3-momentum of the particle.</span>
+<span class="sd">    theta : array</span>
+<span class="sd">        Angle of the 3-momentum relative to the incoming electron.</span>
+<span class="sd">    phi : array</span>
+<span class="sd">        Azimuthal angle of the particle, by convention the coordinate</span>
+<span class="sd">        system is selected such that φ = 0.</span>
+<span class="sd">    L_int : float</span>
+<span class="sd">        The total integrated luminosity.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">E</span><span class="p">,</span> <span class="n">p_mag</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span>
+                                         <span class="n">skiprows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">unpack</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fin</span><span class="p">:</span>
+        <span class="nb">next</span><span class="p">(</span><span class="n">fin</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="n">L_int</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">E</span><span class="p">,</span> <span class="n">p_mag</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">L_int</span></div>
+
+
+<div class="viewcode-block" id="setup_histogram"><a class="viewcode-back" href="../../apidoc/mcpairproduction.analysis.html#mcpairproduction.analysis.setup_histogram">[docs]</a><span class="k">def</span> <span class="nf">setup_histogram</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n_bins</span><span class="p">,</span> <span class="nb">range</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create histogram</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : array</span>
+<span class="sd">        Data to compute the histogram from.</span>
+<span class="sd">    n_bins : integer</span>
+<span class="sd">        The number of bins for the histogram of scattering events.</span>
+<span class="sd">    range : tuple or list</span>
+<span class="sd">        Range of the histogram.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    hist : array</span>
+<span class="sd">        Number of values in each bin.</span>
+<span class="sd">    hist_err : array</span>
+<span class="sd">        Error in the number of elements in each bin assuming Poisson</span>
+<span class="sd">        statistics.</span>
+<span class="sd">    bins : array</span>
+<span class="sd">        Location of the left edge of each bin.</span>
+<span class="sd">    bin_width : float</span>
+<span class="sd">        Width of the histogram bins.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">hist</span><span class="p">,</span> <span class="n">bin_edges</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">n_bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="nb">range</span><span class="p">)</span>
+    <span class="n">hist_error</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span>
+    <span class="n">bin_width</span> <span class="o">=</span> <span class="n">bin_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">bin_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">hist</span><span class="p">,</span> <span class="n">hist_error</span><span class="p">,</span> <span class="n">bin_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">bin_width</span></div>
+
+
+<div class="viewcode-block" id="theoretic_binning"><a class="viewcode-back" href="../../apidoc/mcpairproduction.analysis.html#mcpairproduction.analysis.theoretic_binning">[docs]</a><span class="k">def</span> <span class="nf">theoretic_binning</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">bin_width</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Bin theoretical curve</span>
+
+<span class="sd">    Average the theoretic curve within each bin</span>
+
+<span class="sd">    Note the resulting values for x, y produce a histogram like plot</span>
+<span class="sd">    when plotted directly with pyplot.plot()</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : array</span>
+<span class="sd">        x values of the theoretical curve.</span>
+<span class="sd">    y : array</span>
+<span class="sd">        y values of the theoretical curve.</span>
+<span class="sd">    bins : array</span>
+<span class="sd">        Location of the left edge of each bin.</span>
+<span class="sd">    bin_width : float</span>
+<span class="sd">        Width of the histogram bins.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    binned_x : array</span>
+<span class="sd">        Sequence of x values for each edge of each bin.</span>
+<span class="sd">    binned_y</span>
+<span class="sd">        Sequence of repeated y values. The mean value of y in the bin,</span>
+<span class="sd">        for each edge of each bin.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">binned_x</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">binned_y</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="nb">bin</span> <span class="ow">in</span> <span class="n">bins</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="nb">bin</span><span class="p">,</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="nb">bin</span> <span class="o">+</span> <span class="n">bin_width</span><span class="p">)</span>
+        <span class="n">mean_y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span>
+        <span class="n">binned_x</span> <span class="o">=</span> <span class="n">binned_x</span> <span class="o">+</span> <span class="p">[</span><span class="nb">bin</span><span class="p">,</span> <span class="nb">bin</span> <span class="o">+</span> <span class="n">bin_width</span><span class="p">]</span>
+        <span class="n">binned_y</span> <span class="o">=</span> <span class="n">binned_y</span> <span class="o">+</span> <span class="p">[</span><span class="n">mean_y</span><span class="p">,</span> <span class="n">mean_y</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">binned_x</span><span class="p">,</span> <span class="n">binned_y</span></div>
+
+
+<div class="viewcode-block" id="plot_angular_distribution"><a class="viewcode-back" href="../../apidoc/mcpairproduction.analysis.html#mcpairproduction.analysis.plot_angular_distribution">[docs]</a><span class="k">def</span> <span class="nf">plot_angular_distribution</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">Run_data</span><span class="p">,</span> <span class="n">n_bins</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                              <span class="n">Nsigma</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">comparisons</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;total&quot;</span><span class="p">,</span> <span class="s2">&quot;k-&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot scattering events vs angle</span>
+
+<span class="sd">    Make plot of scattering events vs angle and compare against theoretical</span>
+<span class="sd">    predictions of the expected number of events.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ax : pyplot axis</span>
+<span class="sd">        The axis on which to make the plot.</span>
+<span class="sd">    Run_data : tuple</span>
+<span class="sd">        Tuple of data from loading a data set using `analysis.load`.</span>
+<span class="sd">    n_bins : integer</span>
+<span class="sd">        The number of bins for the histogram of scattering events.</span>
+<span class="sd">    resolution : int</span>
+<span class="sd">        The resolution for theoretical curves.</span>
+<span class="sd">    Nsigma : integer</span>
+<span class="sd">        show error bars with size `Nsigma` standard deviations.</span>
+<span class="sd">    comparisons : list</span>
+<span class="sd">        Set of theoretical curves for comparison where each curve is given</span>
+<span class="sd">        as (Name, line_style, bin_curve). Name is one of</span>
+<span class="sd">        [&quot;total&quot;, &quot;gamma&quot;, &quot;Z&quot;, &quot;cross&quot;], line_style is a matplotlib line</span>
+<span class="sd">        style string and if bin_curve is True then the theoretical curve</span>
+<span class="sd">        is averaged over each bin.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">E_data</span><span class="p">,</span> <span class="n">p_data</span><span class="p">,</span> <span class="n">theta_data</span><span class="p">,</span> <span class="n">phi_data</span><span class="p">,</span> <span class="n">L_int</span> <span class="o">=</span> <span class="n">Run_data</span>
+
+    <span class="n">E_data</span> <span class="o">=</span> <span class="n">E_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">theta_theory</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">resolution</span><span class="p">)</span>
+
+    <span class="c1"># calibrating the differential cross section to compair with the data</span>
+    <span class="n">tot_amplitude</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">differential_amplitudes</span><span class="p">[</span><span class="s2">&quot;total&quot;</span><span class="p">]</span>
+    <span class="n">ds_total</span> <span class="o">=</span> <span class="n">scattering</span><span class="o">.</span><span class="n">dsigma_dOmega</span><span class="p">(</span><span class="n">E_data</span><span class="p">,</span> <span class="n">theta_theory</span><span class="p">,</span> <span class="n">tot_amplitude</span><span class="p">())</span>
+    <span class="n">ds_total</span> <span class="o">=</span> <span class="n">ds_total</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta_theory</span><span class="p">)</span>
+
+    <span class="n">events_per_bin</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">theta_data</span><span class="p">)</span><span class="o">/</span><span class="n">n_bins</span>
+    <span class="n">normalization</span> <span class="o">=</span> <span class="n">events_per_bin</span><span class="o">/</span><span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ds_total</span><span class="p">)</span>
+
+    <span class="c1"># make histogram of angular distribution</span>
+    <span class="n">hist</span><span class="p">,</span> <span class="n">hist_err</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">bin_width</span> <span class="o">=</span> <span class="n">setup_histogram</span><span class="p">(</span><span class="n">theta_data</span><span class="p">,</span> <span class="n">n_bins</span><span class="p">,</span>
+                                                      <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">hist</span><span class="p">,</span> <span class="n">bin_width</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">&quot;edge&quot;</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">Nsigma</span><span class="o">*</span><span class="n">hist_err</span><span class="p">,</span>
+           <span class="n">color</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">ecolor</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">capsize</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Data&quot;</span><span class="p">)</span>
+
+    <span class="n">sqrt_s</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">E_data</span><span class="o">/</span><span class="mf">1E3</span> <span class="c1"># in GeV</span>
+
+    <span class="k">for</span> <span class="n">component</span><span class="p">,</span> <span class="n">style</span><span class="p">,</span> <span class="n">binning</span> <span class="ow">in</span> <span class="n">comparisons</span><span class="p">:</span>
+        <span class="n">diff_amplitude</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">differential_amplitudes</span><span class="p">[</span><span class="n">component</span><span class="p">]</span>
+        <span class="n">dsigma</span> <span class="o">=</span> <span class="n">scattering</span><span class="o">.</span><span class="n">dsigma_dOmega</span><span class="p">(</span><span class="n">E_data</span><span class="p">,</span> <span class="n">theta_theory</span><span class="p">,</span>
+                                          <span class="n">diff_amplitude</span><span class="p">())</span>
+        <span class="n">dsigma</span> <span class="o">=</span> <span class="n">dsigma</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta_theory</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">binning</span><span class="p">:</span>
+            <span class="n">theta_b</span><span class="p">,</span> <span class="n">dsigma_b</span> <span class="o">=</span> <span class="n">theoretic_binning</span><span class="p">(</span><span class="n">theta_theory</span><span class="p">,</span>
+                                                  <span class="n">normalization</span><span class="o">*</span><span class="n">dsigma</span><span class="p">,</span>
+                                                  <span class="n">bins</span><span class="p">,</span> <span class="n">bin_width</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">theta_b</span><span class="p">,</span> <span class="n">dsigma_b</span><span class="p">,</span> <span class="n">style</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">theta_theory</span><span class="p">,</span> <span class="n">normalization</span><span class="o">*</span><span class="n">dsigma</span><span class="p">,</span> <span class="n">style</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+
+    <span class="n">num_ticks</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">xticks</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="n">num_ticks</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_ticks</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+    <span class="n">xtick_labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">utils</span><span class="o">.</span><span class="n">nice_ticks</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">num_ticks</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_ticks</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">xticks</span><span class="p">,</span> <span class="n">xtick_labels</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">theta$ in radians&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Scattering Events&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Angular distribution $</span><span class="se">\\</span><span class="s2">frac</span><span class="se">{{</span><span class="s2">d</span><span class="se">\\</span><span class="s2">sigma</span><span class="se">}}{{</span><span class="s2">d</span><span class="se">\\</span><span class="s2">Omega</span><span class="se">}}\\</span><span class="s2">sin(</span><span class="se">\\</span><span class="s2">theta)$ at $</span><span class="se">\\</span><span class="s2">sqrt</span><span class="se">{{</span><span class="s2">s</span><span class="se">}}</span><span class="s2"> = </span><span class="si">{</span><span class="n">sqrt_s</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> GeV$&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="plot_energy_distribution"><a class="viewcode-back" href="../../apidoc/mcpairproduction.analysis.html#mcpairproduction.analysis.plot_energy_distribution">[docs]</a><span class="k">def</span> <span class="nf">plot_energy_distribution</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">Run_data</span><span class="p">,</span> <span class="n">n_bins</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                             <span class="n">theta_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span> <span class="n">Nsigma</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                             <span class="n">comparisons</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;total&quot;</span><span class="p">,</span> <span class="s2">&quot;k-&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot scattering events vs energy</span>
+
+<span class="sd">    Make plot of scattering events vs energy and compare against theoretical</span>
+<span class="sd">    predictions of the expected number of events.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ax : pyplot axis</span>
+<span class="sd">        The axis on which to make the plot.</span>
+<span class="sd">    Run_data : tuple</span>
+<span class="sd">        Tuple of data from loading a data set using `analysis.load`.</span>
+<span class="sd">    n_bins : integer</span>
+<span class="sd">        The number of bins for the histogram of scattering events.</span>
+<span class="sd">    resolution : int</span>
+<span class="sd">        The resolution for theoretical curves.</span>
+<span class="sd">    theta_range : tuple</span>
+<span class="sd">        Consider only events within this range of angles.</span>
+<span class="sd">    Nsigma : integer</span>
+<span class="sd">        show error bars with size `Nsigma` standard deviations.</span>
+<span class="sd">    comparisons : list</span>
+<span class="sd">        Set of theoretical curves for comparison where each curve is given</span>
+<span class="sd">        as (Name, line_style, bin_curve). Name is one of</span>
+<span class="sd">        [&quot;total&quot;, &quot;gamma&quot;, &quot;Z&quot;, &quot;cross&quot;], line_style is a matplotlib line</span>
+<span class="sd">        style string and if bin_curve is True then the theoretical curve</span>
+<span class="sd">        is averaged over each bin.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">E_data</span><span class="p">,</span> <span class="n">p_data</span><span class="p">,</span> <span class="n">theta_data</span><span class="p">,</span> <span class="n">phi_data</span><span class="p">,</span> <span class="n">L_int</span> <span class="o">=</span> <span class="n">Run_data</span>
+
+    <span class="n">E_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">E_data</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">E_data</span><span class="p">))</span>
+    <span class="n">E_theory</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">*</span><span class="n">E_range</span><span class="p">,</span> <span class="n">resolution</span><span class="p">)</span>
+
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">theta_data</span> <span class="o">&gt;=</span> <span class="n">theta_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                             <span class="n">theta_data</span> <span class="o">&lt;=</span> <span class="n">theta_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">hist</span><span class="p">,</span> <span class="n">hist_err</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">bin_width</span> <span class="o">=</span> <span class="n">setup_histogram</span><span class="p">(</span><span class="n">E_data</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span>
+                                                      <span class="n">n_bins</span><span class="p">,</span> <span class="n">E_range</span><span class="p">)</span>
+
+    <span class="c1"># convert to sqrt(s) in GeV</span>
+    <span class="n">bins</span><span class="p">,</span> <span class="n">bin_width</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">bins</span><span class="o">/</span><span class="mf">1E3</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">bin_width</span><span class="o">/</span><span class="mf">1E3</span>
+    <span class="n">sqrt_s</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">E_theory</span><span class="o">/</span><span class="mf">1E3</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">hist</span><span class="p">,</span> <span class="n">bin_width</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">&quot;edge&quot;</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">Nsigma</span><span class="o">*</span><span class="n">hist_err</span><span class="p">,</span>
+           <span class="n">color</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">ecolor</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">capsize</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Data&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">component</span><span class="p">,</span> <span class="n">style</span><span class="p">,</span> <span class="n">binning</span> <span class="ow">in</span> <span class="n">comparisons</span><span class="p">:</span>
+        <span class="n">int_amplitude</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">integrated_amplitudes</span><span class="p">[</span><span class="n">component</span><span class="p">]</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">scattering</span><span class="o">.</span><span class="n">sigma_analytic</span><span class="p">(</span><span class="n">E_theory</span><span class="p">,</span> <span class="n">int_amplitude</span><span class="p">(</span><span class="n">theta_range</span><span class="o">=</span><span class="n">theta_range</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">binning</span><span class="p">:</span>
+            <span class="n">E_b</span><span class="p">,</span> <span class="n">sigma_b</span> <span class="o">=</span> <span class="n">theoretic_binning</span><span class="p">(</span><span class="n">sqrt_s</span><span class="p">,</span> <span class="n">sigma</span><span class="o">*</span><span class="n">L_int</span><span class="o">/</span><span class="n">n_bins</span><span class="p">,</span>
+                                             <span class="n">bins</span><span class="p">,</span> <span class="n">bin_width</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">E_b</span><span class="p">,</span> <span class="n">sigma_b</span><span class="p">,</span> <span class="n">style</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span> <span class="o">+</span> <span class="s2">&quot; binned&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">sqrt_s</span><span class="p">,</span> <span class="n">sigma</span><span class="o">*</span><span class="n">L_int</span><span class="o">/</span><span class="n">n_bins</span><span class="p">,</span> <span class="n">style</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">sqrt_s</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">sqrt_s</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Scattering Events&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">sqrt</span><span class="si">{s}</span><span class="s2">$ in GeV&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="plot_FB_asymmetry"><a class="viewcode-back" href="../../apidoc/mcpairproduction.analysis.html#mcpairproduction.analysis.plot_FB_asymmetry">[docs]</a><span class="k">def</span> <span class="nf">plot_FB_asymmetry</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">Run_data</span><span class="p">,</span> <span class="n">n_bins</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">Nsigma</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot the Forward-Backward asymmetry</span>
+
+<span class="sd">    Make plot of forward-backward asymmetry vs energy and compare against</span>
+<span class="sd">    theoretical predictions.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ax : pyplot axis</span>
+<span class="sd">        The axis on which to make the plot.</span>
+<span class="sd">    Run_data : tuple</span>
+<span class="sd">        Tuple of data from loading a data set using `analysis.load`.</span>
+<span class="sd">    n_bins : integer</span>
+<span class="sd">        The number of bins for the histogram of scattering events.</span>
+<span class="sd">    resolution : int</span>
+<span class="sd">        The resolution for theoretical curves.</span>
+<span class="sd">    Nsigma : integer</span>
+<span class="sd">        show error bars with size `Nsigma` standard deviations.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">E_data</span><span class="p">,</span> <span class="n">p_data</span><span class="p">,</span> <span class="n">theta_data</span><span class="p">,</span> <span class="n">phi_data</span><span class="p">,</span> <span class="n">L_int</span> <span class="o">=</span> <span class="n">Run_data</span>
+
+    <span class="n">E_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">E_data</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">E_data</span><span class="p">))</span>
+    <span class="n">E_theory</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">*</span><span class="n">E_range</span><span class="p">,</span> <span class="n">resolution</span><span class="p">)</span>
+
+    <span class="n">front_mask</span> <span class="o">=</span> <span class="n">theta_data</span> <span class="o">&lt;=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">back_mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">front_mask</span><span class="p">)</span>
+
+    <span class="n">Fhist</span><span class="p">,</span> <span class="n">Fhist_err</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">bin_width</span> <span class="o">=</span> <span class="n">setup_histogram</span><span class="p">(</span><span class="n">E_data</span><span class="p">[</span><span class="n">front_mask</span><span class="p">],</span>
+                                                        <span class="n">n_bins</span><span class="p">,</span> <span class="n">E_range</span><span class="p">)</span>
+    <span class="n">Bhist</span><span class="p">,</span> <span class="n">Bhist_err</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">bin_width</span> <span class="o">=</span> <span class="n">setup_histogram</span><span class="p">(</span><span class="n">E_data</span><span class="p">[</span><span class="n">back_mask</span><span class="p">],</span>
+                                                        <span class="n">n_bins</span><span class="p">,</span> <span class="n">E_range</span><span class="p">)</span>
+
+    <span class="n">A_FB</span> <span class="o">=</span> <span class="p">(</span><span class="n">Fhist</span> <span class="o">-</span> <span class="n">Bhist</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">Fhist</span> <span class="o">+</span> <span class="n">Bhist</span><span class="p">)</span>
+    <span class="n">A_FB_err</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">Fhist</span><span class="o">*</span><span class="n">Bhist</span><span class="o">/</span><span class="p">(</span><span class="n">Fhist</span> <span class="o">+</span> <span class="n">Bhist</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">Fhist_err</span><span class="o">/</span><span class="n">Fhist</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">Bhist_err</span><span class="o">/</span><span class="n">Bhist</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># convert to sqrt(s) in GeV</span>
+    <span class="n">bins</span><span class="p">,</span> <span class="n">bin_width</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">bins</span><span class="o">/</span><span class="mf">1E3</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">bin_width</span><span class="o">/</span><span class="mf">1E3</span>
+    <span class="n">sqrt_s</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">E_theory</span><span class="o">/</span><span class="mf">1E3</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">A_FB</span><span class="p">,</span> <span class="n">bin_width</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">&quot;edge&quot;</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">Nsigma</span><span class="o">*</span><span class="n">A_FB_err</span><span class="p">,</span>
+           <span class="n">color</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">ecolor</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">capsize</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Data&quot;</span><span class="p">)</span>
+
+    <span class="n">int_amplitude</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">integrated_amplitudes</span><span class="p">[</span><span class="s2">&quot;total&quot;</span><span class="p">]</span>
+    <span class="n">sigma_F</span> <span class="o">=</span> <span class="n">scattering</span><span class="o">.</span><span class="n">sigma_analytic</span><span class="p">(</span><span class="n">E_theory</span><span class="p">,</span> <span class="n">int_amplitude</span><span class="p">(</span><span class="n">theta_range</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">]))</span>
+    <span class="n">sigma_B</span> <span class="o">=</span> <span class="n">scattering</span><span class="o">.</span><span class="n">sigma_analytic</span><span class="p">(</span><span class="n">E_theory</span><span class="p">,</span> <span class="n">int_amplitude</span><span class="p">(</span><span class="n">theta_range</span><span class="o">=</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">]))</span>
+    <span class="n">FB_asymmetry</span> <span class="o">=</span> <span class="p">(</span><span class="n">sigma_F</span> <span class="o">-</span> <span class="n">sigma_B</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">sigma_F</span> <span class="o">+</span> <span class="n">sigma_B</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sqrt_s</span><span class="p">,</span> <span class="n">FB_asymmetry</span><span class="p">,</span> <span class="s2">&quot;k-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;$A_</span><span class="si">{FB}</span><span class="s2">$&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">sqrt_s</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">sqrt_s</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">sqrt</span><span class="si">{s}</span><span class="s2">$ in GeV&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;$A_</span><span class="si">{FB}</span><span class="s2">$&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Forward Backward asymmetry: $A_</span><span class="si">{FB}</span><span class="s2">$&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Luke Siemens.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

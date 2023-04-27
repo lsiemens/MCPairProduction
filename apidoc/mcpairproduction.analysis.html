@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mcpairproduction.analysis module &mdash; MCPairProduction: Phys 424 Project  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mcpairproduction.constants module" href="mcpairproduction.constants.html" />
+    <link rel="prev" title="mcpairproduction.accelerator module" href="mcpairproduction.accelerator.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> MCPairProduction: Phys 424 Project
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="mcpairproduction.html">mcpairproduction package</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="mcpairproduction.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="mcpairproduction.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.accelerator.html">mcpairproduction.accelerator module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">mcpairproduction.analysis module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.analysis.load"><code class="docutils literal notranslate"><span class="pre">load()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.analysis.plot_FB_asymmetry"><code class="docutils literal notranslate"><span class="pre">plot_FB_asymmetry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.analysis.plot_angular_distribution"><code class="docutils literal notranslate"><span class="pre">plot_angular_distribution()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.analysis.plot_energy_distribution"><code class="docutils literal notranslate"><span class="pre">plot_energy_distribution()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.analysis.setup_histogram"><code class="docutils literal notranslate"><span class="pre">setup_histogram()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcpairproduction.analysis.theoretic_binning"><code class="docutils literal notranslate"><span class="pre">theoretic_binning()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.constants.html">mcpairproduction.constants module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.sampling.html">mcpairproduction.sampling module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.scattering.html">mcpairproduction.scattering module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.totcross.html">mcpairproduction.totcross module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mcpairproduction.utils.html">mcpairproduction.utils module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="LEP_analysis.html">LEP_analysis module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LEP_setup.html">LEP_setup module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run_examples.html">run_examples module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MCPairProduction: Phys 424 Project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="mcpairproduction.html">mcpairproduction package</a></li>
+      <li class="breadcrumb-item active">mcpairproduction.analysis module</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-mcpairproduction.analysis">
+<span id="mcpairproduction-analysis-module"></span><h1>mcpairproduction.analysis module<a class="headerlink" href="#module-mcpairproduction.analysis" title="Permalink to this heading"></a></h1>
+<p>Analyze particle scattering event data</p>
+<p>This module contains functions to make plots of the scattering event
+data. Plots of the angular distribution of events, plots of the energy
+distribution of events and plots of the forward-backward asymmetry can
+be produced. The forward-backward asymmetry characterizes the degree of 
+asymmetry in the angular distribution at a given energy. It is defined as,</p>
+<p>A_FB = (N_F - N_B)/(N_F + N_B)</p>
+<p>where N_F is the number of events at a given energy with 0 &lt; θ &lt; 𝜋/2 and
+N_B is the number of events at a given energy with 𝜋/2 &lt; θ &lt; 𝜋.</p>
+<p>For more information about the forward-backward asymmetry see the PDG
+book <a class="reference internal" href="#r8cb52ccece19-1" id="id1">[1]</a> section 10.5.1 Electroweak physics off the Z pole and Thomson
+<a href="#id3"><span class="problematic" id="id2">[3]_</span></a> chapter 16 section 2.2 Measurements of the weak mixing angle.</p>
+<dl class="citation">
+<dt class="label" id="r8cb52ccece19-1"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>R.L. Workman et al. (Particle Data Group), Prog. Theor. Exp. Phys.
+2022, 083C01 (2022)</p>
+</dd>
+<dt class="label" id="r8cb52ccece19-2"><span class="brackets">2</span></dt>
+<dd><p>M. Thomson, <em>Modern particle physics</em>. Cambridge: Cambridge
+University Press, 2013.</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.analysis.load">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.analysis.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/analysis.html#load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.analysis.load" title="Permalink to this definition"></a></dt>
+<dd><p>Load data</p>
+<p>Load scattering event data from produced by accelerator.py</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>fname</strong><span class="classifier">string</span></dt><dd><p>Name of the data file.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>E</strong><span class="classifier">array</span></dt><dd><p>Energy of the particle.</p>
+</dd>
+<dt><strong>p_mag</strong><span class="classifier">array</span></dt><dd><p>Magnitude of the 3-momentum of the particle.</p>
+</dd>
+<dt><strong>theta</strong><span class="classifier">array</span></dt><dd><p>Angle of the 3-momentum relative to the incoming electron.</p>
+</dd>
+<dt><strong>phi</strong><span class="classifier">array</span></dt><dd><p>Azimuthal angle of the particle, by convention the coordinate
+system is selected such that φ = 0.</p>
+</dd>
+<dt><strong>L_int</strong><span class="classifier">float</span></dt><dd><p>The total integrated luminosity.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.analysis.plot_FB_asymmetry">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.analysis.</span></span><span class="sig-name descname"><span class="pre">plot_FB_asymmetry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Run_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nsigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/analysis.html#plot_FB_asymmetry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.analysis.plot_FB_asymmetry" title="Permalink to this definition"></a></dt>
+<dd><p>Plot the Forward-Backward asymmetry</p>
+<p>Make plot of forward-backward asymmetry vs energy and compare against
+theoretical predictions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ax</strong><span class="classifier">pyplot axis</span></dt><dd><p>The axis on which to make the plot.</p>
+</dd>
+<dt><strong>Run_data</strong><span class="classifier">tuple</span></dt><dd><p>Tuple of data from loading a data set using <cite>analysis.load</cite>.</p>
+</dd>
+<dt><strong>n_bins</strong><span class="classifier">integer</span></dt><dd><p>The number of bins for the histogram of scattering events.</p>
+</dd>
+<dt><strong>resolution</strong><span class="classifier">int</span></dt><dd><p>The resolution for theoretical curves.</p>
+</dd>
+<dt><strong>Nsigma</strong><span class="classifier">integer</span></dt><dd><p>show error bars with size <cite>Nsigma</cite> standard deviations.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.analysis.plot_angular_distribution">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.analysis.</span></span><span class="sig-name descname"><span class="pre">plot_angular_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Run_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nsigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comparisons</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[('total',</span> <span class="pre">'k-',</span> <span class="pre">False)]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/analysis.html#plot_angular_distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.analysis.plot_angular_distribution" title="Permalink to this definition"></a></dt>
+<dd><p>Plot scattering events vs angle</p>
+<p>Make plot of scattering events vs angle and compare against theoretical
+predictions of the expected number of events.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ax</strong><span class="classifier">pyplot axis</span></dt><dd><p>The axis on which to make the plot.</p>
+</dd>
+<dt><strong>Run_data</strong><span class="classifier">tuple</span></dt><dd><p>Tuple of data from loading a data set using <cite>analysis.load</cite>.</p>
+</dd>
+<dt><strong>n_bins</strong><span class="classifier">integer</span></dt><dd><p>The number of bins for the histogram of scattering events.</p>
+</dd>
+<dt><strong>resolution</strong><span class="classifier">int</span></dt><dd><p>The resolution for theoretical curves.</p>
+</dd>
+<dt><strong>Nsigma</strong><span class="classifier">integer</span></dt><dd><p>show error bars with size <cite>Nsigma</cite> standard deviations.</p>
+</dd>
+<dt><strong>comparisons</strong><span class="classifier">list</span></dt><dd><p>Set of theoretical curves for comparison where each curve is given
+as (Name, line_style, bin_curve). Name is one of
+[“total”, “gamma”, “Z”, “cross”], line_style is a matplotlib line
+style string and if bin_curve is True then the theoretical curve
+is averaged over each bin.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.analysis.plot_energy_distribution">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.analysis.</span></span><span class="sig-name descname"><span class="pre">plot_energy_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Run_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">3.141592653589793)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nsigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comparisons</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[('total',</span> <span class="pre">'k-',</span> <span class="pre">False)]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/analysis.html#plot_energy_distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.analysis.plot_energy_distribution" title="Permalink to this definition"></a></dt>
+<dd><p>Plot scattering events vs energy</p>
+<p>Make plot of scattering events vs energy and compare against theoretical
+predictions of the expected number of events.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ax</strong><span class="classifier">pyplot axis</span></dt><dd><p>The axis on which to make the plot.</p>
+</dd>
+<dt><strong>Run_data</strong><span class="classifier">tuple</span></dt><dd><p>Tuple of data from loading a data set using <cite>analysis.load</cite>.</p>
+</dd>
+<dt><strong>n_bins</strong><span class="classifier">integer</span></dt><dd><p>The number of bins for the histogram of scattering events.</p>
+</dd>
+<dt><strong>resolution</strong><span class="classifier">int</span></dt><dd><p>The resolution for theoretical curves.</p>
+</dd>
+<dt><strong>theta_range</strong><span class="classifier">tuple</span></dt><dd><p>Consider only events within this range of angles.</p>
+</dd>
+<dt><strong>Nsigma</strong><span class="classifier">integer</span></dt><dd><p>show error bars with size <cite>Nsigma</cite> standard deviations.</p>
+</dd>
+<dt><strong>comparisons</strong><span class="classifier">list</span></dt><dd><p>Set of theoretical curves for comparison where each curve is given
+as (Name, line_style, bin_curve). Name is one of
+[“total”, “gamma”, “Z”, “cross”], line_style is a matplotlib line
+style string and if bin_curve is True then the theoretical curve
+is averaged over each bin.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.analysis.setup_histogram">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.analysis.</span></span><span class="sig-name descname"><span class="pre">setup_histogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/analysis.html#setup_histogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.analysis.setup_histogram" title="Permalink to this definition"></a></dt>
+<dd><p>Create histogram</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">array</span></dt><dd><p>Data to compute the histogram from.</p>
+</dd>
+<dt><strong>n_bins</strong><span class="classifier">integer</span></dt><dd><p>The number of bins for the histogram of scattering events.</p>
+</dd>
+<dt><strong>range</strong><span class="classifier">tuple or list</span></dt><dd><p>Range of the histogram.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>hist</strong><span class="classifier">array</span></dt><dd><p>Number of values in each bin.</p>
+</dd>
+<dt><strong>hist_err</strong><span class="classifier">array</span></dt><dd><p>Error in the number of elements in each bin assuming Poisson
+statistics.</p>
+</dd>
+<dt><strong>bins</strong><span class="classifier">array</span></dt><dd><p>Location of the left edge of each bin.</p>
+</dd>
+<dt><strong>bin_width</strong><span class="classifier">float</span></dt><dd><p>Width of the histogram bins.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mcpairproduction.analysis.theoretic_binning">
+<span class="sig-prename descclassname"><span class="pre">mcpairproduction.analysis.</span></span><span class="sig-name descname"><span class="pre">theoretic_binning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_width</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mcpairproduction/analysis.html#theoretic_binning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mcpairproduction.analysis.theoretic_binning" title="Permalink to this definition"></a></dt>
+<dd><p>Bin theoretical curve</p>
+<p>Average the theoretic curve within each bin</p>
+<p>Note the resulting values for x, y produce a histogram like plot
+when plotted directly with pyplot.plot()</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">array</span></dt><dd><p>x values of the theoretical curve.</p>
+</dd>
+<dt><strong>y</strong><span class="classifier">array</span></dt><dd><p>y values of the theoretical curve.</p>
+</dd>
+<dt><strong>bins</strong><span class="classifier">array</span></dt><dd><p>Location of the left edge of each bin.</p>
+</dd>
+<dt><strong>bin_width</strong><span class="classifier">float</span></dt><dd><p>Width of the histogram bins.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>binned_x</strong><span class="classifier">array</span></dt><dd><p>Sequence of x values for each edge of each bin.</p>
+</dd>
+<dt>binned_y</dt><dd><p>Sequence of repeated y values. The mean value of y in the bin,
+for each edge of each bin.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="mcpairproduction.accelerator.html" class="btn btn-neutral float-left" title="mcpairproduction.accelerator module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mcpairproduction.constants.html" class="btn btn-neutral float-right" title="mcpairproduction.constants module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Luke Siemens.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mcpairproduction.scattering &mdash; MCPairProduction: Phys 424 Project  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> MCPairProduction: Phys 424 Project
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../apidoc/mcpairproduction.html">mcpairproduction package</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../apidoc/LEP_analysis.html">LEP_analysis module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apidoc/LEP_setup.html">LEP_setup module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apidoc/run_examples.html">run_examples module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MCPairProduction: Phys 424 Project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">mcpairproduction.scattering</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for mcpairproduction.scattering</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Scattering cross sections and differential cross sections</span>
+
+<span class="sd">The differential cross section and the analytic equation for the cross</span>
+<span class="sd">section for components due to the photon the Z boson and the interference</span>
+<span class="sd">of these two. These equations are derived for the two tree order diagrams</span>
+<span class="sd">of the process e⁻ + e⁺ →  𝜇⁻ + 𝜇⁺. The analytic functions for the cross</span>
+<span class="sd">section are given in terms of the indefinite integral of the differential</span>
+<span class="sd">cross section so that the cross section over an arbitrary range of angles</span>
+<span class="sd">can be found in addition to the total cross section. The differential</span>
+<span class="sd">scattering cross sections are given in the center of momentum frame for</span>
+<span class="sd">the ultrarelativistic limit and defined such that the angle θ is the</span>
+<span class="sd">angle of the outgoing muon relative to the incoming electron.</span>
+
+<span class="sd">While these equation where derived specifically for the process</span>
+<span class="sd">e⁻ + e⁺ →  𝜇⁻ + 𝜇⁺ they are applicable more broadly. The equations can</span>
+<span class="sd">be used for process of the form e⁻ + e⁺ →  f + f̄, where f is one of the</span>
+<span class="sd">following fermions: muon, tauon, electron neutrino, muon neutrino and</span>
+<span class="sd">tau neutrino. Note that in the case where the fermion is a neutrino then</span>
+<span class="sd">only the Z boson component is relevant.</span>
+
+<span class="sd">Note, internal calculations use natural units with ħ=c=1. Energies are</span>
+<span class="sd">in units of MeV if not otherwise specified.</span>
+
+<span class="sd">The differential cross sections for the photon and Z boson terms are</span>
+<span class="sd">given in Griffiths [1]_ Section 8.1 Hadron production in e⁺e⁻ Collisions</span>
+<span class="sd">and Example 9.5 Electron-Positron scattering near the Z pole. The full</span>
+<span class="sd">equations for the differential cross section are given in section 2 of [2]_.</span>
+
+<span class="sd">.. [1] Griffiths, David J. Introduction to Elementary Particles. 2nd,</span>
+<span class="sd">       rev. ed. Weinheim: Wiley-VCH, 2008.</span>
+
+<span class="sd">.. [2] Berends, F.A., R. Kleiss, and S. Jadach. &quot;Radiative Corrections to</span>
+<span class="sd">       Muon Pair and Quark Pair Production in Electron-Positron Collisions</span>
+<span class="sd">       in the Z 0 Region.&quot; Nuclear physics. B 202, no. 1 (1982): 63-88.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">constants</span>
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">M_z</span><span class="p">,</span> <span class="n">Gamma_z</span><span class="p">,</span> <span class="n">g_e</span><span class="p">,</span> <span class="n">g_z</span>
+
+
+<div class="viewcode-block" id="dsigma_dOmega"><a class="viewcode-back" href="../../apidoc/mcpairproduction.scattering.html#mcpairproduction.scattering.dsigma_dOmega">[docs]</a><span class="k">def</span> <span class="nf">dsigma_dOmega</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">A_2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Differential cross section</span>
+
+<span class="sd">    Compute the differential cross section in terms of the scattering</span>
+<span class="sd">    amplitude squared. This equation is given for the center of momentum</span>
+<span class="sd">    frame.</span>
+
+<span class="sd">    The differential cross section dσ/dΩ is given by the equation below.</span>
+
+<span class="sd">    dσ/dΩ = ⟨|A|²⟩/(16𝜋E)²</span>
+
+<span class="sd">    Where the spin averaged scattering amplitude squared, ⟨|A|²⟩, is a</span>
+<span class="sd">    function of the energy and the angle θ.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    E : array or float</span>
+<span class="sd">        The energy of the incoming particle in the center of momentum frame.</span>
+<span class="sd">    theta :  array or float</span>
+<span class="sd">        The angle, θ, between the incoming electron and the outgoing muon.</span>
+<span class="sd">    A_2 : callable</span>
+<span class="sd">        The spin averaged scattering amplitude squared.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dσ/dΩ : array or float</span>
+<span class="sd">        The differential cross section of the process for the given</span>
+<span class="sd">        energy and angle.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># the differential cross section</span>
+    <span class="k">return</span> <span class="n">A_2</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">16</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">E</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span></div>
+
+
+<div class="viewcode-block" id="get_A_tot2"><a class="viewcode-back" href="../../apidoc/mcpairproduction.scattering.html#mcpairproduction.scattering.get_A_tot2">[docs]</a><span class="k">def</span> <span class="nf">get_A_tot2</span><span class="p">(</span><span class="n">fermion_name</span><span class="o">=</span><span class="s2">&quot;mu&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get ⟨|A|²⟩ function</span>
+
+<span class="sd">    Get the total spin averaged scattering amplitude squared function</span>
+<span class="sd">    for the interaction e⁻ + e⁺ →  f + f̄, where f is the specified</span>
+<span class="sd">    fermion. The total amplitude squared can be expressed in terms of the</span>
+<span class="sd">    following three components: photon term, Z boson term and the cross</span>
+<span class="sd">    terms. The equation is given below,</span>
+
+<span class="sd">    ⟨|A|²⟩ =  ⟨|A_𝛾|²⟩ + ⟨|A_Z|²⟩ + ⟨A_𝛾 A⁺_Z + A_Z A⁺_𝛾⟩</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fermion_name : string</span>
+<span class="sd">        Name of the resulting fundamental fermion in the reaction.</span>
+<span class="sd">        Ex &quot;mu&quot; or &quot;nu_e&quot; ...</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    callable</span>
+<span class="sd">        The function ⟨|A|²⟩ with arguments,</span>
+<span class="sd">            - ``E``: The energy of the incoming particle.</span>
+<span class="sd">            - ``theta``: The angle of the outgoing muon.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">A_gamma2</span> <span class="o">=</span> <span class="n">get_A_gamma2</span><span class="p">(</span><span class="n">fermion_name</span><span class="p">)</span>
+    <span class="n">A_Z2</span> <span class="o">=</span> <span class="n">get_A_Z2</span><span class="p">(</span><span class="n">fermion_name</span><span class="p">)</span>
+    <span class="n">A_cross2</span> <span class="o">=</span> <span class="n">get_A_cross2</span><span class="p">(</span><span class="n">fermion_name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">A_tot2</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The function ⟨|A|²⟩</span>
+
+<span class="sd">        The total spin averaged scattering amplitude squared.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        E : array or float</span>
+<span class="sd">            The energy of the incoming particle.</span>
+<span class="sd">        theta : array or float</span>
+<span class="sd">            The angle of the outgoing muon.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">A_gamma2</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span> <span class="o">+</span> <span class="n">A_Z2</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span> <span class="o">+</span> <span class="n">A_cross2</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">A_tot2</span></div>
+
+
+<div class="viewcode-block" id="get_A_gamma2"><a class="viewcode-back" href="../../apidoc/mcpairproduction.scattering.html#mcpairproduction.scattering.get_A_gamma2">[docs]</a><span class="k">def</span> <span class="nf">get_A_gamma2</span><span class="p">(</span><span class="n">fermion_name</span><span class="o">=</span><span class="s2">&quot;mu&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get ⟨|A_𝛾|²⟩ function</span>
+
+<span class="sd">    Get the photon component of the spin averaged scattering amplitude</span>
+<span class="sd">    squared function for the interaction e⁻ + e⁺ →  f + f̄, where f is</span>
+<span class="sd">    the specified fermion. The equation is given below,</span>
+
+<span class="sd">    ⟨|A_𝛾|²⟩ = g_e⁴*(1 + cos(θ)²)</span>
+
+<span class="sd">    where g_e is the electromagnetic coupling constant.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fermion_name : string</span>
+<span class="sd">        Name of the resulting fundamental fermion in the reaction.</span>
+<span class="sd">        Ex &quot;mu&quot; or &quot;nu_e&quot; ...</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    callable</span>
+<span class="sd">        The function ⟨|A_𝛾|²⟩ with arguments,</span>
+<span class="sd">            - ``E``: The energy of the incoming particle.</span>
+<span class="sd">            - ``theta``: The angle of the outgoing muon.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">A_gamma2</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The function ⟨|A_𝛾|²⟩</span>
+
+<span class="sd">        The photon component of the spin averaged scattering amplitude</span>
+<span class="sd">        squared.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        E : array or float</span>
+<span class="sd">            The energy of the incoming particle.</span>
+<span class="sd">        theta : array or float</span>
+<span class="sd">            The angle of the outgoing muon.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">g_e</span><span class="o">**</span><span class="mi">4</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">A_gamma2</span></div>
+
+
+<div class="viewcode-block" id="get_A_Z2"><a class="viewcode-back" href="../../apidoc/mcpairproduction.scattering.html#mcpairproduction.scattering.get_A_Z2">[docs]</a><span class="k">def</span> <span class="nf">get_A_Z2</span><span class="p">(</span><span class="n">fermion_name</span><span class="o">=</span><span class="s2">&quot;mu&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get ⟨|A_Z|²⟩ function</span>
+
+<span class="sd">    Get the Z boson component of the spin averaged scattering amplitude</span>
+<span class="sd">    squared function for the interaction e⁻ + e⁺ →  f + f̄, where f is</span>
+<span class="sd">    the specified fermion. The equations are given below,</span>
+
+<span class="sd">    C⁺ = (Cᵥ_e² + Cₐ_e²)(Cᵥ_𝜇² + Cₐ_𝜇²)</span>
+<span class="sd">    Cˣ = Cᵥ_e Cₐ_e Cᵥ_𝜇 Cₐ_𝜇</span>
+<span class="sd">    A = (g_z E)⁴/([4E² - M_z²]² + [M_z 𝚪_z]²)</span>
+<span class="sd">    ⟨|A_Z|²⟩ = A (C⁺(1 + cos(θ)²) + 8Cˣcos(θ))</span>
+
+<span class="sd">    where g_z is the neutral weak coupling, M_z is the mass of the Z boson,</span>
+<span class="sd">    𝚪_z is the decay width of the Z boson and Cᵥ_e, Cₐ_e, Cᵥ_𝜇, Cₐ_𝜇 are</span>
+<span class="sd">    the vector and axial-vector coupling constants of the electron and</span>
+<span class="sd">    the other fermion.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fermion_name : string</span>
+<span class="sd">        Name of the resulting fundamental fermion in the reaction.</span>
+<span class="sd">        Ex &quot;mu&quot; or &quot;nu_e&quot; ...</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    callable</span>
+<span class="sd">        The function ⟨|A_Z|²⟩ with arguments,</span>
+<span class="sd">            - ``E``: The energy of the incoming particle.</span>
+<span class="sd">            - ``theta``: The angle of the outgoing muon.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">c_Ve</span><span class="p">,</span> <span class="n">c_Ae</span><span class="p">,</span> <span class="n">c_Vf</span><span class="p">,</span> <span class="n">c_Af</span> <span class="o">=</span> <span class="n">get_neutral_couplings</span><span class="p">(</span><span class="n">fermion_name</span><span class="p">)</span>
+    <span class="n">c_sum</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_Ve</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">c_Ae</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">c_Vf</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">c_Af</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">c_product</span> <span class="o">=</span> <span class="n">c_Ve</span><span class="o">*</span><span class="n">c_Ae</span><span class="o">*</span><span class="n">c_Vf</span><span class="o">*</span><span class="n">c_Af</span>
+
+    <span class="k">def</span> <span class="nf">A_Z2</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The function ⟨|A_Z|²⟩</span>
+
+<span class="sd">        The Z boson component of the spin averaged scattering amplitude</span>
+<span class="sd">        squared.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        E : array or float</span>
+<span class="sd">            The energy of the incoming particle.</span>
+<span class="sd">        theta : array or float</span>
+<span class="sd">            The angle of the outgoing muon.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="p">(</span><span class="n">g_z</span><span class="o">*</span><span class="n">E</span><span class="p">)</span><span class="o">**</span><span class="mi">4</span><span class="o">/</span><span class="p">((</span><span class="mi">4</span><span class="o">*</span><span class="n">E</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">M_z</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">M_z</span><span class="o">*</span><span class="n">Gamma_z</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">A</span><span class="o">*</span><span class="p">(</span><span class="n">c_sum</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">8</span><span class="o">*</span><span class="n">c_product</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">A_Z2</span></div>
+
+
+<div class="viewcode-block" id="get_A_cross2"><a class="viewcode-back" href="../../apidoc/mcpairproduction.scattering.html#mcpairproduction.scattering.get_A_cross2">[docs]</a><span class="k">def</span> <span class="nf">get_A_cross2</span><span class="p">(</span><span class="n">fermion_name</span><span class="o">=</span><span class="s2">&quot;mu&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get ⟨A_𝛾 A⁺_Z + A_Z A⁺_𝛾⟩ function</span>
+
+<span class="sd">    Get the cross term component of the spin averaged scattering</span>
+<span class="sd">    amplitude squared function for the interaction e⁻ + e⁺ →  f + f̄,</span>
+<span class="sd">    where f is the specified fermion. The equations are given below,</span>
+
+<span class="sd">    A = 8(g_e g_z E²)²/([4E² - M_z²]² + [M_z 𝚪_z]²)</span>
+<span class="sd">    B = (1 - [M_z/(2 E)]²)</span>
+<span class="sd">    ⟨A_𝛾 A⁺_Z + A_Z A⁺_𝛾⟩ = AB(Cᵥ_e Cᵥ_𝜇[1 + cos(θ)²] + 2Cₐ_e Cₐ_𝜇cos(θ))</span>
+
+<span class="sd">    where g_e is the electromagnetic coupling, g_z is the neutral weak</span>
+<span class="sd">    coupling, M_z is the mass of the Z boson, 𝚪_z is the decay width of</span>
+<span class="sd">    the Z boson and Cᵥ_e, Cₐ_e, Cᵥ_𝜇, Cₐ_𝜇 are the vector and</span>
+<span class="sd">    axial-vector coupling constants of the electron and the other fermion.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fermion_name : string</span>
+<span class="sd">        Name of the resulting fundamental fermion in the reaction.</span>
+<span class="sd">        Ex &quot;mu&quot; or &quot;nu_e&quot; ...</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    callable</span>
+<span class="sd">        The function ⟨A_𝛾 A⁺_Z + A_Z A⁺_𝛾⟩ with arguments,</span>
+<span class="sd">            - ``E``: The energy of the incoming particle.</span>
+<span class="sd">            - ``theta``: The angle of the outgoing muon.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">c_Ve</span><span class="p">,</span> <span class="n">c_Ae</span><span class="p">,</span> <span class="n">c_Vf</span><span class="p">,</span> <span class="n">c_Af</span> <span class="o">=</span> <span class="n">get_neutral_couplings</span><span class="p">(</span><span class="n">fermion_name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">A_cross2</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The function ⟨A_𝛾 A⁺_Z + A_Z A⁺_𝛾⟩</span>
+
+<span class="sd">        The cross term component of the spin averaged scattering</span>
+<span class="sd">        amplitude squared.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        E : array or float</span>
+<span class="sd">            The energy of the incoming particle.</span>
+<span class="sd">        theta : array or float</span>
+<span class="sd">            The angle of the outgoing muon.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="mi">8</span><span class="o">*</span><span class="p">(</span><span class="n">g_e</span><span class="o">*</span><span class="n">g_z</span><span class="o">*</span><span class="n">E</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">((</span><span class="mi">4</span><span class="o">*</span><span class="n">E</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">M_z</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">M_z</span><span class="o">*</span><span class="n">Gamma_z</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">M_z</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">E</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">A</span><span class="o">*</span><span class="n">B</span><span class="o">*</span><span class="p">(</span><span class="n">c_Ve</span><span class="o">*</span><span class="n">c_Vf</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">c_Ae</span><span class="o">*</span><span class="n">c_Af</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">A_cross2</span></div>
+
+
+<div class="viewcode-block" id="get_neutral_couplings"><a class="viewcode-back" href="../../apidoc/mcpairproduction.scattering.html#mcpairproduction.scattering.get_neutral_couplings">[docs]</a><span class="k">def</span> <span class="nf">get_neutral_couplings</span><span class="p">(</span><span class="n">fermion_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get coupling constants for the electron and other fermion</span>
+
+<span class="sd">    Get the vector and axial-vector coupling constants for the electron</span>
+<span class="sd">    and other specified fermion from `constants.py`. For more detail on</span>
+<span class="sd">    the coupling constants check the docstring of</span>
+<span class="sd">    `constants.neutral_couplings`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fermion_name : string</span>
+<span class="sd">        Name of the resulting fundamental fermion in the reaction.</span>
+<span class="sd">        Ex &quot;mu&quot; or &quot;nu_e&quot; ...</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (Cᵥ_e, Cₐ_e, Cᵥ_𝜇, Cₐ_𝜇) : tuple</span>
+<span class="sd">        The vector and axial-vector couplings of the fermions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">fermion_name</span> <span class="o">==</span> <span class="s2">&quot;e&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid particle label: </span><span class="si">{</span><span class="n">fermion_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                          <span class="s2">&quot;The reaction e⁻ + e⁺ →  e⁻ + e⁺ is not implemented.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># get the weak neutral coupling constants</span>
+    <span class="c1"># coupling constants for the electron</span>
+    <span class="n">c_Ve</span><span class="p">,</span> <span class="n">c_Ae</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">neutral_couplings</span><span class="p">(</span><span class="o">*</span><span class="n">constants</span><span class="o">.</span><span class="n">fermions</span><span class="p">[</span><span class="s2">&quot;e&quot;</span><span class="p">])</span>
+
+    <span class="c1"># fermion coupling constants for the other fermion</span>
+    <span class="n">c_Vf</span><span class="p">,</span> <span class="n">c_Af</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">neutral_couplings</span><span class="p">(</span><span class="o">*</span><span class="n">constants</span><span class="o">.</span><span class="n">fermions</span><span class="p">[</span><span class="n">fermion_name</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">c_Ve</span><span class="p">,</span> <span class="n">c_Ae</span><span class="p">,</span> <span class="n">c_Vf</span><span class="p">,</span> <span class="n">c_Af</span></div>
+
+
+<div class="viewcode-block" id="sigma_analytic"><a class="viewcode-back" href="../../apidoc/mcpairproduction.scattering.html#mcpairproduction.scattering.sigma_analytic">[docs]</a><span class="k">def</span> <span class="nf">sigma_analytic</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">A_2_integrated</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Analytic cross section</span>
+
+<span class="sd">    Compute the analytic cross section. The cross section is σ = ∬ (dσ/dΩ)dΩ</span>
+<span class="sd">    where dσ/dΩ = ⟨|A|²⟩/(16𝜋E)². So expanding the integral then,</span>
+<span class="sd">    σ = ∬ (dσ/dΩ)sin(θ)dθdφ = ∫⟨|A|²⟩sin(θ)dθ ∫(16𝜋E)⁻²dφ. Denoting the</span>
+<span class="sd">    first term in this equation ⟨|A|²⟩_int then the analytic equation for</span>
+<span class="sd">    the cross section is,</span>
+
+<span class="sd">    σ = ⟨|A|²⟩_int/(128𝜋E²)</span>
+
+<span class="sd">    Where ⟨|A|²⟩_int is a function of the energy.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    E : array or float</span>
+<span class="sd">        The energy of the incoming particle in the center of momentum frame.</span>
+<span class="sd">    A_2_integrated : callable</span>
+<span class="sd">        The integrated spin averaged scattering amplitude squared.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    σ : array or float</span>
+<span class="sd">        The cross section of the process for the given energy.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># the total cross section, integrated over phi</span>
+    <span class="k">return</span> <span class="n">A_2_integrated</span><span class="p">(</span><span class="n">E</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">128</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">E</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_A_tot2_integrated"><a class="viewcode-back" href="../../apidoc/mcpairproduction.scattering.html#mcpairproduction.scattering.get_A_tot2_integrated">[docs]</a><span class="k">def</span> <span class="nf">get_A_tot2_integrated</span><span class="p">(</span><span class="n">fermion_name</span><span class="o">=</span><span class="s2">&quot;mu&quot;</span><span class="p">,</span> <span class="n">theta_range</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get ⟨|A|²⟩_int function</span>
+
+<span class="sd">    Get the total integrated spin averaged scattering amplitude squared</span>
+<span class="sd">    function for the interaction e⁻ + e⁺ →  f + f̄, where f is the</span>
+<span class="sd">    specified fermion. The total amplitude squared can be expressed</span>
+<span class="sd">    in terms of the following three components: photon term, Z boson term</span>
+<span class="sd">    and the cross terms. The equation is given below,</span>
+
+<span class="sd">    ⟨|A|²⟩_int = ⟨|A_𝛾|²⟩_int + ⟨|A_Z|²⟩_int + ⟨A_𝛾 A⁺_Z + A_Z A⁺_𝛾⟩_int</span>
+
+<span class="sd">    where the terms are definite integrals of the form</span>
+<span class="sd">    ⟨|A|²⟩_int = ∫⟨|A|²⟩sin(θ)dθ.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fermion_name : string</span>
+<span class="sd">        Name of the resulting fundamental fermion in the reaction.</span>
+<span class="sd">        Ex &quot;mu&quot; or &quot;nu_e&quot; ...</span>
+<span class="sd">    theta_range : list</span>
+<span class="sd">        The bounds of integration.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    callable</span>
+<span class="sd">        The function ⟨|A|²⟩_int with argument,</span>
+<span class="sd">            - ``E``: The energy of the incoming particle.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">A_gamma2_integrated</span> <span class="o">=</span> <span class="n">get_A_gamma2_integrated</span><span class="p">(</span><span class="n">fermion_name</span><span class="p">,</span> <span class="n">theta_range</span><span class="p">)</span>
+    <span class="n">A_Z2_integrated</span> <span class="o">=</span> <span class="n">get_A_Z2_integrated</span><span class="p">(</span><span class="n">fermion_name</span><span class="p">,</span> <span class="n">theta_range</span><span class="p">)</span>
+    <span class="n">A_cross2_integrated</span> <span class="o">=</span> <span class="n">get_A_cross2_integrated</span><span class="p">(</span><span class="n">fermion_name</span><span class="p">,</span> <span class="n">theta_range</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">A_tot2_integrated</span><span class="p">(</span><span class="n">E</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The function ⟨|A|²⟩_int</span>
+
+<span class="sd">        The total integrated spin averaged scattering amplitude squared.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        E : array or float</span>
+<span class="sd">            The energy of the incoming particle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">A_gamma2_integrated</span><span class="p">(</span><span class="n">E</span><span class="p">)</span> <span class="o">+</span> <span class="n">A_Z2_integrated</span><span class="p">(</span><span class="n">E</span><span class="p">)</span> <span class="o">+</span> <span class="n">A_cross2_integrated</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">A_tot2_integrated</span></div>
+
+
+<div class="viewcode-block" id="get_A_gamma2_integrated"><a class="viewcode-back" href="../../apidoc/mcpairproduction.scattering.html#mcpairproduction.scattering.get_A_gamma2_integrated">[docs]</a><span class="k">def</span> <span class="nf">get_A_gamma2_integrated</span><span class="p">(</span><span class="n">fermion_name</span><span class="o">=</span><span class="s2">&quot;mu&quot;</span><span class="p">,</span> <span class="n">theta_range</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get ⟨|A_𝛾|²⟩_int function</span>
+
+<span class="sd">    Get the photon component of the integrated spin averaged scattering</span>
+<span class="sd">    amplitude squared function for the interaction e⁻ + e⁺ →  f + f̄,</span>
+<span class="sd">    where f is the specified fermion. The equation is given below,</span>
+
+<span class="sd">    F(θ) = g_e⁴*(cos(θ) + cos(θ)³/3)</span>
+<span class="sd">    ⟨|A_𝛾|²⟩_int = F(b) - F(a)</span>
+
+<span class="sd">    where g_e is the electromagnetic coupling constant and [a, b] is the</span>
+<span class="sd">    bounds of integration.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fermion_name : string</span>
+<span class="sd">        Name of the resulting fundamental fermion in the reaction.</span>
+<span class="sd">        Ex &quot;mu&quot; or &quot;nu_e&quot; ...</span>
+<span class="sd">    theta_range : array or float</span>
+<span class="sd">        The bounds of integration.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    callable</span>
+<span class="sd">        The function ⟨|A_𝛾|²⟩_int with argument,</span>
+<span class="sd">            - ``E``: The energy of the incoming particle.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">A_gamma2_indefinite</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The function ⟨|A_𝛾|²⟩_indefinite</span>
+
+<span class="sd">        The indefinite integral of the photon component of the spin</span>
+<span class="sd">        averaged scattering amplitude squared.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        E : array or float</span>
+<span class="sd">            The energy of the incoming particle.</span>
+<span class="sd">        theta : array or float</span>
+<span class="sd">            The angle of the outgoing muon.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">g_e</span><span class="o">**</span><span class="mi">4</span><span class="o">*</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">+</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">return</span> <span class="k">lambda</span> <span class="n">E</span> <span class="p">:</span> <span class="n">A_gamma2_indefinite</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">theta_range</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="n">A_gamma2_indefinite</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">theta_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="get_A_Z2_integrated"><a class="viewcode-back" href="../../apidoc/mcpairproduction.scattering.html#mcpairproduction.scattering.get_A_Z2_integrated">[docs]</a><span class="k">def</span> <span class="nf">get_A_Z2_integrated</span><span class="p">(</span><span class="n">fermion_name</span><span class="o">=</span><span class="s2">&quot;mu&quot;</span><span class="p">,</span> <span class="n">theta_range</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get ⟨|A_Z|²⟩_int function</span>
+
+<span class="sd">    Get the Z boson component of the integrated spin averaged scattering</span>
+<span class="sd">    amplitude squared function for the interaction e⁻ + e⁺ →  f + f̄,</span>
+<span class="sd">    where f is the specified fermion. The equations are given below,</span>
+
+<span class="sd">    C⁺ = (Cᵥ_e² + Cₐ_e²)(Cᵥ_𝜇² + Cₐ_𝜇²)</span>
+<span class="sd">    Cˣ = Cᵥ_e Cₐ_e Cᵥ_𝜇 Cₐ_𝜇</span>
+<span class="sd">    A = (g_z E)⁴/([4E² - M_z²]² + [M_z 𝚪_z]²)</span>
+<span class="sd">    F(θ) = A (C⁺(cos(θ) + cos(θ)³/3) + 4Cˣcos(θ)²)</span>
+<span class="sd">    ⟨|A_Z|²⟩ = F(b) - F(a)</span>
+
+<span class="sd">    where g_z is the neutral weak coupling, M_z is the mass of the Z boson,</span>
+<span class="sd">    𝚪_z is the decay width of the Z boson, [a, b] is the bounds of</span>
+<span class="sd">    integration and Cᵥ_e, Cₐ_e, Cᵥ_𝜇, Cₐ_𝜇 are the vector and axial-vector</span>
+<span class="sd">    coupling constants of the electron and the other fermion.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fermion_name : string</span>
+<span class="sd">        Name of the resulting fundamental fermion in the reaction.</span>
+<span class="sd">        Ex &quot;mu&quot; or &quot;nu_e&quot; ...</span>
+<span class="sd">    theta_range : array or float</span>
+<span class="sd">        The bounds of integration.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    callable</span>
+<span class="sd">        The function ⟨|A_Z|²⟩_int with argument,</span>
+<span class="sd">            - ``E``: The energy of the incoming particle.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">c_Ve</span><span class="p">,</span> <span class="n">c_Ae</span><span class="p">,</span> <span class="n">c_Vf</span><span class="p">,</span> <span class="n">c_Af</span> <span class="o">=</span> <span class="n">get_neutral_couplings</span><span class="p">(</span><span class="n">fermion_name</span><span class="p">)</span>
+    <span class="n">c_sum</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_Ve</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">c_Ae</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">c_Vf</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">c_Af</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">c_product</span> <span class="o">=</span> <span class="n">c_Ve</span><span class="o">*</span><span class="n">c_Ae</span><span class="o">*</span><span class="n">c_Vf</span><span class="o">*</span><span class="n">c_Af</span>
+
+    <span class="k">def</span> <span class="nf">A_Z2_indefinite</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The function ⟨|A_Z|²⟩_indefinite</span>
+
+<span class="sd">        The indefinite integral of the Z boson component of the spin</span>
+<span class="sd">        averaged scattering amplitude squared.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        E : array or float</span>
+<span class="sd">            The energy of the incoming particle.</span>
+<span class="sd">        theta : array or float</span>
+<span class="sd">            The angle of the outgoing muon.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="p">(</span><span class="n">g_z</span><span class="o">*</span><span class="n">E</span><span class="p">)</span><span class="o">**</span><span class="mi">4</span><span class="o">/</span><span class="p">((</span><span class="mi">4</span><span class="o">*</span><span class="n">E</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">M_z</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">M_z</span><span class="o">*</span><span class="n">Gamma_z</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">A</span><span class="o">*</span><span class="p">(</span><span class="n">c_sum</span><span class="o">*</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">+</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="mi">4</span><span class="o">*</span><span class="n">c_product</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="k">lambda</span> <span class="n">E</span> <span class="p">:</span> <span class="n">A_Z2_indefinite</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">theta_range</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="n">A_Z2_indefinite</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">theta_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="get_A_cross2_integrated"><a class="viewcode-back" href="../../apidoc/mcpairproduction.scattering.html#mcpairproduction.scattering.get_A_cross2_integrated">[docs]</a><span class="k">def</span> <span class="nf">get_A_cross2_integrated</span><span class="p">(</span><span class="n">fermion_name</span><span class="o">=</span><span class="s2">&quot;mu&quot;</span><span class="p">,</span> <span class="n">theta_range</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get ⟨A_𝛾 A⁺_Z + A_Z A⁺_𝛾⟩_int function</span>
+
+<span class="sd">    Get the cross term component of the integrated spin averaged scattering</span>
+<span class="sd">    amplitude squared function for the interaction e⁻ + e⁺ →  f + f̄,</span>
+<span class="sd">    where f is the specified fermion. The equations are given below,</span>
+
+<span class="sd">    A = 8(g_e g_z E²)²/([4E² - M_z²]² + [M_z 𝚪_z]²)</span>
+<span class="sd">    B = (1 - [M_z/(2 E)]²)</span>
+<span class="sd">    F(θ) = AB(Cᵥ_e Cᵥ_𝜇[cos(θ) + cos(θ)³/3] + Cₐ_e Cₐ_𝜇cos(θ)²)</span>
+<span class="sd">    ⟨A_𝛾 A⁺_Z + A_Z A⁺_𝛾⟩ = F(b) - F(a)</span>
+
+<span class="sd">    where g_e is the electromagnetic coupling, g_z is the neutral weak</span>
+<span class="sd">    coupling, M_z is the mass of the Z boson, 𝚪_z is the decay width of</span>
+<span class="sd">    the Z boson, [a, b] is the bounds of integration and Cᵥ_e, Cₐ_e,</span>
+<span class="sd">    Cᵥ_𝜇, Cₐ_𝜇 are the vector and axial-vector coupling constants of the</span>
+<span class="sd">    electron and the other fermion.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fermion_name : string</span>
+<span class="sd">        Name of the resulting fundamental fermion in the reaction.</span>
+<span class="sd">        Ex &quot;mu&quot; or &quot;nu_e&quot; ...</span>
+<span class="sd">    theta_range : array or float</span>
+<span class="sd">        The bounds of integration.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    callable</span>
+<span class="sd">        The function ⟨A_𝛾 A⁺_Z + A_Z A⁺_𝛾⟩_int with argument,</span>
+<span class="sd">            - ``E``: The energy of the incoming particle.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">c_Ve</span><span class="p">,</span> <span class="n">c_Ae</span><span class="p">,</span> <span class="n">c_Vf</span><span class="p">,</span> <span class="n">c_Af</span> <span class="o">=</span> <span class="n">get_neutral_couplings</span><span class="p">(</span><span class="n">fermion_name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">A_cross2_indefinite</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The function  ⟨A_𝛾 A⁺_Z + A_Z A⁺_𝛾⟩_indefinite</span>
+
+<span class="sd">        The indefinite integral of the cross term component of the spin</span>
+<span class="sd">        averaged scattering amplitude squared.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        E : array or float</span>
+<span class="sd">            The energy of the incoming particle.</span>
+<span class="sd">        theta : array or float</span>
+<span class="sd">            The angle of the outgoing muon.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="mi">8</span><span class="o">*</span><span class="p">(</span><span class="n">g_e</span><span class="o">*</span><span class="n">g_z</span><span class="o">*</span><span class="n">E</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">((</span><span class="mi">4</span><span class="o">*</span><span class="n">E</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">M_z</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">M_z</span><span class="o">*</span><span class="n">Gamma_z</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">M_z</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">E</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">A</span><span class="o">*</span><span class="n">B</span><span class="o">*</span><span class="p">(</span><span class="n">c_Ve</span><span class="o">*</span><span class="n">c_Vf</span><span class="o">*</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">+</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="n">c_Ae</span><span class="o">*</span><span class="n">c_Af</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="k">lambda</span> <span class="n">E</span> <span class="p">:</span> <span class="n">A_cross2_indefinite</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">theta_range</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="n">A_cross2_indefinite</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">theta_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Luke Siemens.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

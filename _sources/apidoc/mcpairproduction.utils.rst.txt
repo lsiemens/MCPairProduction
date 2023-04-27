@@ -1,0 +1,7 @@
+mcpairproduction.utils module
+=============================
+
+.. automodule:: mcpairproduction.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

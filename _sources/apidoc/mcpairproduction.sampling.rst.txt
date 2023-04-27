@@ -1,0 +1,7 @@
+mcpairproduction.sampling module
+================================
+
+.. automodule:: mcpairproduction.sampling
+   :members:
+   :undoc-members:
+   :show-inheritance:
