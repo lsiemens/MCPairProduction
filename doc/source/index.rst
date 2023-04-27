@@ -6,11 +6,22 @@
 MCPairProduction: Phys 424 Project
 ==================================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
 
-   apidoc/modules
+Module
+======
+.. toctree::
+   :maxdepth: 3
+
+   apidoc/mcpairproduction
+
+Scripts
+=======
+.. toctree::
+   :maxdepth: 1
+
+   apidoc/LEP_analysis
+   apidoc/LEP_setup
+   apidoc/run_examples
 
 
 Indices and tables

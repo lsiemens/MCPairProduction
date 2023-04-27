@@ -17,7 +17,7 @@ author = 'Luke Siemens'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ["numpydoc", "sphinx.ext.autodoc", "sphinx_rtd_theme"]
+extensions = ["numpydoc", "sphinx.ext.autodoc", "sphinx.ext.viewcode", "sphinx_rtd_theme"]
 
 templates_path = ['_templates']
 exclude_patterns = []
@@ -28,3 +28,4 @@ exclude_patterns = []
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
+html_show_sourcelink = False
