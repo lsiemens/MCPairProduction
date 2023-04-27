@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Run examples and tests
 
-Run examples and test for validating the code against the code for the
-first part of the project.
+This script runs examples and tests for validating mcpairproduction
+against the code for the first part of the project.
 """
 
 import mcpairproduction.examples as examples
